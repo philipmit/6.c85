@@ -72,7 +72,7 @@
 					For a broad New York Times audience that includes casual news readers, a more explicit orientation could help. 
 					Including larger arrows or a short explanation in the legend would make the pathway from 2020 to 2022 more clear. 
 					A future design modification could also introduce a clear visual hierarchy with stronger guiding lines and improved month labeling. 
-					This would also help reinforce the main takeaway that each successive wave surpassed the previous wave ultimately leading up to the ongoing Omicron wave.
+					This would also help reinforce the main takeaway that each successive wave surpassed the previous wave ultimately leading up to the Omicron wave.
 				</li>
 			</ul>
 		</section>
@@ -114,7 +114,8 @@
 			<figure>
 				<img src="a3_sk2.png" alt="" width = "600" />
 				<figcaption>
-					The heatmap shows the number of COVID-19 cases each month over the years 2020 and 2021, along with the start of 2022. The darkness of the red represents each month's average number of new cases each day.
+					The heatmap shows the number of COVID-19 cases each month over the years 2020 and 2021, along with the start of 2022. 
+                    The darkness of the red represents each month's average number of new cases each day.
 				</figcaption>
 			</figure>
 
@@ -124,7 +125,7 @@
 
 			<ul>
 				
-				<li>				This provides a clear way to compare case severity across years and across months. 
+				<li>				This provides a clear way to compare case severity across years and/or across months. 
 				</li>
 				<li>				The heatmap emphasizes trends without requiring users to follow complex curves. 
 				</li>
@@ -132,7 +133,9 @@
 				</li>
 				<li>				The heatmap provides a clear starting point to look at (the top left with 2020) and trajectory to follow moving left to right (across months) and top to down (across years) when interpreting the figure.
 				</li>
-				<li>				Using color to represent the magnitude of new case counts in each month can make it more challenging to precisely interpret the scale of differences over time (and to fully appreciate the significant increase corresponding to the current Omicron wave). In the next attempt, I hope to create a visualization that not only gives an overall sense of changes over time, but allows for precise interpretation of the scale of these differences.
+				<li>				Using color to represent the magnitude of new case counts in each month can make it more challenging to precisely interpret the scale of differences over time 
+                    (and hard to fully appreciate the significant increase corresponding to the Omicron wave). 
+                    In the next attempt, I hope to create a visualization that not only gives an overall sense of changes over time, but allows for precise interpretation of the scale of these differences.
 				</li>
 				
 
@@ -152,7 +155,7 @@
 
 			<ul>
 				
-				<li>				This addresses the challenge of interpretation difficulty by using a standard time-series chart. 
+				<li>				This figure addresses the challenge of interpretation difficulty by using a standard time-series chart. 
 				</li>
 				<li>				It allows easy year-over-year comparisons with distinct colors representing each year within the line. Gridlines and labeled x-axis make it easy to follow trends over time. 
 				</li>
@@ -169,7 +172,10 @@
 			<figure>
 				<img src="a3_final_fig_large.png" alt="" width = "1170" />
 				<figcaption>
-				This figure shows the 7-day average of new COVID-19 cases, starting on January 13, 2020 and leading up to the current Omicron wave, with the final data point representing January 6, 2022. Months are represented by the color of both the plotted markers and the background color of the figure. Months that occur close to each other in time are shown in similar colors, with December and January represented with the darkest colors. The vertical dashed lines indicate the start of each year (2020, 2021, and 2022) represented in the figure.
+				This figure shows the 7-day average of new COVID-19 cases, starting on January 13, 2020 and leading up to the Omicron wave, with the final data point representing January 6, 2022. 
+                Months are represented by the color of both the plotted markers and the background color of the figure. 
+                Months that occur close to each other in time are shown in similar colors, with December and January represented with the darkest colors. 
+                The vertical dashed lines indicate the start of each year (2020, 2021, and 2022) represented in the figure.
 
 				</figcaption>
 			</figure>
@@ -182,13 +188,30 @@
 			<h2>Design Process & Design Decisions</h2>
 
 			<p>
-				The final visualization builds upon the strengths of previous sketches while addressing the interpretability challenges of the original spiral visualization. The core objective was to effectively communicate both the long-term progression of COVID-19 cases and the seasonal patterns that define its surges. To achieve this, a standard time-series line chart was selected for its clarity and accessibility, as it allows for precise trend interpretation while eliminating the distortion inherent in a spiral layout. The most critical enhancement was the introduction of color encoding to represent months (which was not incorporated in sketch 3), which preserves the cyclical nature of the pandemic while maintaining a linear, easy-to-follow temporal flow. The use of a gradient color scheme ensures that months close in time are visually grouped, reinforcing seasonal trends without introducing unnecessary complexity. Additionally, dashed vertical lines mark the beginning of each new year, making it easier to contextualize wave patterns in relation to calendar years. By combining these design choices, the visualization clearly conveys the evolving magnitude of COVID-19 waves, the relative severity of each season, and how each year’s peak compares to the previous ones.
+				The final visualization builds upon the strengths of previous sketches while addressing the interpretability challenges of the original spiral visualization. 
+                The core objective was to effectively communicate both the long-term progression of COVID-19 cases and the seasonal patterns that define its surges. 
+                To achieve this, a standard time-series line chart was selected for its clarity and accessibility, as it allows for precise trend interpretation while eliminating the distortion inherent in a spiral layout. 
+                The most critical enhancement was the introduction of color encoding to represent months (which was not incorporated in sketch 3), 
+                which preserves the cyclical nature of the pandemic while maintaining a linear, easy-to-follow temporal flow. 
+                Both the markers within the plot and the background color of the figure are color-coded by month, making the monthly patterns that correspond to the major spikes in cases more clear.
+                The use of a gradient color scheme ensures that months close in time are visually grouped, reinforcing seasonal trends without introducing unnecessary complexity. 
+                Additionally, dashed vertical lines mark the beginning of each new year, making it easier to contextualize wave patterns in relation to calendar years. 
+                By combining these design choices, the visualization clearly conveys the evolving magnitude of COVID-19 waves, the relative severity of each season, and how each year’s peak compares to the previous ones.
+                One advantage of the original visualization over this final figure is the ease with which specific time points can be compared across years in the spiral layout. 
+                The color gradient across months enables readers to identify and compare similar points in time across years (e.g., December is dark blue in each year), 
+                but the spiral layout made this comparison more intuitive and might be prefered if this is the main evaluation of interest.
       </p>
 
       <h3>Reflection</h3>
 
       <p>
-		The redesign process revealed key trade-offs between aesthetics and clarity. While the spiral visualization effectively captured the cyclical nature of the pandemic, it sacrificed ease of interpretation, a challenge partially addressed in the radar chart but more successfully resolved in the final design. The heatmap sketch, though valuable in showing relative case intensity, lacked precision in communicating exact trends over time. The line chart sketch improved readability and precision but did not highlight seasonal patterns explicitly, an issue that the final visualization resolved through its color encoding of months. Although this approach still abstracts some finer details, such as exact case numbers at every point, it balances precision and readability far better than the original spiral. This iterative process underscored the difficulty of designing a visualization that is both intuitive and information-rich, demonstrating that effective visual storytelling often involves compromises between various design priorities.
+		The redesign process revealed key trade-offs between aesthetics and clarity. 
+        While the spiral visualization effectively captured the cyclical nature of the pandemic, it sacrificed ease of interpretation, a challenge partially addressed in the radar chart, 
+        but more successfully resolved in the final design. The heatmap sketch, though valuable in showing relative case intensity, lacked precision in communicating exact trends over time. 
+        The line chart sketch improved readability and precision, but did not highlight seasonal patterns explicitly, an issue that the final visualization resolved through its color encoding of months. 
+        Although this approach still abstracts some finer details, such as exact case numbers at every point, it balances precision and readability better than the original spiral. 
+        This iterative process underscored the difficulty of designing a visualization that is both intuitive and information-rich, 
+        demonstrating that producing effective visualizations often involves compromises between various design priorities.
       </p>
 		</section>
 	</main>
