@@ -1,0 +1,196 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+	<title>Vis & Society Assignment 3</title>
+	<link rel="stylesheet" href="https://vis-society.github.io/assignments/report.css" />
+</head>
+
+<body>
+	<header>
+		<h1>
+			<small>Assignment 3</small>
+			Visualization Critique & Redesign
+		</h1>
+
+		<p>
+			<strong>Philip Schroeder</strong> — <em>pschro@mit.edu</em>
+		</p>
+	</header>
+
+	<main>
+		<section>
+			<h2>Reading & Critique</h2>
+
+			<figure>
+				<img src="https://vis-society.github.io/assets/imgs/covid-spiral.png" alt="" width="600" />
+			</figure>
+
+			<p>
+				Insights about the data/visualization:
+			</p>
+
+			<ul>
+				<li>				The spiral visualization presents the trend of new COVID-19 cases (7-day average) in the United States starting in January, 2020 and ending January 6, 2022 (the day the article was published). 
+				</li>
+				<li>Each year follows a spiral pattern that highlights fluctuations in cases across the months. We clearly see a seasonal pattern, with spikes in the winter months, with the current wave leading up to January 6.
+				</li>
+				<li>The recent Omicron variant wave in early 2022 is the most pronounced, with over 400K new cases being reported. In addition, it looks like the spike may be expected to continue into mid-late January base on the pattern observed in early 2021.
+				</li>
+				<li>Although it does not stand out in this figure, we also see a surprising peak in new cases in September, 2021. The counts then decline before approaching the Omicron wave at the end of 2021.
+
+				</li>
+
+
+
+			</ul>
+
+			<p>
+				Design Critique:
+			</p>
+
+			<ul>
+
+				
+				
+				<li>				A key strength of this spiral design is that it grabs the reader’s attention and conveys how the pandemic has unfolded over multiple years in a cyclic/seasonal manner, which can be more engaging than standard visualization strategies. 
+					It also effectively highlights broad waves of infection, with thicker regions indicating larger surges. 
+					However, because this is such an unconventional graphic, the placement and labeling of time on the spiral can be confusing for a general audience, 
+					especially around the transitions from one year to the next. 
+					One improvement might be to add radial gridlines or more explicit labeling of months and years in regular intervals. 
+					This would help the audience quickly orient themselves on the time scale and see exactly when major surges occurred.
+				</li>
+				<li>				Despite being its visual appeal, the spiral format introduces readability challenges, particularly with respect to accurately gauging case counts. 
+					Unlike a traditional line chart where the x-axis is consistent, the spiral’s changing radius makes it difficult to discern specific trends, 
+					and the 150K case example in the key is hard to cross-reference with the rest of the figure. 
+					<!-- As a result, but fluctuations remain somewhat ambiguous without clearer axis indicators.  -->
+					To improve accessibility for a broader audience, future versions could incorporate clear axis labels and more explicit reference points along the spiral to better orient the reader.
+				</li>
+				<li>
+					The idea of cases mounting over time comes across clearly in the figure, but the starting point for reading the visualization might not be immediately obvious to readers, 
+					especially those unfamiliar with this form of visualization. 
+					You have to look for small textual clues (e.g., “2020” near the center), then follow the spiral outward. 
+					For a broad New York Times audience that includes casual news readers, a more explicit orientation could help. 
+					Including larger arrows or a short explanation in the legend would make the pathway from 2020 to 2022 more clear. 
+					A future design modification could also introduce a clear visual hierarchy with stronger guiding lines and improved month labeling. 
+					This would also help reinforce the main takeaway that each successive wave surpassed the previous wave ultimately leading up to the ongoing Omicron wave.
+				</li>
+			</ul>
+		</section>
+
+		<section>
+			<h2>Visualization Sketches</h2>
+
+      <figure>
+				<img src="a3_sk1.png" alt="" width = "600" />
+				<figcaption>
+					This radar chart visualizes monthly COVID-19 case trends for different years, where each month is a point on the circular axis and each year is represented by a separate line (2020 in blue, 2021 in red, and 2022 in green), 
+					showing how cases varied month-to-month within each year. The data points being plotted are based on the 7-day average, just like the original spiral figure.
+				</figcaption>
+			</figure>
+
+			<p>
+				Design Rationale for Sketch 1:
+			</p>
+
+			<ul>
+				
+				<li>				The peak in January 2022 is immediately evident, showing the Omicron surge. 
+					Seasonal patterns emerge, with mid-to-late-year increases in 2020 and 2021. Case counts in certain months, especially during the summer, appear to be less severe across multiple years.
+				</li>
+				<li>				This preserves the cyclical nature of months while maintaining clear year-over-year comparisons.
+				</li>
+				<li>				The lines and light-filled areas differentiate each year without overwhelming the visualization.
+				</li>
+				<li> The 12 evenly spaced months naturally align with the calendar (and resemble the familiar clock-like format), making it intuitive to read.
+				</li>
+				<li>				Although not as visually appealing as the original figure, this chart successfully mimics the seasonal cycle representation of the spiral but in a more structured and comparable format.
+				</li>
+				<li>				Readers from a general audience may still struggle to interpret this chart due to its circular format. 
+					In the next visualization, I hope to represent the more explicit temporal pattern (across years and across months) that is reflected in the data.
+				</li>
+				
+			</ul>
+
+			<figure>
+				<img src="a3_sk2.png" alt="" width = "600" />
+				<figcaption>
+					The heatmap shows the number of COVID-19 cases each month over the years 2020 and 2021, along with the start of 2022. The darkness of the red represents each month's average number of new cases each day.
+				</figcaption>
+			</figure>
+
+			<p>
+				Design Rationale for Sketch 2:
+			</p>
+
+			<ul>
+				
+				<li>				This provides a clear way to compare case severity across years and across months. 
+				</li>
+				<li>				The heatmap emphasizes trends without requiring users to follow complex curves. 
+				</li>
+				<li>				It removes any distortions caused by spirals or non-traditional layouts.
+				</li>
+				<li>				The heatmap provides a clear starting point to look at (the top left with 2020) and trajectory to follow moving left to right (across months) and top to down (across years) when interpreting the figure.
+				</li>
+				<li>				Using color to represent the magnitude of new case counts in each month can make it more challenging to precisely interpret the scale of differences over time (and to fully appreciate the significant increase corresponding to the current Omicron wave). In the next attempt, I hope to create a visualization that not only gives an overall sense of changes over time, but allows for precise interpretation of the scale of these differences.
+				</li>
+				
+
+			</ul>
+
+			<figure>
+				<img src="a3_sk3.png" alt="" width = "600" />
+				<figcaption>
+					This figure shows the 7-day average of new COVID-19 cases from January 2020 to January 6, 2022. 
+					There is a single line of data, but the line changes color for each year with blue, red, and green representing the years 2020, 2021, and 2022, respectively.
+				</figcaption>
+			</figure>
+
+			<p>
+				Design Rationale for Sketch 3:
+			</p>
+
+			<ul>
+				
+				<li>				This addresses the challenge of interpretation difficulty by using a standard time-series chart. 
+				</li>
+				<li>				It allows easy year-over-year comparisons with distinct colors representing each year within the line. Gridlines and labeled x-axis make it easy to follow trends over time. 
+				</li>
+				<li>				The x-axis progression is linear, making it easier to track trends. It retains the benefits of a continuous timeline while avoiding the difficulties of interpreting a spiral. 
+				</li>
+				<li>				The major limitation of this figure is that it makes it more difficult to identify the monthly pattern corresponding to the spikes within each year (i.e., major spikes during December/January). In the final figure, I hope to leverage the coloring to make these monthly patterns more clear.
+				</li>
+			</ul>
+		</section>
+
+		<section>
+			<h2>Final Visualization Design</h2>
+      
+			<figure>
+				<img src="a3_final_fig_large.png" alt="" width = "1170" />
+				<figcaption>
+				This figure shows the 7-day average of new COVID-19 cases, starting on January 13, 2020 and leading up to the current Omicron wave, with the final data point representing January 6, 2022. Months are represented by the color of both the plotted markers and the background color of the figure. Months that occur close to each other in time are shown in similar colors, with December and January represented with the darkest colors. The vertical dashed lines indicate the start of each year (2020, 2021, and 2022) represented in the figure.
+
+				</figcaption>
+			</figure>
+			<!-- <iframe src="final_fig_.pdf" width="600" height="500"></iframe> -->
+
+
+		</section>
+
+		<section>
+			<h2>Design Process & Design Decisions</h2>
+
+			<p>
+				The final visualization builds upon the strengths of previous sketches while addressing the interpretability challenges of the original spiral visualization. The core objective was to effectively communicate both the long-term progression of COVID-19 cases and the seasonal patterns that define its surges. To achieve this, a standard time-series line chart was selected for its clarity and accessibility, as it allows for precise trend interpretation while eliminating the distortion inherent in a spiral layout. The most critical enhancement was the introduction of color encoding to represent months (which was not incorporated in sketch 3), which preserves the cyclical nature of the pandemic while maintaining a linear, easy-to-follow temporal flow. The use of a gradient color scheme ensures that months close in time are visually grouped, reinforcing seasonal trends without introducing unnecessary complexity. Additionally, dashed vertical lines mark the beginning of each new year, making it easier to contextualize wave patterns in relation to calendar years. By combining these design choices, the visualization clearly conveys the evolving magnitude of COVID-19 waves, the relative severity of each season, and how each year’s peak compares to the previous ones.
+      </p>
+
+      <h3>Reflection</h3>
+
+      <p>
+		The redesign process revealed key trade-offs between aesthetics and clarity. While the spiral visualization effectively captured the cyclical nature of the pandemic, it sacrificed ease of interpretation, a challenge partially addressed in the radar chart but more successfully resolved in the final design. The heatmap sketch, though valuable in showing relative case intensity, lacked precision in communicating exact trends over time. The line chart sketch improved readability and precision but did not highlight seasonal patterns explicitly, an issue that the final visualization resolved through its color encoding of months. Although this approach still abstracts some finer details, such as exact case numbers at every point, it balances precision and readability far better than the original spiral. This iterative process underscored the difficulty of designing a visualization that is both intuitive and information-rich, demonstrating that effective visual storytelling often involves compromises between various design priorities.
+      </p>
+		</section>
+	</main>
+</body>
+</html>
