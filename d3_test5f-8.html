@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Community Diversity Visualizer</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      background: #f9f9f9;
+      position: relative;
+    }
+
+    svg {
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    #people-viz {
+      position: relative;
+      z-index: 1;
+    }
+
+    .bar-chart-container {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2;
+      background-color: rgba(255, 255, 255, 0.85);
+      padding: 10px;
+      border-radius: 10px;
+    }
+
+    #bar-chart-race, #bar-chart-age,
+    #bar-chart-education, #bar-chart-job {
+      margin-top: 5px;
+    }
+
+    .symbol {
+      font-size: 30px;
+    }
+
+    .bar {
+      stroke: #333;
+      stroke-width: 0.5;
+    }
+
+    .label {
+      font-size: 14px;
+    }
+
+    .category-name {
+      font-size: 14px;
+      fill: #444;
+    }
+
+    #charts-wrapper {
+      top: 180px;
+      width: 520px;
+    }
+
+    .controls {
+      margin-bottom: 20px;
+    }
+
+    select {
+      margin-left: 10px;
+      font-size: 14px;
+    }
+
+    .chart-title {
+      font-weight: bold;
+      font-size: 14px;
+      margin-top: 12px;
+      margin-bottom: -8px;
+      /* add underline */
+        /* text-decoration: underline; */
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Community Diversity vs. Corporate Ownership in Boston from 2004 to 2024</h2>
+  <div>Move the slider to see how the diversity of Boston changes, along the dimensions of race, age, education level, and employment type, as corporate ownership increases!</div>
+  <br>
+  <div class="controls">
+    <div id="status" style="font-weight: bold">(Observed Data)</div>
+    <input type="range" id="slider" min="2" max="94" step="4" value="2" />
+    <label for="slider">Corporate Ownership:  <span id="ownership-value">2</span>%</label>  
+
+    <label for="view-select">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; View:</label>
+    <select id="view-select" style="font-size: 16px;">
+      <option value="all">Race + Age + Education + Job Type</option>
+      <option value="race_age">Race + Age</option>
+      <option value="education">Race + Age + Education</option>
+      <option value="job">Race + Age + Job Type</option>
+    </select>
+  </div>
+
+  <div id="charts-wrapper" class="bar-chart-container">
+    <div id="title-race" class="chart-title">Race</div>
+    <svg id="bar-chart-race" width="500" height="180"></svg>
+    <span id="title-age1"><hr></span>
+    <div id="title-age" class="chart-title" >Age (years)</div>
+    <svg id="bar-chart-age" width="500" height="140"></svg>
+    <span id="title-education1"><hr></span>
+    <div id="title-education" class="chart-title">Education Level</div>
+    <svg id="bar-chart-education" width="500" height="140"></svg>
+    <!-- <br> -->
+    <span id="title-job1"><hr></span>
+    <div id="title-job" class="chart-title">Job Type</div>
+    <svg id="bar-chart-job" width="500" height="140"></svg>
+  </div>
+
+  <svg id="people-viz" width="1200" height="1200"></svg>
+
+  <script>
+    function mulberry32(a) {
+      return function() {
+        let t = a += 0x6D2B79F5;
+        t = Math.imul(t ^ (t >>> 15), t | 1);
+        t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+      }
+    }
+
+    function getSeed(ownership) {
+      const key = `seed-${ownership}`;
+      if (!localStorage.getItem(key)) {
+        localStorage.setItem(key, Math.floor(Math.random() * 1000000));
+      }
+      return parseInt(localStorage.getItem(key));
+    }
+
+    function shuffle(array, randomFunc) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(randomFunc() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    const raceColors = {
+      White: "#FF5733",
+      Asian: "#33FF57",
+      Black: "#3357FF",
+      Hispanic: "#FF33D4",
+      Other: "orange"
+    };
+
+    const educationSymbols = {
+      Edu_Below_High_School: "",
+      Edu_High_School: "✏️",
+      Edu_Some_College: "📘",
+      Edu_Bachelor_or_Above: "🎓"
+    };
+
+    const jobEmojis = {
+      Job_Technology: "💻",
+      Job_Corporate: "💼",
+      Job_Healthcare: "🚑",
+      Job_Construction: "🪚",
+      Job_Hospitality: "🛎️",
+    //   Job_Repair_Tech: "🛠️"
+    };
+
+    const ageSizes = {
+      Age_0_19: 12,
+      Age_20_34: 18,
+      Age_35_54: 24,
+      Age_55_plus: 30
+    };
+
+
+    const data = [{'corp_own_rate': 2, 'White': 37, 'Asian': 10, 'Black': 30, 'Hispanic': 17, 'Other': 6, 'Age_0_19': 25, 'Age_20_34': 28, 'Age_35_54': 24, 'Age_55_plus': 23, 'Edu_Below_High_School': 16, 'Edu_High_School': 25, 'Edu_Some_College': 23, 'Edu_Bachelor_or_Above': 35, 'Job_Technology': 15, 'Job_Corporate': 12, 'Job_Healthcare': 15, 'Job_Construction': 15, 'Job_Hospitality': 21, 'Job_Repair_Tech': 5}, {'corp_own_rate': 6, 'White': 41, 'Asian': 9, 'Black': 25, 'Hispanic': 21, 'Other': 4, 'Age_0_19': 24, 'Age_20_34': 34, 'Age_35_54': 25, 'Age_55_plus': 17, 'Edu_Below_High_School': 18, 'Edu_High_School': 23, 'Edu_Some_College': 22, 'Edu_Bachelor_or_Above': 37, 'Job_Technology': 16, 'Job_Corporate': 16, 'Job_Healthcare': 10, 'Job_Construction': 14, 'Job_Hospitality': 14, 'Job_Repair_Tech': 6}, {'corp_own_rate': 10, 'White': 48, 'Asian': 4, 'Black': 26, 'Hispanic': 17, 'Other': 5, 'Age_0_19': 23, 'Age_20_34': 40, 'Age_35_54': 23, 'Age_55_plus': 14, 'Edu_Below_High_School': 13, 'Edu_High_School': 26, 'Edu_Some_College': 21, 'Edu_Bachelor_or_Above': 40, 'Job_Technology': 20, 'Job_Corporate': 16, 'Job_Healthcare': 16, 'Job_Construction': 13, 'Job_Hospitality': 12, 'Job_Repair_Tech': 5}, {'corp_own_rate': 14, 'White': 48, 'Asian': 9, 'Black': 24, 'Hispanic': 14, 'Other': 6, 'Age_0_19': 21, 'Age_20_34': 40, 'Age_35_54': 17, 'Age_55_plus': 21, 'Edu_Below_High_School': 6, 'Edu_High_School': 25, 'Edu_Some_College': 24, 'Edu_Bachelor_or_Above': 44, 'Job_Technology': 17, 'Job_Corporate': 17, 'Job_Healthcare': 11, 'Job_Construction': 15, 'Job_Hospitality': 7, 'Job_Repair_Tech': 0}, {'corp_own_rate': 18, 'White': 50, 'Asian': 8, 'Black': 23, 'Hispanic': 14, 'Other': 5, 'Age_0_19': 23, 'Age_20_34': 40, 'Age_35_54': 19, 'Age_55_plus': 18, 'Edu_Below_High_School': 8, 'Edu_High_School': 19, 'Edu_Some_College': 22, 'Edu_Bachelor_or_Above': 51, 'Job_Technology': 28, 'Job_Corporate': 16, 'Job_Healthcare': 13, 'Job_Construction': 12, 'Job_Hospitality': 10, 'Job_Repair_Tech': 0}, {'corp_own_rate': 22, 'White': 50, 'Asian': 12, 'Black': 19, 'Hispanic': 13, 'Other': 6, 'Age_0_19': 13, 'Age_20_34': 51, 'Age_35_54': 24, 'Age_55_plus': 13, 'Edu_Below_High_School': 11, 'Edu_High_School': 15, 'Edu_Some_College': 23, 'Edu_Bachelor_or_Above': 52, 'Job_Technology': 27, 'Job_Corporate': 21, 'Job_Healthcare': 11, 'Job_Construction': 8, 'Job_Hospitality': 7, 'Job_Repair_Tech': 3}, {'corp_own_rate': 26, 'White': 55, 'Asian': 14, 'Black': 15, 'Hispanic': 12, 'Other': 5, 'Age_0_19': 13, 'Age_20_34': 51, 'Age_35_54': 20, 'Age_55_plus': 16, 'Edu_Below_High_School': 9, 'Edu_High_School': 14, 'Edu_Some_College': 24, 'Edu_Bachelor_or_Above': 54, 'Job_Technology': 32, 'Job_Corporate': 23, 'Job_Healthcare': 16, 'Job_Construction': 8, 'Job_Hospitality': 9, 'Job_Repair_Tech': 0}, {'corp_own_rate': 30, 'White': 58, 'Asian': 9, 'Black': 18, 'Hispanic': 10, 'Other': 5, 'Age_0_19': 13, 'Age_20_34': 56, 'Age_35_54': 21, 'Age_55_plus': 10, 'Edu_Below_High_School': 9, 'Edu_High_School': 12, 'Edu_Some_College': 21, 'Edu_Bachelor_or_Above': 58, 'Job_Technology': 36, 'Job_Corporate': 20, 'Job_Healthcare': 10, 'Job_Construction': 6, 'Job_Hospitality': 6, 'Job_Repair_Tech': 0}, {'corp_own_rate': 34, 'White': 58, 'Asian': 14, 'Black': 15, 'Hispanic': 10, 'Other': 2, 'Age_0_19': 7, 'Age_20_34': 63, 'Age_35_54': 20, 'Age_55_plus': 11, 'Edu_Below_High_School': 3, 'Edu_High_School': 15, 'Edu_Some_College': 24, 'Edu_Bachelor_or_Above': 59, 'Job_Technology': 41, 'Job_Corporate': 22, 'Job_Healthcare': 12, 'Job_Construction': 4, 'Job_Hospitality': 4, 'Job_Repair_Tech': 0}, {'corp_own_rate': 38, 'White': 62, 'Asian': 13, 'Black': 13, 'Hispanic': 8, 'Other': 4, 'Age_0_19': 7, 'Age_20_34': 64, 'Age_35_54': 19, 'Age_55_plus': 10, 'Edu_Below_High_School': 3, 'Edu_High_School': 10, 'Edu_Some_College': 23, 'Edu_Bachelor_or_Above': 63, 'Job_Technology': 42, 'Job_Corporate': 24, 'Job_Healthcare': 12, 'Job_Construction': 3, 'Job_Hospitality': 2, 'Job_Repair_Tech': 0}, {'corp_own_rate': 42, 'White': 65, 'Asian': 14, 'Black': 11, 'Hispanic': 7, 'Other': 4, 'Age_0_19': 5, 'Age_20_34': 68, 'Age_35_54': 19, 'Age_55_plus': 9, 'Edu_Below_High_School': 2, 'Edu_High_School': 9, 'Edu_Some_College': 23, 'Edu_Bachelor_or_Above': 66, 'Job_Technology': 46, 'Job_Corporate': 25, 'Job_Healthcare': 11, 'Job_Construction': 2, 'Job_Hospitality': 0, 'Job_Repair_Tech': 0}, {'corp_own_rate': 46, 'White': 67, 'Asian': 14, 'Black': 9, 'Hispanic': 6, 'Other': 3, 'Age_0_19': 2, 'Age_20_34': 72, 'Age_35_54': 18, 'Age_55_plus': 7, 'Edu_Below_High_School': 1, 'Edu_High_School': 7, 'Edu_Some_College': 23, 'Edu_Bachelor_or_Above': 69, 'Job_Technology': 49, 'Job_Corporate': 26, 'Job_Healthcare': 11, 'Job_Construction': 1, 'Job_Hospitality': 0, 'Job_Repair_Tech': 0}, {'corp_own_rate': 50, 'White': 70, 'Asian': 15, 'Black': 7, 'Hispanic': 5, 'Other': 3, 'Age_0_19': 0, 'Age_20_34': 76, 'Age_35_54': 18, 'Age_55_plus': 6, 'Edu_Below_High_School': 0, 'Edu_High_School': 5, 'Edu_Some_College': 23, 'Edu_Bachelor_or_Above': 72, 'Job_Technology': 52, 'Job_Corporate': 27, 'Job_Healthcare': 11, 'Job_Construction': 0, 'Job_Hospitality': 0, 'Job_Repair_Tech': 0}, {'corp_own_rate': 54, 'White': 72, 'Asian': 16, 'Black': 5, 'Hispanic': 3, 'Other': 3, 'Age_0_19': 0, 'Age_20_34': 78, 'Age_35_54': 17, 'Age_55_plus': 5, 'Edu_Below_High_School': 0, 'Edu_High_School': 3, 'Edu_Some_College': 23, 'Edu_Bachelor_or_Above': 74, 'Job_Technology': 55, 'Job_Corporate': 29, 'Job_Healthcare': 11, 'Job_Construction': 0, 'Job_Hospitality': 0, 'Job_Repair_Tech': 0}, {'corp_own_rate': 58, 'White': 75, 'Asian': 16, 'Black': 4, 'Hispanic': 2, 'Other': 3, 'Age_0_19': 0, 'Age_20_34': 80, 'Age_35_54': 16, 'Age_55_plus': 4, 'Edu_Below_High_School': 0, 'Edu_High_School': 1, 'Edu_Some_College': 22, 'Edu_Bachelor_or_Above': 76, 'Job_Technology': 59, 'Job_Corporate': 30, 'Job_Healthcare': 11, 'Job_Construction': 0, 'Job_Hospitality': 0, 'Job_Repair_Tech': 0}, {'corp_own_rate': 62, 'White': 77, 'Asian': 17, 'Black': 2, 'Hispanic': 1, 'Other': 3, 'Age_0_19': 0, 'Age_20_34': 82, 'Age_35_54': 15, 'Age_55_plus': 2, 'Edu_Below_High_School': 0, 'Edu_High_School': 0, 'Edu_Some_College': 22, 'Edu_Bachelor_or_Above': 78, 'Job_Technology': 62, 'Job_Corporate': 31, 'Job_Healthcare': 10, 'Job_Construction': 0, 'Job_Hospitality': 0, 'Job_Repair_Tech': 0}, {'corp_own_rate': 66, 'White': 80, 'Asian': 18, 'Black': 0, 'Hispanic': 0, 'Other': 2, 'Age_0_19': 0, 'Age_20_34': 84, 'Age_35_54': 15, 'Age_55_plus': 1, 'Edu_Below_High_School': 0, 'Edu_High_School': 0, 'Edu_Some_College': 22, 'Edu_Bachelor_or_Above': 78, 'Job_Technology': 65, 'Job_Corporate': 32, 'Job_Healthcare': 10, 'Job_Construction': 0, 'Job_Hospitality': 0, 'Job_Repair_Tech': 0}, {'corp_own_rate': 70, 'White': 80, 'Asian': 18, 'Black': 0, 'Hispanic': 0, 'Other': 2, 'Age_0_19': 0, 'Age_20_34': 86, 'Age_35_54': 14, 'Age_55_plus': 0, 'Edu_Below_High_School': 0, 'Edu_High_School': 0, 'Edu_Some_College': 21, 'Edu_Bachelor_or_Above': 79, 'Job_Technology': 69, 'Job_Corporate': 33, 'Job_Healthcare': 10, 'Job_Construction': 0, 'Job_Hospitality': 0, 'Job_Repair_Tech': 0}, {'corp_own_rate': 74, 'White': 80, 'Asian': 18, 'Black': 0, 'Hispanic': 0, 'Other': 2, 'Age_0_19': 0, 'Age_20_34': 87, 'Age_35_54': 13, 'Age_55_plus': 0, 'Edu_Below_High_School': 0, 'Edu_High_School': 0, 'Edu_Some_College': 21, 'Edu_Bachelor_or_Above': 79, 'Job_Technology': 72, 'Job_Corporate': 34, 'Job_Healthcare': 10, 'Job_Construction': 0, 'Job_Hospitality': 0, 'Job_Repair_Tech': 0}, {'corp_own_rate': 78, 'White': 80, 'Asian': 18, 'Black': 0, 'Hispanic': 0, 'Other': 2, 'Age_0_19': 0, 'Age_20_34': 88, 'Age_35_54': 12, 'Age_55_plus': 0, 'Edu_Below_High_School': 0, 'Edu_High_School': 0, 'Edu_Some_College': 20, 'Edu_Bachelor_or_Above': 80, 'Job_Technology': 75, 'Job_Corporate': 36, 'Job_Healthcare': 10, 'Job_Construction': 0, 'Job_Hospitality': 0, 'Job_Repair_Tech': 0}, {'corp_own_rate': 82, 'White': 81, 'Asian': 18, 'Black': 0, 'Hispanic': 0, 'Other': 1, 'Age_0_19': 0, 'Age_20_34': 88, 'Age_35_54': 12, 'Age_55_plus': 0, 'Edu_Below_High_School': 0, 'Edu_High_School': 0, 'Edu_Some_College': 20, 'Edu_Bachelor_or_Above': 80, 'Job_Technology': 79, 'Job_Corporate': 37, 'Job_Healthcare': 9, 'Job_Construction': 0, 'Job_Hospitality': 0, 'Job_Repair_Tech': 0}, {'corp_own_rate': 86, 'White': 81, 'Asian': 18, 'Black': 0, 'Hispanic': 0, 'Other': 1, 'Age_0_19': 0, 'Age_20_34': 89, 'Age_35_54': 11, 'Age_55_plus': 0, 'Edu_Below_High_School': 0, 'Edu_High_School': 0, 'Edu_Some_College': 19, 'Edu_Bachelor_or_Above': 81, 'Job_Technology': 82, 'Job_Corporate': 38, 'Job_Healthcare': 9, 'Job_Construction': 0, 'Job_Hospitality': 0, 'Job_Repair_Tech': 0}, {'corp_own_rate': 90, 'White': 81, 'Asian': 18, 'Black': 0, 'Hispanic': 0, 'Other': 1, 'Age_0_19': 0, 'Age_20_34': 90, 'Age_35_54': 10, 'Age_55_plus': 0, 'Edu_Below_High_School': 0, 'Edu_High_School': 0, 'Edu_Some_College': 19, 'Edu_Bachelor_or_Above': 81, 'Job_Technology': 85, 'Job_Corporate': 39, 'Job_Healthcare': 9, 'Job_Construction': 0, 'Job_Hospitality': 0, 'Job_Repair_Tech': 0}, {'corp_own_rate': 94, 'White': 81, 'Asian': 18, 'Black': 0, 'Hispanic': 0, 'Other': 1, 'Age_0_19': 0, 'Age_20_34': 90, 'Age_35_54': 10, 'Age_55_plus': 0, 'Edu_Below_High_School': 0, 'Edu_High_School': 0, 'Edu_Some_College': 18, 'Edu_Bachelor_or_Above': 82, 'Job_Technology': 88, 'Job_Corporate': 40, 'Job_Healthcare': 9, 'Job_Construction': 0, 'Job_Hospitality': 0, 'Job_Repair_Tech': 0}]
+
+
+    const svg = d3.select("#people-viz");
+    const cols = 35;
+    const rows = 14;
+    const spacing = 60;
+
+    function getClosestData(ownership) {
+      let closest = data[0];
+      let minDiff = Math.abs(data[0].corp_own_rate - ownership);
+      data.forEach(d => {
+        const diff = Math.abs(d.corp_own_rate - ownership);
+        if (diff < minDiff) {
+          closest = d;
+          minDiff = diff;
+        }
+      });
+      return closest;
+    }
+
+    function assignCategory(obj, dict, rand) {
+      const result = [];
+      for (let key in dict) {
+        for (let i = 0; i < obj[key]; i++) {
+          result.push(key);
+        }
+      }
+      return shuffle(result, rand);
+    }
+
+    function generatePeople(row) {
+      const totalPeople = cols * rows;
+      const seed = getSeed(row.corp_own_rate);
+      const rand = mulberry32(seed);
+
+      const races = assignCategory(row, raceColors, rand);
+      const ages = assignCategory(row, ageSizes, rand);
+      const educations = assignCategory(row, educationSymbols, rand);
+      const jobs = assignCategory(row, jobEmojis, rand);
+
+      const people = [];
+      for (let i = 0; i < totalPeople; i++) {
+        people.push({
+          id: i,
+          race: raceColors[races[i % races.length]],
+          age: ageSizes[ages[i % ages.length]],
+          ageCat: ages[i % ages.length],
+          education: educationSymbols[educations[i % educations.length]],
+          eduCat: educations[i % educations.length],
+          job: jobEmojis[jobs[i % jobs.length]],
+          jobCat: jobs[i % jobs.length]
+        });
+      }
+
+      return shuffle(people, rand);
+    }
+
+    function drawPeople(people) {
+      svg.selectAll("*").remove();
+
+      const groups = svg.selectAll("g.person")
+        .data(people)
+        .enter()
+        .append("g")
+        .attr("class", "person")
+        .attr("transform", (d, i) => {
+          const x = (i % cols) * spacing / 1.5 + 30;
+          const y = Math.floor(i / cols) * spacing + 30;
+          return `translate(${x - 100},${y})`;
+        });
+
+      groups.append("ellipse")
+        .attr("rx", 10)
+        .attr("ry", d => d.age / 2)
+        .attr("fill", d => d.race)
+        .attr("stroke", "#333")
+        .attr("stroke-width", 0.5);
+
+      groups.append("text")
+        .attr("class", "symbol")
+        .attr("y", -10)
+        .attr("text-anchor", "middle")
+        .style("font-size", "16px")
+        .text(d => d.education);
+
+      groups.append("text")
+        .attr("class", "symbol")
+        .attr("y", 25)
+        .attr("text-anchor", "middle")
+        .style("font-size", "20px")
+        .text(d => d.job);
+    }
+
+    function drawGrayBarChart(svgId, people, key, categories, barWidth = 92) {
+      const count = {};
+      Object.keys(categories).forEach(k => count[k] = 0);
+      people.forEach(p => count[p[key]]++);
+
+      const chartData = Object.entries(count).map(([cat, num]) => ({
+        label: cat.replace(/_/g, " ").replace("Edu", "").replace("Job", "").replace("Age", "").replace("0", "0 -").replace("35", "35 -").replace("55 plus", "55 plus").replace("19", "19").trim(),
+        rawKey: cat,
+        percent: (num / people.length) * 100
+      }));
+
+      const svg = d3.select(svgId);
+      const width = +svg.attr("width");
+      const height = +svg.attr("height");
+    //   const barWidth = 100;
+      const chartMarginBottom = 60;
+      const yScale = d3.scaleLinear().domain([0, 100]).range([height - chartMarginBottom, 10]);
+
+      svg.selectAll("*").remove();
+
+      svg.selectAll("rect")
+        .data(chartData)
+        .enter()
+        .append("rect")
+        .attr("x", (d, i) => i * (barWidth + 10))
+        .attr("y", d => yScale(d.percent) - 3)
+        .attr("width", barWidth)
+        .attr("height", d => height - chartMarginBottom - yScale(d.percent))
+        .attr("fill", "gray")
+        .attr("class", "bar");
+
+      svg.selectAll("text.label")
+        .data(chartData)
+        .enter()
+        .append("text")
+        .attr("class", "label")
+        .attr("x", (d, i) => i * (barWidth + 10) + barWidth / 2)
+        .attr("y", height - 45) // shifted downward
+        .attr("text-anchor", "middle")
+        .text(d => `${Math.round(d.percent)}%`);
+
+      svg.selectAll("text.category-name")
+        .data(chartData)
+        .enter()
+        .append("text")
+        .attr("class", "category-name")
+        .attr("x", (d, i) => i * (barWidth + 10) + barWidth / 2)
+        .attr("y", height - 25) // moved down
+        .attr("text-anchor", "middle")
+        .text(d => d.label);
+
+      if (svgId === "#bar-chart-job") {
+        svg.selectAll("text.job-emoji")
+          .data(chartData)
+          .enter()
+          .append("text")
+          .attr("class", "job-emoji")
+          .attr("x", (d, i) => i * (barWidth + 10) + barWidth / 2)
+          .attr("y", height - 5) // further down
+          .attr("text-anchor", "middle")
+          .style("font-size", "20px")
+          .text(d => jobEmojis[d.rawKey] || "");
+      }
+      if (svgId === "#bar-chart-education") {
+        svg.selectAll("text.edu-emoji")
+            .data(chartData)
+            .enter()
+            .append("text")
+            .attr("class", "edu-emoji")
+            .attr("x", (d, i) => i * (barWidth + 10) + barWidth / 2)
+            .attr("y", height - 5)
+            .attr("text-anchor", "middle")
+            .style("font-size", "20px")
+            .text(d => educationSymbols[d.rawKey] || "");
+        }
+        if (svgId === "#bar-chart-age") {
+        svg.selectAll("ellipse.age-oval")
+            .data(chartData)
+            .enter()
+            .append("ellipse")
+            .attr("class", "age-oval")
+            .attr("cx", (d, i) => i * (barWidth + 10) + barWidth / 2 + 37)
+            .attr("cy", height - 28)
+            .attr("rx", 10)
+            .attr("ry", d => (ageSizes[d.rawKey] || 16) / 2)
+            .attr("fill", "#C0C0C0")
+            .attr("stroke", "#222")
+            .attr("stroke-width", 0.5);
+        }
+    }
+
+    function drawBarCharts(people) {
+      drawRaceBarChart(people);
+      drawGrayBarChart("#bar-chart-age", people, "ageCat", ageSizes, 115);
+      drawGrayBarChart("#bar-chart-education", people, "eduCat", educationSymbols, 115);
+      drawGrayBarChart("#bar-chart-job", people, "jobCat", jobEmojis);
+    }
+
+    function drawRaceBarChart(people) {
+      const colorCount = {};
+      Object.entries(raceColors).forEach(([name, color]) => colorCount[name] = 0);
+      people.forEach(p => {
+        const race = Object.keys(raceColors).find(key => raceColors[key] === p.race);
+        if (race) colorCount[race]++;
+      });
+
+      const data = Object.entries(colorCount).map(([label, count]) => ({
+        label,
+        color: raceColors[label],
+        percent: (count / people.length) * 100
+      }));
+
+      const svg = d3.select("#bar-chart-race");
+      const barWidth = 80;
+      const chartHeight = 150;
+
+      svg.selectAll("*").remove();
+
+      svg.selectAll("rect")
+        .data(data)
+        .enter()
+        .append("rect")
+        .attr("x", (d, i) => i * (barWidth + 10))
+        .attr("y", d => chartHeight - d.percent * 1.5)
+        .attr("width", barWidth)
+        .attr("height", d => d.percent * 1.5)
+        .attr("fill", d => d.color)
+        .attr("class", "bar");
+
+      svg.selectAll("text.label")
+        .data(data)
+        .enter()
+        .append("text")
+        .attr("class", "label")
+        .attr("x", (d, i) => i * (barWidth + 10) + barWidth / 2)
+        .attr("y", chartHeight + 12)
+        .attr("text-anchor", "middle")
+        .text(d => `${Math.round(d.percent)}%`);
+
+      svg.selectAll("text.category-name")
+        .data(data)
+        .enter()
+        .append("text")
+        .attr("class", "category-name")
+        .attr("x", (d, i) => i * (barWidth + 10) + barWidth / 2)
+        .attr("y", chartHeight + 30)
+        .attr("text-anchor", "middle")
+        .text(d => d.label);
+    }
+
+    // d3.select("#slider").on("input", function () {
+    //   const ownership = +this.value;
+    //   d3.select("#ownership-value").text(ownership);
+    //   d3.select("#status").text(ownership > 34 ? "(Projected Data)" : "(Observed Data)");
+
+    //   const row = getClosestData(ownership);
+    //   const people = generatePeople(row);
+
+    //   drawPeople(people);
+    //   drawBarCharts(people);
+    // });
+    d3.select("#slider").on("input", function () {
+  d3.select("#ownership-value").text(this.value);
+  d3.select("#status").text(this.value > 34 ? "(Projected Data)" : "(Observed Data)");
+  updateVisualization();
+});
+
+d3.select("#view-select").on("change", function () {
+  updateVisualization();
+});
+
+    const initialRow = getClosestData(2);
+    const initialPeople = generatePeople(initialRow);
+    drawPeople(initialPeople);
+    drawBarCharts(initialPeople);
+
+    // Wrap draw functions in this to conditionally show/hide based on dropdown
+    function updateVisualization() {
+      const ownership = +document.getElementById("slider").value;
+      const view = document.getElementById("view-select").value;
+      const row = getClosestData(ownership);
+      const people = generatePeople(row);
+
+      drawPeopleFiltered(people, view);
+      updateChartsVisibility(view);
+      drawBarChartsFiltered(people, view);
+    }
+
+    function drawPeopleFiltered(people, view) {
+    svg.selectAll("*").remove();
+
+    const groups = svg.selectAll("g.person")
+        .data(people)
+        .enter()
+        .append("g")
+        .attr("class", "person")
+        .attr("transform", (d, i) => {
+        const x = (i % cols) * spacing / 1.5 + 30;
+        const y = Math.floor(i / cols) * spacing + 30;
+        return `translate(${x - 100},${y})`;
+        });
+
+    // Always draw race/age ellipses
+    groups.append("ellipse")
+        .attr("rx", 10)
+        .attr("ry", d => d.age / 2)
+        .attr("fill", d => d.race)
+        .attr("stroke", "#333")
+        .attr("stroke-width", 0.5);
+
+    if (view === "education" || view === "all") {
+        groups.append("text")
+        .attr("class", "symbol")
+        .attr("y", -10)
+        .attr("text-anchor", "middle")
+        .style("font-size", "16px")
+        .text(d => d.education);
+    }
+
+    if (view === "job" || view === "all") {
+        groups.append("text")
+        .attr("class", "symbol")
+        .attr("y", 25)
+        .attr("text-anchor", "middle")
+        .style("font-size", "20px")
+        .text(d => d.job);
+    }
+    }
+
+
+    function updateChartsVisibility(view) {
+  const showRaceAge = view === "race_age" || view === "education" || view === "job" || view === "all";
+  const showEducation = view === "education" || view === "all";
+  const showJob = view === "job" || view === "all";
+
+  // Toggle SVGs
+  d3.select("#bar-chart-race").style("display", showRaceAge ? "block" : "none");
+  d3.select("#bar-chart-age").style("display", showRaceAge ? "block" : "none");
+  d3.select("#bar-chart-education").style("display", showEducation ? "block" : "none");
+  d3.select("#bar-chart-job").style("display", showJob ? "block" : "none");
+
+  // Toggle Titles
+  d3.select("#title-race").style("display", showRaceAge ? "block" : "none");
+  d3.select("#title-race1").style("display", showRaceAge ? "block" : "none");
+  d3.select("#title-age").style("display", showRaceAge ? "block" : "none");
+  d3.select("#title-age1").style("display", showRaceAge ? "block" : "none");
+  d3.select("#title-education").style("display", showEducation ? "block" : "none");
+  d3.select("#title-education1").style("display", showEducation ? "block" : "none");
+  d3.select("#title-job").style("display", showJob ? "block" : "none");
+  d3.select("#title-job1").style("display", showJob ? "block" : "none");
+}
+    updateVisualization();
+  </script>
+</body>
+</html>
+
