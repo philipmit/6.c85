@@ -79,6 +79,91 @@
       /* add underline */
         /* text-decoration: underline; */
     }
+
+    .view-dropdown {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: 20px;
+    /* background: #eaeaea; */
+    padding: 6px 12px;
+    border-radius: 8px;
+    box-shadow: 1px 1px 4px rgba(0,0,0,0.1);
+    }
+
+    .view-label {
+    font-weight: bold;
+    color: #333;
+    font-size: 15px;
+    }
+
+    .view-select {
+    font-size: 15px;
+    padding: 5px 8px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    background-color: white;
+    cursor: pointer;
+    }
+
+    .view-select:focus {
+    outline: none;
+    border-color: #666;
+    }
+
+    .slider-container {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    /* background: #eaeaea; */
+    padding: 6px 12px;
+    border-radius: 8px;
+    box-shadow: 1px 1px 4px rgba(0,0,0,0.1);
+    margin-right: 20px;
+    }
+
+    .slider-label {
+    font-weight: bold;
+    font-size: 15px;
+    color: #333;
+    }
+
+    .styled-slider {
+    -webkit-appearance: none;
+    width: 180px;
+    height: 6px;
+    border-radius: 5px;
+    background: #ccc;
+    outline: none;
+    transition: background 0.3s;
+    cursor: pointer;
+    }
+
+    .styled-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #444;
+    cursor: pointer;
+    box-shadow: 0 0 2px rgba(0,0,0,0.5);
+    }
+
+    .styled-slider::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #444;
+    cursor: pointer;
+    box-shadow: 0 0 2px rgba(0,0,0,0.5);
+    }
+    #ownership-value {
+    display: inline-block;
+    width: 18px; /* tweak as needed */
+    text-align: right;
+    font-family: monospace;
+    }
   </style>
 </head>
 <body>
@@ -88,11 +173,25 @@
   <br>
   <div class="controls">
     <div id="status" style="font-weight: bold">(Observed Data)</div>
-    <input type="range" id="slider" min="2" max="94" step="4" value="2" />
-    <label for="slider">Corporate Ownership:  <span id="ownership-value">2</span>%</label>  
+    <!-- <input type="range" id="slider" min="2" max="94" step="4" value="2" /> -->
+    <!-- <label for="slider">Corporate Ownership:  <span id="ownership-value">2</span>%</label>   -->
+    <div class="slider-container">
+        <label for="slider" class="slider-label">Corporate Ownership: <span id="ownership-value">2</span>%</label>
+        <input type="range" id="slider" min="2" max="94" step="4" value="2" class="styled-slider" />
+      </div>
 
-    <label for="view-select">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; View:</label>
+    <!-- <label for="view-select">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; View:</label>
     <select id="view-select" style="font-size: 16px;">
+      <option value="all">Race + Age + Education + Job Type</option>
+      <option value="race_age">Race + Age</option>
+      <option value="education">Race + Age + Education</option>
+      <option value="job">Race + Age + Job Type</option>
+    </select>
+  </div> -->
+  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+  <div class="view-dropdown">
+    <label for="view-select" class="view-label">View:</label>
+    <select id="view-select" class="view-select">
       <option value="all">Race + Age + Education + Job Type</option>
       <option value="race_age">Race + Age</option>
       <option value="education">Race + Age + Education</option>
