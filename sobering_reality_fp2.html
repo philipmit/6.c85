@@ -164,13 +164,27 @@
     text-align: right;
     font-family: monospace;
     }
+    @media (max-width: 890px) {
+    .responsive-break {
+        display: none;
+    }
+    }
+    @media (min-width: 890px) {
+    .responsive-break2 {
+        display: none;
+    }
+    }
   </style>
 </head>
 <body>
 
-  <h2>Community Diversity vs. Corporate Ownership in Boston from 2004 to 2024</h2>
-  <div>Move the slider to see how the diversity of Boston changes, along the dimensions of race, age, education level, and employment type, as corporate ownership increases!</div>
-  <br>
+    <h2 class="responsive-break">Community Diversity vs. Corporate Ownership in Boston from 2004 to 2024</h2>
+    <h3 class="responsive-break2">Community Diversity vs. Corporate Ownership in Boston from 2004 to 2024</h3>
+    <br class="responsive-break">
+  <div>Move the slider to see how the diversity of Boston changes<span class="responsive-break">, along the dimensions of race, age, education level, and employment type, as corporate ownership increases</span>!</div>
+  <!-- remove br if widht is less than 600 px -->
+  <!-- <br> -->
+  <br class="responsive-break">
   <div class="controls">
     <div id="status" style="font-weight: bold">(Observed Data)</div>
     <!-- <input type="range" id="slider" min="2" max="94" step="4" value="2" /> -->
@@ -188,7 +202,7 @@
       <option value="job">Race + Age + Job Type</option>
     </select>
   </div> -->
-  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+  &nbsp; &nbsp; &nbsp; &nbsp;
   <div class="view-dropdown">
     <label for="view-select" class="view-label">View:</label>
     <select id="view-select" class="view-select">
