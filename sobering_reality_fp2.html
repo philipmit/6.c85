@@ -436,17 +436,25 @@
       .attr("stroke-width", 0.5);
     }
 
+    // d3.select("#slider").on("input", function () {
+    //   const ownership = +this.value;
+    //   d3.select("#ownership-value").text(ownership);
+    //   d3.select("#status").text(ownership > 34 ? "(Projected Data)" : "(Observed Data)");
+
+    //   const row = getClosestData(ownership);
+    //   const people = generatePeople(row);
+
+    //   drawPeople(people);
+    //   drawBarCharts(people);
+    // });
+
+
     d3.select("#slider").on("input", function () {
-      const ownership = +this.value;
-      d3.select("#ownership-value").text(ownership);
-      d3.select("#status").text(ownership > 34 ? "(Projected Data)" : "(Observed Data)");
-
-      const row = getClosestData(ownership);
-      const people = generatePeople(row);
-
-      drawPeople(people);
-      drawBarCharts(people);
+    d3.select("#ownership-value").text(this.value);
+    d3.select("#status").text(this.value > 34 ? "(Projected Data)" : "(Observed Data)");
+    updateVisualization(); // 🔁 Unified redraw based on current filter
     });
+
 //     d3.select("#slider").on("input", function () {
 //   d3.select("#ownership-value").text(this.value);
 //   d3.select("#status").text(this.value > 34 ? "(Projected Data)" : "(Observed Data)");
@@ -463,16 +471,26 @@ d3.select("#view-select").on("change", function () {
     drawBarCharts(initialPeople);
 
     // Wrap draw functions in this to conditionally show/hide based on dropdown
-    function updateVisualization() {
-      const ownership = +document.getElementById("slider").value;
-      const view = document.getElementById("view-select").value;
-      const row = getClosestData(ownership);
-      const people = generatePeople(row);
+    // function updateVisualization() {
+    //   const ownership = +document.getElementById("slider").value;
+    //   const view = document.getElementById("view-select").value;
+    //   const row = getClosestData(ownership);
+    //   const people = generatePeople(row);
 
-      drawPeopleFiltered(people, view);
-      updateChartsVisibility(view);
-      drawBarChartsFiltered(people, view);
-    }
+    //   drawPeopleFiltered(people, view);
+    //   updateChartsVisibility(view);
+    //   drawBarChartsFiltered(people, view);
+    // }
+    function updateVisualization() {
+        const ownership = +document.getElementById("slider").value;
+        const view = document.getElementById("view-select").value;
+        const row = getClosestData(ownership);
+        const people = generatePeople(row);
+
+        drawPeopleFiltered(people, view);
+        updateChartsVisibility(view);
+        drawBarCharts(people); // ✅ Corrected function
+        }
 
     function drawPeopleFiltered(people, view) {
     svg.selectAll("*").remove();
