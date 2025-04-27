@@ -1,0 +1,2062 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Community Diversity Visualizer</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      background: #f9f9f9;
+      position: relative;
+    }
+
+    svg {
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    #people-viz {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* .bar-chart-container {
+    position: absolute;
+    left: 49.4%;
+    transform: translateX(-50%);
+    z-index: 2;
+    background-color: rgba(255, 255, 255, 0.85);
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); /* 🌟 added shadow */
+    /* } */ */
+        #viz-container {
+    position: relative;
+    padding-bottom: 300px; /* give room for bar charts */
+    }
+    .bar-chart-container {
+  position: relative;
+  left: 50%;
+  bottom: 30px;
+  margin-top: -100px;
+  transform: translateX(-50%);
+  z-index: 2;
+  background-color: rgba(255, 255, 255, 0.85);
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+    #bar-chart-race, #bar-chart-age,
+    #bar-chart-education, #bar-chart-job {
+      margin-top: 5px;
+    }
+
+    .symbol {
+      font-size: 30px;
+    }
+
+    .bar {
+      stroke: #333;
+      stroke-width: 0.5;
+    }
+
+    .label {
+      font-size: 14px;
+    }
+
+    .category-name {
+      font-size: 14px;
+      fill: #444;
+    }
+
+    #charts-wrapper {
+      top: 190px;
+      width: 530px;
+    }
+
+    .controls {
+      margin-bottom: 20px;
+    }
+
+    select {
+      margin-left: 10px;
+      font-size: 14px;
+    }
+
+    .chart-title {
+      font-weight: bold;
+      font-size: 14px;
+      margin-top: 12px;
+      margin-bottom: -8px;
+      /* add underline */
+        /* text-decoration: underline; */
+    }
+
+    .view-dropdown {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: 20px;
+    /* background: #eaeaea; */
+    padding: 6px 12px;
+    border-radius: 8px;
+    box-shadow: 1px 1px 4px rgba(0,0,0,0.1);
+    }
+
+    .view-label {
+    font-weight: bold;
+    color: #333;
+    font-size: 15px;
+    }
+
+    .view-select {
+    font-size: 15px;
+    padding: 5px 8px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    background-color: white;
+    cursor: pointer;
+    }
+
+    .view-select:focus {
+    outline: none;
+    border-color: #666;
+    }
+
+    .slider-container {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    /* background: #eaeaea; */
+    padding: 6px 12px;
+    border-radius: 8px;
+    box-shadow: 1px 1px 4px rgba(0,0,0,0.1);
+    margin-right: 20px;
+    }
+
+    .slider-label {
+    font-weight: bold;
+    font-size: 15px;
+    color: #333;
+    }
+
+    .styled-slider {
+    -webkit-appearance: none;
+    width: 180px;
+    height: 6px;
+    border-radius: 5px;
+    background: #ccc;
+    outline: none;
+    transition: background 0.3s;
+    cursor: pointer;
+    }
+
+    .styled-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #444;
+    cursor: pointer;
+    box-shadow: 0 0 2px rgba(0,0,0,0.5);
+    }
+
+    .styled-slider::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #444;
+    cursor: pointer;
+    box-shadow: 0 0 2px rgba(0,0,0,0.5);
+    }
+    #ownership-value {
+    display: inline-block;
+    width: 18px; /* tweak as needed */
+    text-align: right;
+    font-family: monospace;
+    }
+    @media (max-width: 890px) {
+    .responsive-break {
+        display: none;
+    }
+    }
+    @media (min-width: 890px) {
+    .responsive-break2 {
+        display: none;
+    }
+    }
+
+    #intro {
+    width: 100%;
+    height: 400vh; /* Taller to allow scrolling */
+    position: relative;
+    }
+
+    .panel {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    width: 100%;
+    padding: 60px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: background 1s, color 1s;
+    text-align: center;
+    font-family: 'Helvetica', sans-serif;
+    }
+
+    .vibrant {
+    background: linear-gradient(135deg, #FFDEE9 0%, #B5FFFC 100%);
+    color: #222;
+    }
+
+    .colorful {
+    background: linear-gradient(135deg, #F9FFB5 0%, #FFB5B5 100%);
+    color: #333;
+    }
+
+    .neutral {
+    background: #e0e0e0;
+    color: #555;
+    }
+
+    .gray {
+    background: #b0b0b0;
+    color: #777;
+    }
+
+    .vibrant, .neutral {
+  overflow: hidden;
+}
+.panel * {
+  margin: 0;
+  padding: 0;
+}
+
+  </style>
+</head>
+<body>
+
+    <div id="intro">
+        <section class="panel vibrant" id="vibrant-intro" style="background: radial-gradient(ellipse at center, rgba(255,255,255,0) 100%, rgba(255,255,255,0.9) 100%), url('image1.webp') center/cover no-repeat; position: relative; color: black; padding: 100px 20px; text-align: center;">
+            <!-- background: radial-gradient(ellipse at center, rgba(255,255,255,0) 40%, rgba(255,255,255,0.9) 100%), url('image1.webp') center/cover no-repeat; -->
+            <div style="background: linear-gradient(135deg, rgba(240, 248, 255, 0.85), rgba(230, 242, 255, 0.85)); padding: 30px; border-radius: 15px; box-shadow: 0 8px 16px rgba(0,0,0,0.2); max-width: 750px; margin: auto; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.7; color: #333;">
+                <h1 style="font-size: 2.7em; text-align: center; margin-bottom: 25px; color: #1e3a8a;">Present Day Boston 🌎✨</h1>
+                
+                <p style="font-size: 1.25em; text-align: justify;">
+                  Today, <span style="color: #0ea5e9; font-weight: bold;">Boston</span> is a vibrant community where cultures, ages, professions, and dreams intermingle freely. The city's rich diversity colors every street corner, festival, and neighborhood gathering.
+                </p>
+              
+                <p style="font-size: 1.25em; text-align: justify;">
+                  Roughly <span style="color: #16a34a; font-weight: bold;">44%</span> of Boston’s population identifies as <span style="color: #dc2626;">Black</span>, <span style="color: #f97316;">Hispanic</span>, <span style="color: #2563eb;">Asian</span>, or <span style="color: #9333ea;">multiracial</span>, with over <span style="color: #f59e0b;font-weight: bold;">28%</span> of residents being foreign-born. 
+                  The city’s age distribution is youthful yet balanced, with a median age around <span style="color: #0d9488;">32 years</span>, fueled by its dynamic student population.
+                </p>
+              
+                <p style="font-size: 1.25em; text-align: justify;">
+                  In the professional world, Boston shines as a hub for <span style="color: #7c3aed;">healthcare</span>, <span style="color: #0ea5e9;">education</span>, and <span style="color: #ea580c;">technology</span> — 
+                  <span style="color: #16a34a;font-weight: bold;">18%</span> of the workforce is employed in healthcare and social assistance, while educational services account for about <span style="color: #f59e0b;font-weight: bold;">11%</span>.
+                </p>
+              
+                <p style="font-size: 1.25em; text-align: justify;">
+                    Boston’s educational landscape is as diverse as its people. Around <span style="color: #10b981; font-weight: bold;">18%</span> of adults have less than a high school diploma, while about <span style="color: #f59e0b; font-weight: bold;">20%</span> have completed high school or earned a GED. 
+                    Another <span style="color: #7c3aed; font-weight: bold;">12%</span> have some college experience or an associate degree, and over <span style="color: #0ea5e9; font-weight: bold;">50%</span> have achieved a bachelor’s degree or higher. 
+                    This educational variety reflects Boston’s rich mix of lifelong learners, skilled tradespeople, scholars, and innovators, each contributing to the city’s dynamic energy.
+                  </p>
+              </div>
+              
+          </section>
+
+
+
+          <div  class="vibrant" style="margin-top: 0px; margin-bottom: 0px; height: 700px;">
+
+                    <h2>Explore the diversity of Boston from 2004 to 2024 with respect to race, age, education, and employment type.</h2>
+                
+                <div style="margin-top: 40px; margin-bottom: 20px;">
+                    <label for="pie-year-select" style="font-weight: bold; font-size: 16px;">Select Year:</label>
+                    <select id="pie-year-select" style="font-size: 16px; margin-left: 10px; padding: 4px 8px; border-radius: 6px;">
+                    </select>
+                </div>
+
+                
+
+                <div id="pie-charts-row" style="margin-top: 40px; display: flex; justify-content: center; gap: 40px; flex-wrap: wrap;">
+                
+                    <div class="pie-chart-container">
+                        <svg id="pie-race" width="300" height="300"></svg>
+                        <div class="chart-title">Race</div>
+                        <div id="legend-race"></div> <!-- New -->
+                    </div>
+                    
+                    <div class="pie-chart-container">
+                        <svg id="pie-age" width="300" height="300"></svg>
+                        <div class="chart-title">Age</div>
+                        <div id="legend-age"></div> <!-- New -->
+                    </div>
+                    
+                    <div class="pie-chart-container">
+                        <svg id="pie-education" width="300" height="300"></svg>
+                        <div class="chart-title">Education</div>
+                        <div id="legend-education"></div> <!-- New -->
+                        <!-- increase font size of legend -->
+                        
+                    </div>
+                    
+                    <div class="pie-chart-container">
+                        <svg id="pie-job" width="300" height="300"></svg>
+                        <div class="chart-title">Job Type</div>
+                        <div id="legend-job"></div> <!-- New -->
+                    </div>
+                </div>
+            </div>
+
+
+
+        <div class = "neutral" style="text-align: center; margin-top: 0px; margin-bottom: 0px; height: 700px;">
+            <h2>How has the rate of corporate ownership in Boston changed between 2004 and 2024? 🏙️</h2>
+            <p>Select a year to view how corporate ownership rates have changed across the city.</p>
+          
+    
+            <div style="margin-top: 20px;">
+                <label for="ownership-year-slider" style="font-weight: bold;">Select Year:</label>
+                <input type="range" id="ownership-year-slider" min="2004" max="2024" step="1" value="2004" style="width: 300px; margin-left: 10px;">
+                <span id="ownership-year-display" style="margin-left: 10px; font-weight: bold;">2004</span>
+              </div>
+
+            <div style="margin-top: 20px; display: flex; align-items: flex-start; gap: 20px;">
+  
+                <svg id="ownership-bar-chart" width="1100" height="400"></svg>
+                <img id="map-image" src="2004.png" alt="Corporate Ownership Map" style="max-width: 300px; height: auto; flex-shrink: 0; margin-right: auto; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">
+                
+              
+              </div>
+          </div>
+
+          <section class="panel vibrant" id="fading-colors" style="background: url('image2.webp') center/cover no-repeat; position: relative; color: black; padding: 100px 20px; text-align: center;">
+            <div style="background-color: rgba(255, 255, 255, 0.8); padding: 20px; border-radius: 10px; display: inline-block;">
+                <!-- <h1>Fading Colors, Fading Voices 🎭</h1> -->
+                <h2>How does the rise in corporate ownership affect the diversity of Boston communities?</h2>
+                <!-- <h2>How do communities with corporate ownership affect the diversity of Boston communities?</h2> -->
+
+                <p>Higher corporate ownership rates correlate with a measurable decline in community diversity across race, age, education, and employment types.</p>
+            
+
+                <div style="margin-bottom: 20px; margin-top: 20px;">
+                    <label for="line-version-slider" style="font-weight: bold;">Select Threshold:</label>
+                    <input 
+                      type="range" 
+                      id="line-version-slider" 
+                      min="1" 
+                      max="3" 
+                      step="1" 
+                      value="3" 
+                      style="margin-left: 10px; vertical-align: middle;"
+                    >
+                    <span id="slider-value" style="font-size: 16px; margin-left: 10px;">15%</span>
+                  </div>
+
+            <div style="display: flex; justify-content: center; gap: 40px; margin-top: 0px; flex-wrap: wrap;">
+  
+
+                <div>
+                  <h3 style="margin-bottom: 10px;">Communities with High Corporate Ownership</h3>
+                  <span style="text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 10px;"> greater than <span id="threshold-label" style="text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 10px;">15% corporate ownership</span></span>
+                  <!-- set label for selected threshold -->
+                   <!-- only show this if line-version-slider value is 3-->
+
+                  <svg id="high-ownership-chart" width="600" height="200"></svg>
+                </div>
+              
+                <div>
+                  <h3 style="margin-bottom: 10px;">Communities with Low Corporate Ownership</h3>
+                  <span style="text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 10px;"> less than <span id="threshold-label-2" style="text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 10px;">15% corporate ownership</span></span>
+                  <svg id="low-ownership-chart" width="600" height="200"></svg>
+                </div>
+              
+              </div>
+
+              <div style="display: flex; justify-content: center; gap: 40px; margin-top: 0px; flex-wrap: wrap;">
+  
+                <div>
+                  <svg id="high-ownership-chart-age" width="600" height="200"></svg>
+                </div>
+              
+                <div>
+                  <svg id="low-ownership-chart-age" width="600" height="200"></svg>
+                </div>
+              
+              </div>
+
+              <div style="display: flex; justify-content: center; gap: 40px; margin-top: 0px; flex-wrap: wrap;">
+  
+                <div>
+                  <svg id="high-ownership-chart-edu" width="600" height="200"></svg>
+                </div>
+              
+                <div>
+                  <svg id="low-ownership-chart-edu" width="600" height="200"></svg>
+                </div>
+              
+              </div>
+
+
+            </div>
+          </section>
+
+   
+  
+      
+    
+      <!-- move div higher on page -->
+       <!-- here -->
+       <div class = "neutral"  id="future-section" style="position: relative; top: 0px; z-index: 2; margin-top: 0px; margin-bottom: 0px; padding: 0px;">
+        <h1 style="font-size: 2.7em; text-align: center; margin-bottom: 25px; color: black;">Future Boston</h1>
+        <h2 class="responsive-break">What will the future of Boston look like if we let corporate ownership rates continue to increase?</h2>
+      
+    <!-- <h3 class="responsive-break2">Community Diversity vs. Corporate Ownership in Boston from 2004 to 2024</h3> -->
+    <br class="responsive-break">
+  <div>Move the slider to see how the diversity of Boston changes<span class="responsive-break">, along the dimensions of race, age, education level, and employment type, as corporate ownership increases</span>!</div>
+  <!-- remove br if widht is less than 600 px -->
+  <!-- <br> -->
+  <br class="responsive-break">
+  <div class="controls">
+    <div id="status" style="font-weight: bold">(Observed Data)</div>
+    <!-- <input type="range" id="slider" min="2" max="94" step="4" value="2" /> -->
+    <!-- <label for="slider">Corporate Ownership:  <span id="ownership-value">2</span>%</label>   -->
+
+    <div style="display: flex; align-items: flex-start; justify-content: center; gap: 20px; margin-top: 20px;">
+
+        <!-- Slider + Legend Container -->
+        <div class="slider-container" style="background-color: rgba(255, 255, 255, 0.5); padding: 10px; display: flex; flex-direction: column; align-items: center; width: fit-content;">
+          
+          <label for="slider" class="slider-label">
+            Corporate Ownership: <span id="ownership-value">2</span>%
+          </label>
+          
+          <input type="range" id="slider" min="2" max="98" step="4" value="2" class="styled-slider" style="width: 300px; margin-top: 8px;" />
+          
+          <!-- Ownership Legend -->
+          <div id="ownership-legend" style="margin-top: 15px; width: 300px;">
+            <div style="height: 16px; background: linear-gradient(to right, rgb(250,250,250), rgb(190,190,190)); border-radius: 8px;"></div>
+            <div style="display: flex; justify-content: space-between; font-size: 12px; margin-top: 4px; color: #555;">
+              <span>2%</span>
+              <span>100%</span>
+            </div>
+          </div>
+      
+        </div>
+      
+        <!-- View Dropdown -->
+        <div class="view-dropdown" style="background-color: rgba(255, 255, 255, 0.5); padding: 10px; display: flex; flex-direction: column; align-items: center;">
+          <span style="font-weight: bold;">View Selection</span>
+          <select id="view-select" class="view-select" style="background-color: rgba(255, 255, 255, 0.5); margin-top: 8px;">
+            <option value="all">Race + Age + Education + Job Type</option>
+            <option value="race_age">Race + Age</option>
+            <option value="education">Race + Age + Education</option>
+            <option value="job">Race + Age + Job Type</option>
+          </select>
+        </div>
+      
+      </div>
+
+  <div id="charts-wrapper" class="bar-chart-container">
+    <div id="title-race" class="chart-title">Race</div>
+    <svg id="bar-chart-race" width="500" height="140"></svg>
+    <span id="title-age1"><hr></span>
+    <div id="title-age" class="chart-title" >Age (years)</div>
+    <svg id="bar-chart-age" width="500" height="140"></svg>
+    <span id="title-education1"><hr></span>
+    <div id="title-education" class="chart-title">Education Level</div>
+    <svg id="bar-chart-education" width="500" height="140"></svg>
+    <!-- <br> -->
+    <span id="title-job1"><hr></span>
+    <div id="title-job" class="chart-title">Job Type</div>
+    <svg id="bar-chart-job" width="500" height="140"></svg>
+  </div>
+
+  <svg id="people-viz" width="1200" height="1200" style="overflow: visible;"></svg>
+</div>
+</div>
+
+  <script>
+    function mulberry32(a) {
+      return function() {
+        let t = a += 0x6D2B79F5;
+        t = Math.imul(t ^ (t >>> 15), t | 1);
+        t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+      }
+    }
+
+    function getSeed(ownership) {
+      const key = `seed-${ownership}`;
+      if (!localStorage.getItem(key)) {
+        localStorage.setItem(key, Math.floor(Math.random() * 1000000));
+      }
+      return parseInt(localStorage.getItem(key));
+    }
+
+    function shuffle(array, randomFunc) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(randomFunc() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    const raceColors = {
+      White: "#FF5733",
+      Asian: "#33FF57",
+      Black: "#3357FF",
+      Hispanic: "#FF33D4",
+      Other: "orange"
+    };
+
+    const educationSymbols = {
+      Edu_Below_High_School: "",
+      Edu_High_School: "✏️",
+      Edu_Some_College: "📘",
+      Edu_Bachelor_or_Above: "🎓"
+    };
+
+    const jobEmojis = {
+      Job_Technology: "💻",
+      Job_Corporate: "💼",
+      Job_Healthcare: "🚑",
+      Job_Construction: "🪚",
+      Job_Hospitality: "🛎️",
+    //   Job_Repair_Tech: "🛠️"
+    };
+
+    const ageSizes = {
+      Age_0_19: 12,
+      Age_20_34: 18,
+      Age_35_54: 24,
+      Age_55_plus: 30
+    };
+
+
+    const data = [{'corp_own_rate': 2, 'White': 37, 'Asian': 10, 'Black': 30, 'Hispanic': 17, 'Other': 6, 'Age_0_19': 25, 'Age_20_34': 28, 'Age_35_54': 24, 'Age_55_plus': 23, 'Edu_Below_High_School': 16, 'Edu_High_School': 25, 'Edu_Some_College': 23, 'Edu_Bachelor_or_Above': 35, 'Job_Technology': 15, 'Job_Corporate': 12, 'Job_Healthcare': 15, 'Job_Construction': 15, 'Job_Hospitality': 21, 'Job_Repair_Tech': 5}, {'corp_own_rate': 6, 'White': 41, 'Asian': 9, 'Black': 25, 'Hispanic': 21, 'Other': 4, 'Age_0_19': 24, 'Age_20_34': 34, 'Age_35_54': 25, 'Age_55_plus': 17, 'Edu_Below_High_School': 18, 'Edu_High_School': 23, 'Edu_Some_College': 22, 'Edu_Bachelor_or_Above': 37, 'Job_Technology': 16, 'Job_Corporate': 16, 'Job_Healthcare': 10, 'Job_Construction': 14, 'Job_Hospitality': 14, 'Job_Repair_Tech': 6}, {'corp_own_rate': 10, 'White': 48, 'Asian': 4, 'Black': 26, 'Hispanic': 17, 'Other': 5, 'Age_0_19': 23, 'Age_20_34': 40, 'Age_35_54': 23, 'Age_55_plus': 14, 'Edu_Below_High_School': 13, 'Edu_High_School': 26, 'Edu_Some_College': 21, 'Edu_Bachelor_or_Above': 40, 'Job_Technology': 20, 'Job_Corporate': 16, 'Job_Healthcare': 16, 'Job_Construction': 13, 'Job_Hospitality': 12, 'Job_Repair_Tech': 5}, {'corp_own_rate': 14, 'White': 48, 'Asian': 9, 'Black': 24, 'Hispanic': 14, 'Other': 6, 'Age_0_19': 21, 'Age_20_34': 40, 'Age_35_54': 17, 'Age_55_plus': 21, 'Edu_Below_High_School': 6, 'Edu_High_School': 25, 'Edu_Some_College': 24, 'Edu_Bachelor_or_Above': 44, 'Job_Technology': 17, 'Job_Corporate': 17, 'Job_Healthcare': 11, 'Job_Construction': 15, 'Job_Hospitality': 7, 'Job_Repair_Tech': 0}, {'corp_own_rate': 18, 'White': 50, 'Asian': 8, 'Black': 23, 'Hispanic': 14, 'Other': 5, 'Age_0_19': 23, 'Age_20_34': 40, 'Age_35_54': 19, 'Age_55_plus': 18, 'Edu_Below_High_School': 8, 'Edu_High_School': 19, 'Edu_Some_College': 22, 'Edu_Bachelor_or_Above': 51, 'Job_Technology': 28, 'Job_Corporate': 16, 'Job_Healthcare': 13, 'Job_Construction': 12, 'Job_Hospitality': 10, 'Job_Repair_Tech': 0}, {'corp_own_rate': 22, 'White': 50, 'Asian': 12, 'Black': 19, 'Hispanic': 13, 'Other': 6, 'Age_0_19': 13, 'Age_20_34': 51, 'Age_35_54': 24, 'Age_55_plus': 13, 'Edu_Below_High_School': 11, 'Edu_High_School': 15, 'Edu_Some_College': 23, 'Edu_Bachelor_or_Above': 52, 'Job_Technology': 27, 'Job_Corporate': 21, 'Job_Healthcare': 11, 'Job_Construction': 8, 'Job_Hospitality': 7, 'Job_Repair_Tech': 3}, {'corp_own_rate': 26, 'White': 55, 'Asian': 14, 'Black': 15, 'Hispanic': 12, 'Other': 5, 'Age_0_19': 13, 'Age_20_34': 51, 'Age_35_54': 20, 'Age_55_plus': 16, 'Edu_Below_High_School': 9, 'Edu_High_School': 14, 'Edu_Some_College': 24, 'Edu_Bachelor_or_Above': 54, 'Job_Technology': 32, 'Job_Corporate': 23, 'Job_Healthcare': 16, 'Job_Construction': 8, 'Job_Hospitality': 9, 'Job_Repair_Tech': 0}, {'corp_own_rate': 30, 'White': 58, 'Asian': 9, 'Black': 18, 'Hispanic': 10, 'Other': 5, 'Age_0_19': 13, 'Age_20_34': 56, 'Age_35_54': 21, 'Age_55_plus': 10, 'Edu_Below_High_School': 9, 'Edu_High_School': 12, 'Edu_Some_College': 21, 'Edu_Bachelor_or_Above': 58, 'Job_Technology': 36, 'Job_Corporate': 20, 'Job_Healthcare': 10, 'Job_Construction': 6, 'Job_Hospitality': 6, 'Job_Repair_Tech': 0}, {'corp_own_rate': 34, 'White': 58, 'Asian': 14, 'Black': 15, 'Hispanic': 10, 'Other': 2, 'Age_0_19': 7, 'Age_20_34': 63, 'Age_35_54': 20, 'Age_55_plus': 11, 'Edu_Below_High_School': 3, 'Edu_High_School': 15, 'Edu_Some_College': 24, 'Edu_Bachelor_or_Above': 59, 'Job_Technology': 41, 'Job_Corporate': 22, 'Job_Healthcare': 12, 'Job_Construction': 4, 'Job_Hospitality': 4, 'Job_Repair_Tech': 0}, {'corp_own_rate': 38, 'White': 62, 'Asian': 13, 'Black': 13, 'Hispanic': 8, 'Other': 4, 'Age_0_19': 7, 'Age_20_34': 64, 'Age_35_54': 19, 'Age_55_plus': 10, 'Edu_Below_High_School': 3, 'Edu_High_School': 10, 'Edu_Some_College': 23, 'Edu_Bachelor_or_Above': 63, 'Job_Technology': 42, 'Job_Corporate': 24, 'Job_Healthcare': 12, 'Job_Construction': 3, 'Job_Hospitality': 2, 'Job_Repair_Tech': 0}, {'corp_own_rate': 42, 'White': 65, 'Asian': 14, 'Black': 11, 'Hispanic': 7, 'Other': 4, 'Age_0_19': 5, 'Age_20_34': 68, 'Age_35_54': 19, 'Age_55_plus': 9, 'Edu_Below_High_School': 2, 'Edu_High_School': 9, 'Edu_Some_College': 23, 'Edu_Bachelor_or_Above': 66, 'Job_Technology': 46, 'Job_Corporate': 25, 'Job_Healthcare': 11, 'Job_Construction': 2, 'Job_Hospitality': 0, 'Job_Repair_Tech': 0}, {'corp_own_rate': 46, 'White': 67, 'Asian': 14, 'Black': 9, 'Hispanic': 6, 'Other': 3, 'Age_0_19': 2, 'Age_20_34': 72, 'Age_35_54': 18, 'Age_55_plus': 7, 'Edu_Below_High_School': 1, 'Edu_High_School': 7, 'Edu_Some_College': 23, 'Edu_Bachelor_or_Above': 69, 'Job_Technology': 49, 'Job_Corporate': 26, 'Job_Healthcare': 11, 'Job_Construction': 1, 'Job_Hospitality': 0, 'Job_Repair_Tech': 0}, {'corp_own_rate': 50, 'White': 70, 'Asian': 15, 'Black': 7, 'Hispanic': 5, 'Other': 3, 'Age_0_19': 0, 'Age_20_34': 76, 'Age_35_54': 18, 'Age_55_plus': 6, 'Edu_Below_High_School': 0, 'Edu_High_School': 5, 'Edu_Some_College': 23, 'Edu_Bachelor_or_Above': 72, 'Job_Technology': 52, 'Job_Corporate': 27, 'Job_Healthcare': 11, 'Job_Construction': 0, 'Job_Hospitality': 0, 'Job_Repair_Tech': 0}, {'corp_own_rate': 54, 'White': 72, 'Asian': 16, 'Black': 5, 'Hispanic': 3, 'Other': 3, 'Age_0_19': 0, 'Age_20_34': 78, 'Age_35_54': 17, 'Age_55_plus': 5, 'Edu_Below_High_School': 0, 'Edu_High_School': 3, 'Edu_Some_College': 23, 'Edu_Bachelor_or_Above': 74, 'Job_Technology': 55, 'Job_Corporate': 29, 'Job_Healthcare': 11, 'Job_Construction': 0, 'Job_Hospitality': 0, 'Job_Repair_Tech': 0}, {'corp_own_rate': 58, 'White': 75, 'Asian': 16, 'Black': 4, 'Hispanic': 2, 'Other': 3, 'Age_0_19': 0, 'Age_20_34': 80, 'Age_35_54': 16, 'Age_55_plus': 4, 'Edu_Below_High_School': 0, 'Edu_High_School': 1, 'Edu_Some_College': 22, 'Edu_Bachelor_or_Above': 76, 'Job_Technology': 59, 'Job_Corporate': 30, 'Job_Healthcare': 11, 'Job_Construction': 0, 'Job_Hospitality': 0, 'Job_Repair_Tech': 0}, {'corp_own_rate': 62, 'White': 77, 'Asian': 17, 'Black': 2, 'Hispanic': 1, 'Other': 3, 'Age_0_19': 0, 'Age_20_34': 82, 'Age_35_54': 15, 'Age_55_plus': 2, 'Edu_Below_High_School': 0, 'Edu_High_School': 0, 'Edu_Some_College': 22, 'Edu_Bachelor_or_Above': 78, 'Job_Technology': 62, 'Job_Corporate': 31, 'Job_Healthcare': 10, 'Job_Construction': 0, 'Job_Hospitality': 0, 'Job_Repair_Tech': 0}, {'corp_own_rate': 66, 'White': 80, 'Asian': 18, 'Black': 0, 'Hispanic': 0, 'Other': 2, 'Age_0_19': 0, 'Age_20_34': 84, 'Age_35_54': 15, 'Age_55_plus': 1, 'Edu_Below_High_School': 0, 'Edu_High_School': 0, 'Edu_Some_College': 22, 'Edu_Bachelor_or_Above': 78, 'Job_Technology': 65, 'Job_Corporate': 32, 'Job_Healthcare': 10, 'Job_Construction': 0, 'Job_Hospitality': 0, 'Job_Repair_Tech': 0}, {'corp_own_rate': 70, 'White': 80, 'Asian': 18, 'Black': 0, 'Hispanic': 0, 'Other': 2, 'Age_0_19': 0, 'Age_20_34': 86, 'Age_35_54': 14, 'Age_55_plus': 0, 'Edu_Below_High_School': 0, 'Edu_High_School': 0, 'Edu_Some_College': 21, 'Edu_Bachelor_or_Above': 79, 'Job_Technology': 69, 'Job_Corporate': 33, 'Job_Healthcare': 10, 'Job_Construction': 0, 'Job_Hospitality': 0, 'Job_Repair_Tech': 0}, {'corp_own_rate': 74, 'White': 80, 'Asian': 18, 'Black': 0, 'Hispanic': 0, 'Other': 2, 'Age_0_19': 0, 'Age_20_34': 87, 'Age_35_54': 13, 'Age_55_plus': 0, 'Edu_Below_High_School': 0, 'Edu_High_School': 0, 'Edu_Some_College': 21, 'Edu_Bachelor_or_Above': 79, 'Job_Technology': 72, 'Job_Corporate': 34, 'Job_Healthcare': 10, 'Job_Construction': 0, 'Job_Hospitality': 0, 'Job_Repair_Tech': 0}, {'corp_own_rate': 78, 'White': 80, 'Asian': 18, 'Black': 0, 'Hispanic': 0, 'Other': 2, 'Age_0_19': 0, 'Age_20_34': 88, 'Age_35_54': 12, 'Age_55_plus': 0, 'Edu_Below_High_School': 0, 'Edu_High_School': 0, 'Edu_Some_College': 20, 'Edu_Bachelor_or_Above': 80, 'Job_Technology': 75, 'Job_Corporate': 36, 'Job_Healthcare': 10, 'Job_Construction': 0, 'Job_Hospitality': 0, 'Job_Repair_Tech': 0}, {'corp_own_rate': 82, 'White': 81, 'Asian': 18, 'Black': 0, 'Hispanic': 0, 'Other': 1, 'Age_0_19': 0, 'Age_20_34': 88, 'Age_35_54': 12, 'Age_55_plus': 0, 'Edu_Below_High_School': 0, 'Edu_High_School': 0, 'Edu_Some_College': 20, 'Edu_Bachelor_or_Above': 80, 'Job_Technology': 79, 'Job_Corporate': 37, 'Job_Healthcare': 9, 'Job_Construction': 0, 'Job_Hospitality': 0, 'Job_Repair_Tech': 0}, {'corp_own_rate': 86, 'White': 81, 'Asian': 18, 'Black': 0, 'Hispanic': 0, 'Other': 1, 'Age_0_19': 0, 'Age_20_34': 89, 'Age_35_54': 11, 'Age_55_plus': 0, 'Edu_Below_High_School': 0, 'Edu_High_School': 0, 'Edu_Some_College': 19, 'Edu_Bachelor_or_Above': 81, 'Job_Technology': 82, 'Job_Corporate': 38, 'Job_Healthcare': 9, 'Job_Construction': 0, 'Job_Hospitality': 0, 'Job_Repair_Tech': 0}, {'corp_own_rate': 90, 'White': 81, 'Asian': 18, 'Black': 0, 'Hispanic': 0, 'Other': 1, 'Age_0_19': 0, 'Age_20_34': 90, 'Age_35_54': 10, 'Age_55_plus': 0, 'Edu_Below_High_School': 0, 'Edu_High_School': 0, 'Edu_Some_College': 19, 'Edu_Bachelor_or_Above': 81, 'Job_Technology': 85, 'Job_Corporate': 39, 'Job_Healthcare': 9, 'Job_Construction': 0, 'Job_Hospitality': 0, 'Job_Repair_Tech': 0}, {'corp_own_rate': 98, 'White': 81, 'Asian': 18, 'Black': 0, 'Hispanic': 0, 'Other': 1, 'Age_0_19': 0, 'Age_20_34': 90, 'Age_35_54': 10, 'Age_55_plus': 0, 'Edu_Below_High_School': 0, 'Edu_High_School': 0, 'Edu_Some_College': 18, 'Edu_Bachelor_or_Above': 82, 'Job_Technology': 88, 'Job_Corporate': 40, 'Job_Healthcare': 9, 'Job_Construction': 0, 'Job_Hospitality': 0, 'Job_Repair_Tech': 0}]
+    
+
+
+    const svg = d3.select("#people-viz");
+    const cols = 35;
+    const rows = 14;
+    const spacing = 60;
+
+    function getClosestData(ownership) {
+      let closest = data[0];
+      let minDiff = Math.abs(data[0].corp_own_rate - ownership);
+      data.forEach(d => {
+        const diff = Math.abs(d.corp_own_rate - ownership);
+        if (diff < minDiff) {
+          closest = d;
+          minDiff = diff;
+        }
+      });
+      return closest;
+    }
+
+    function assignCategory(obj, dict, rand) {
+      const result = [];
+      for (let key in dict) {
+        for (let i = 0; i < obj[key]; i++) {
+          result.push(key);
+        }
+      }
+      return shuffle(result, rand);
+    }
+
+    function generatePeople(row) {
+      const totalPeople = cols * rows;
+      const seed = getSeed(row.corp_own_rate);
+      const rand = mulberry32(seed);
+
+      const races = assignCategory(row, raceColors, rand);
+      const ages = assignCategory(row, ageSizes, rand);
+      const educations = assignCategory(row, educationSymbols, rand);
+      const jobs = assignCategory(row, jobEmojis, rand);
+
+      const people = [];
+      for (let i = 0; i < totalPeople; i++) {
+        people.push({
+          id: i,
+          race: raceColors[races[i % races.length]],
+          age: ageSizes[ages[i % ages.length]],
+          ageCat: ages[i % ages.length],
+          education: educationSymbols[educations[i % educations.length]],
+          eduCat: educations[i % educations.length],
+          job: jobEmojis[jobs[i % jobs.length]],
+          jobCat: jobs[i % jobs.length]
+        });
+      }
+
+      return shuffle(people, rand);
+    }
+
+    function drawPeople(people) {
+      svg.selectAll("*").remove();
+
+      const groups = svg.selectAll("g.person")
+        .data(people)
+        .enter()
+        .append("g")
+        .attr("class", "person")
+        .attr("transform", (d, i) => {
+          const x = (i % cols) * spacing / 1.5 + 30;
+          const y = Math.floor(i / cols) * spacing - 520 ;
+          return `translate(${x - 100},${y})`;
+        });
+
+      groups.append("ellipse")
+        .attr("rx", 10)
+        .attr("ry", d => d.age / 2)
+        .attr("fill", d => d.race)
+        .attr("stroke", "#333")
+        .attr("stroke-width", 0.5);
+
+      groups.append("text")
+        .attr("class", "symbol")
+        .attr("y", -10)
+        .attr("text-anchor", "middle")
+        .style("font-size", "16px")
+        .text(d => d.education);
+
+      groups.append("text")
+        .attr("class", "symbol")
+        .attr("y", 25)
+        .attr("text-anchor", "middle")
+        .style("font-size", "20px")
+        .text(d => d.job);
+    }
+
+    function drawGrayBarChart(svgId, people, key, categories, barWidth = 92) {
+      const count = {};
+      Object.keys(categories).forEach(k => count[k] = 0);
+      people.forEach(p => count[p[key]]++);
+
+      const chartData = Object.entries(count).map(([cat, num]) => ({
+        label: cat.replace(/_/g, " ").replace("Edu", "").replace("Job", "").replace("Age", "").replace("0", "0 -").replace("35", "35 -").replace("55 plus", "55 plus").replace("19", "19").trim(),
+        rawKey: cat,
+        percent: (num / people.length) * 100
+      }));
+
+      const svg = d3.select(svgId);
+      const width = +svg.attr("width");
+      const height = +svg.attr("height");
+    //   const barWidth = 100;
+      const chartMarginBottom = 60;
+      const yScale = d3.scaleLinear().domain([0, 100]).range([height - chartMarginBottom, 10]);
+
+      svg.selectAll("*").remove();
+
+      svg.selectAll("rect")
+        .data(chartData)
+        .enter()
+        .append("rect")
+        .attr("x", (d, i) => i * (barWidth + 10))
+        .attr("y", d => yScale(d.percent) - 3)
+        .attr("width", barWidth)
+        .attr("height", d => height - chartMarginBottom - yScale(d.percent))
+        .attr("fill", "gray")
+        .attr("class", "bar");
+
+      svg.selectAll("text.label")
+        .data(chartData)
+        .enter()
+        .append("text")
+        .attr("class", "label")
+        .attr("x", (d, i) => i * (barWidth + 10) + barWidth / 2)
+        .attr("y", height - 45) // shifted downward
+        .attr("text-anchor", "middle")
+        .text(d => `${Math.round(d.percent)}%`);
+
+      svg.selectAll("text.category-name")
+        .data(chartData)
+        .enter()
+        .append("text")
+        .attr("class", "category-name")
+        .attr("x", (d, i) => i * (barWidth + 10) + barWidth / 2)
+        .attr("y", height - 25) // moved down
+        .attr("text-anchor", "middle")
+        .text(d => d.label);
+
+
+
+      if (svgId === "#bar-chart-job") {
+        svg.selectAll("text.job-emoji")
+          .data(chartData)
+          .enter()
+          .append("text")
+          .attr("class", "job-emoji")
+          .attr("x", (d, i) => i * (barWidth + 10) + barWidth / 2)
+          .attr("y", height - 5) // further down
+          .attr("text-anchor", "middle")
+          .style("font-size", "20px")
+          .text(d => jobEmojis[d.rawKey] || "");
+      }
+      if (svgId === "#bar-chart-education") {
+        svg.selectAll("text.edu-emoji")
+            .data(chartData)
+            .enter()
+            .append("text")
+            .attr("class", "edu-emoji")
+            .attr("x", (d, i) => i * (barWidth + 10) + barWidth / 2)
+            .attr("y", height - 5)
+            .attr("text-anchor", "middle")
+            .style("font-size", "20px")
+            .text(d => educationSymbols[d.rawKey] || "");
+        }
+        if (svgId === "#bar-chart-age") {
+        svg.selectAll("ellipse.age-oval")
+            .data(chartData)
+            .enter()
+            .append("ellipse")
+            .attr("class", "age-oval")
+            .attr("cx", (d, i) => i * (barWidth + 10) + barWidth / 2 + 37)
+            .attr("cy", height - 28)
+            .attr("rx", 10)
+            .attr("ry", d => (ageSizes[d.rawKey] || 16) / 2)
+            .attr("fill", "#C0C0C0")
+            .attr("stroke", "#222")
+            .attr("stroke-width", 0.5);
+        }
+
+    }
+
+    function drawBarCharts(people) {
+      drawRaceBarChart(people);
+      drawGrayBarChart("#bar-chart-age", people, "ageCat", ageSizes, 115);
+      drawGrayBarChart("#bar-chart-education", people, "eduCat", educationSymbols, 115);
+      drawGrayBarChart("#bar-chart-job", people, "jobCat", jobEmojis);
+    }
+
+    function drawRaceBarChart(people) {
+      const colorCount = {};
+      Object.entries(raceColors).forEach(([name, color]) => colorCount[name] = 0);
+      people.forEach(p => {
+        const race = Object.keys(raceColors).find(key => raceColors[key] === p.race);
+        if (race) colorCount[race]++;
+      });
+
+      const data = Object.entries(colorCount).map(([label, count]) => ({
+        label,
+        color: raceColors[label],
+        percent: (count / people.length) * 100
+      }));
+
+      const svg = d3.select("#bar-chart-race");
+      const barWidth = 80;
+      const chartHeight = 100;
+
+      svg.selectAll("*").remove();
+
+      svg.selectAll("rect")
+        .data(data)
+        .enter()
+        .append("rect")
+        .attr("x", (d, i) => i * (barWidth + 10))
+        .attr("y", d => chartHeight - d.percent * 1.1)
+        .attr("width", barWidth)
+        .attr("height", d => d.percent * 1.1)
+        .attr("fill", d => d.color)
+        .attr("class", "bar");
+
+      svg.selectAll("text.label")
+        .data(data)
+        .enter()
+        .append("text")
+        .attr("class", "label")
+        .attr("x", (d, i) => i * (barWidth + 10) + barWidth / 2)
+        .attr("y", chartHeight + 12)
+        .attr("text-anchor", "middle")
+        .text(d => `${Math.round(d.percent)}%`);
+
+      svg.selectAll("text.category-name")
+        .data(data)
+        .enter()
+        .append("text")
+        .attr("class", "category-name")
+        .attr("x", (d, i) => i * (barWidth + 10) + barWidth / 2)
+        .attr("y", chartHeight + 30)
+        .attr("text-anchor", "middle")
+        .text(d => d.label);
+
+    // NEW: Add color boxes next to race labels
+    svg.selectAll("rect.color-box")
+      .data(data)
+      .enter()
+      .append("rect")
+      .attr("class", "color-box")
+      .attr("x", (d, i) => i * (barWidth + 10) + barWidth / 2 - 18 + 9)
+      .attr("y", chartHeight + 35)
+      .attr("width", 20)
+      .attr("height", 4)
+      .attr("fill", d => d.color)
+      
+      .attr("stroke", "#333")
+      .attr("stroke-width", 0.5);
+    }
+
+    // d3.select("#slider").on("input", function () {
+    //   const ownership = +this.value;
+    //   d3.select("#ownership-value").text(ownership);
+    //   d3.select("#status").text(ownership > 34 ? "(Projected Data)" : "(Observed Data)");
+
+    //   const row = getClosestData(ownership);
+    //   const people = generatePeople(row);
+
+    //   drawPeople(people);
+    //   drawBarCharts(people);
+    // });
+
+
+    d3.select("#slider").on("input", function () {
+    d3.select("#ownership-value").text(this.value);
+    d3.select("#status").text(this.value > 34 ? "(Projected Data)" : "(Observed Data)");
+    updateVisualization(); // 🔁 Unified redraw based on current filter
+    });
+
+//     d3.select("#slider").on("input", function () {
+//   d3.select("#ownership-value").text(this.value);
+//   d3.select("#status").text(this.value > 34 ? "(Projected Data)" : "(Observed Data)");
+//   updateVisualization();
+// });
+
+d3.select("#view-select").on("change", function () {
+  updateVisualization();
+});
+
+    const initialRow = getClosestData(2);
+    const initialPeople = generatePeople(initialRow);
+    drawPeople(initialPeople);
+    drawBarCharts(initialPeople);
+
+    // Wrap draw functions in this to conditionally show/hide based on dropdown
+    // function updateVisualization() {
+    //   const ownership = +document.getElementById("slider").value;
+    //   const view = document.getElementById("view-select").value;
+    //   const row = getClosestData(ownership);
+    //   const people = generatePeople(row);
+
+    //   drawPeopleFiltered(people, view);
+    //   updateChartsVisibility(view);
+    //   drawBarChartsFiltered(people, view);
+    // }
+    function updateVisualization() {
+  const ownership = +document.getElementById("slider").value;
+  const view = document.getElementById("view-select").value;
+  const row = getClosestData(ownership);
+  const people = generatePeople(row);
+
+  // 🌟 UPDATE BACKGROUND OF WHOLE SECTION
+  const futureSection = document.getElementById("future-section");
+  const minOwnership = 2;
+  const maxOwnership = 100;
+  const percent = (ownership - minOwnership) / (maxOwnership - minOwnership); // 0 to 1
+  const grayValue = Math.floor(250 - percent * 60); // from 240 (light) to 50 (dark)
+  futureSection.style.backgroundColor = `rgb(${grayValue}, ${grayValue}, ${grayValue})`;
+
+  drawPeopleFiltered(people, view);
+  updateChartsVisibility(view);
+  drawBarCharts(people);
+}
+
+        function drawPeopleFiltered(people, view) {
+  svg.selectAll("*").remove();
+
+    // 👇 New adjustment: shift amount based on view
+    let yShift = 0; // default no shift
+
+    // 🌟 Custom yShift depending on view
+    if (view === "race_age") {
+        yShift = 340; // move down 40px
+    } else if (view === "education") {
+        yShift = 180; // move down 20px
+    } else if (view === "job") {
+        yShift = 180; // move down 30px
+    } else if (view === "all") {
+        yShift = 0;  // no shift needed
+    }
+
+
+  const groups = svg.selectAll("g.person")
+    .data(people)
+    .enter()
+    .append("g")
+    .attr("class", "person")
+    .attr("transform", (d, i) => {
+      const x = (i % cols) * spacing / 1.5 + 30;
+      const y = Math.floor(i / cols) * spacing - 520 + yShift; // 🔥 add yShift here
+      return `translate(${x - 100},${y})`;
+    });
+
+  const totalPersonHeight = 70; // Fixed box height per person
+
+  groups.append("ellipse")
+    .attr("rx", 10)
+    .attr("ry", d => d.age / 2)
+    .attr("cy", 0) // Center ellipse at 0
+    .attr("fill", d => d.race)
+    .attr("stroke", "#333")
+    .attr("stroke-width", 0.5);
+
+  groups.append("text")
+    .attr("class", "symbol")
+    .attr("y", -5) // 20px above ellipse
+    .attr("text-anchor", "middle")
+    .style("font-size", "16px")
+    .text(d => (view === "education" || view === "all") ? d.education : "");
+
+  groups.append("text")
+    .attr("class", "symbol")
+    .attr("y", 25) // 30px below ellipse
+    .attr("text-anchor", "middle")
+    .style("font-size", "20px")
+    .text(d => (view === "job" || view === "all") ? d.job : "");
+}
+
+
+    function updateChartsVisibility(view) {
+  const showRaceAge = view === "race_age" || view === "education" || view === "job" || view === "all";
+  const showEducation = view === "education" || view === "all";
+  const showJob = view === "job" || view === "all";
+
+  // Toggle SVGs
+  d3.select("#bar-chart-race").style("display", showRaceAge ? "block" : "none");
+  d3.select("#bar-chart-age").style("display", showRaceAge ? "block" : "none");
+  d3.select("#bar-chart-education").style("display", showEducation ? "block" : "none");
+  d3.select("#bar-chart-job").style("display", showJob ? "block" : "none");
+
+  // Toggle Titles
+  d3.select("#title-race").style("display", showRaceAge ? "block" : "none");
+  d3.select("#title-race1").style("display", showRaceAge ? "block" : "none");
+  d3.select("#title-age").style("display", showRaceAge ? "block" : "none");
+  d3.select("#title-age1").style("display", showRaceAge ? "block" : "none");
+  d3.select("#title-education").style("display", showEducation ? "block" : "none");
+  d3.select("#title-education1").style("display", showEducation ? "block" : "none");
+  d3.select("#title-job").style("display", showJob ? "block" : "none");
+  d3.select("#title-job1").style("display", showJob ? "block" : "none");
+}
+    updateVisualization();
+
+    // document.getElementById("line-version-select").addEventListener("change", function() {
+    //     const version = this.value;
+    //     drawLineCharts1(version);
+    //     });
+
+const slider = document.getElementById("line-version-slider");
+const sliderValue = document.getElementById("slider-value");
+const thresholdLabel = document.getElementById("threshold-label");
+const thresholdLabel2 = document.getElementById("threshold-label-2");
+
+slider.addEventListener("input", function() {
+  let version = "v1";  // default
+  if (this.value === "1") {
+    version = "v3";
+    sliderValue.textContent = "5%";
+    thresholdLabel.textContent = "5% corporate ownership";
+    thresholdLabel2.textContent = "5% corporate ownership";
+  } else if (this.value === "2") {
+    version = "v2";
+    sliderValue.textContent = "10%";
+    thresholdLabel.textContent = "10% corporate ownership";
+    thresholdLabel2.textContent = "10% corporate ownership";
+  } else if (this.value === "3") {
+    version = "v1";
+    sliderValue.textContent = "15%";
+    thresholdLabel.textContent = "15% corporate ownership";
+    thresholdLabel2.textContent = "15% corporate ownership";
+  }
+  
+  drawLineCharts1(version);
+  drawLineCharts2(version);
+  drawLineCharts3(version);
+});
+    function drawLineCharts1(version) {
+
+    // const version = document.getElementById("version-select").value;
+  const data1 = [
+    { Year: 2000, White: 39, Asian: 5, Black: 29, Hispanic: 20, Other: 5 },
+    { Year: 2001, White: 40, Asian: 5, Black: 29, Hispanic: 19, Other: 5 },
+    { Year: 2002, White: 40, Asian: 7, Black: 29, Hispanic: 19, Other: 4 },
+    { Year: 2003, White: 42, Asian: 6, Black: 29, Hispanic: 19, Other: 5 },
+    { Year: 2004, White: 44, Asian: 8, Black: 26, Hispanic: 17, Other: 5 },
+    { Year: 2005, White: 45, Asian: 7, Black: 27, Hispanic: 18, Other: 4 },
+    { Year: 2006, White: 44, Asian: 8, Black: 26, Hispanic: 18, Other: 5 },
+    { Year: 2007, White: 46, Asian: 8, Black: 24, Hispanic: 16, Other: 5 },
+    { Year: 2008, White: 46, Asian: 8, Black: 23, Hispanic: 17, Other: 5 },
+    { Year: 2009, White: 45, Asian: 10, Black: 24, Hispanic: 16, Other: 4 },
+    { Year: 2010, White: 48, Asian: 9, Black: 23, Hispanic: 15, Other: 5 },
+    { Year: 2011, White: 47, Asian: 11, Black: 23, Hispanic: 15, Other: 5 },
+    { Year: 2012, White: 47, Asian: 11, Black: 21, Hispanic: 13, Other: 4 },
+    { Year: 2013, White: 49, Asian: 11, Black: 20, Hispanic: 13, Other: 4 },
+    { Year: 2014, White: 51, Asian: 11, Black: 20, Hispanic: 13, Other: 6 },
+    { Year: 2015, White: 50, Asian: 12, Black: 19, Hispanic: 13, Other: 4 },
+    { Year: 2016, White: 53, Asian: 13, Black: 17, Hispanic: 12, Other: 5 },
+    { Year: 2017, White: 54, Asian: 14, Black: 17, Hispanic: 11, Other: 6 },
+    { Year: 2018, White: 53, Asian: 14, Black: 17, Hispanic: 10, Other: 6 },
+    { Year: 2019, White: 54, Asian: 14, Black: 15, Hispanic: 10, Other: 4 },
+    { Year: 2020, White: 56, Asian: 14, Black: 15, Hispanic: 10, Other: 5 }
+  ];
+
+  const data2 = [
+    { Year: 2000, White: 41, Asian: 8, Black: 23, Hispanic: 23, Other: 5 },
+    { Year: 2001, White: 43, Asian: 7, Black: 22, Hispanic: 23, Other: 5 },
+    { Year: 2002, White: 43, Asian: 8, Black: 22, Hispanic: 22, Other: 4 },
+    { Year: 2003, White: 44, Asian: 9, Black: 21, Hispanic: 23, Other: 5 },
+    { Year: 2004, White: 43, Asian: 9, Black: 21, Hispanic: 22, Other: 5 },
+    { Year: 2005, White: 42, Asian: 8, Black: 22, Hispanic: 23, Other: 5 },
+    { Year: 2006, White: 46, Asian: 9, Black: 22, Hispanic: 21, Other: 4 },
+    { Year: 2007, White: 45, Asian: 8, Black: 21, Hispanic: 23, Other: 5 },
+    { Year: 2008, White: 42, Asian: 9, Black: 21, Hispanic: 22, Other: 5 },
+    { Year: 2009, White: 45, Asian: 9, Black: 20, Hispanic: 23, Other: 4 },
+    { Year: 2010, White: 45, Asian: 10, Black: 21, Hispanic: 22, Other: 4 },
+    { Year: 2011, White: 45, Asian: 9, Black: 20, Hispanic: 22, Other: 4 },
+    { Year: 2012, White: 43, Asian: 10, Black: 22, Hispanic: 22, Other: 4 },
+    { Year: 2013, White: 44, Asian: 11, Black: 21, Hispanic: 22, Other: 5 },
+    { Year: 2014, White: 43, Asian: 10, Black: 20, Hispanic: 21, Other: 4 },
+    { Year: 2015, White: 43, Asian: 10, Black: 20, Hispanic: 21, Other: 4 },
+    { Year: 2016, White: 46, Asian: 11, Black: 20, Hispanic: 20, Other: 4 },
+    { Year: 2017, White: 46, Asian: 11, Black: 20, Hispanic: 21, Other: 4 },
+    { Year: 2018, White: 45, Asian: 11, Black: 20, Hispanic: 20, Other: 3 },
+    { Year: 2019, White: 45, Asian: 11, Black: 21, Hispanic: 19, Other: 3 },
+    { Year: 2020, White: 44, Asian: 11, Black: 20, Hispanic: 20, Other: 4 }
+  ];
+
+  const data1_v2 = [
+  { Year: 2000, White: 40, Asian: 6, Black: 27, Hispanic: 21, Other: 5 },
+  { Year: 2001, White: 41, Asian: 6, Black: 27, Hispanic: 21, Other: 5 },
+  { Year: 2002, White: 41, Asian: 7, Black: 27, Hispanic: 21, Other: 4 },
+  { Year: 2003, White: 43, Asian: 7, Black: 27, Hispanic: 21, Other: 5 },
+  { Year: 2004, White: 44, Asian: 8, Black: 25, Hispanic: 20, Other: 5 },
+  { Year: 2005, White: 44, Asian: 8, Black: 25, Hispanic: 21, Other: 4 },
+  { Year: 2006, White: 45, Asian: 8, Black: 25, Hispanic: 20, Other: 5 },
+  { Year: 2007, White: 46, Asian: 8, Black: 23, Hispanic: 18, Other: 5 },
+  { Year: 2008, White: 45, Asian: 9, Black: 23, Hispanic: 19, Other: 5 },
+  { Year: 2009, White: 45, Asian: 10, Black: 23, Hispanic: 19, Other: 4 },
+  { Year: 2010, White: 46, Asian: 10, Black: 22, Hispanic: 18, Other: 5 },
+  { Year: 2011, White: 46, Asian: 11, Black: 22, Hispanic: 18, Other: 5 },
+  { Year: 2012, White: 45, Asian: 11, Black: 21, Hispanic: 17, Other: 4 },
+  { Year: 2013, White: 47, Asian: 11, Black: 20, Hispanic: 17, Other: 4 },
+  { Year: 2014, White: 48, Asian: 11, Black: 20, Hispanic: 17, Other: 5 },
+  { Year: 2015, White: 48, Asian: 11, Black: 19, Hispanic: 17, Other: 4 },
+  { Year: 2016, White: 50, Asian: 12, Black: 18, Hispanic: 16, Other: 5 },
+  { Year: 2017, White: 51, Asian: 13, Black: 18, Hispanic: 15, Other: 5 },
+  { Year: 2018, White: 50, Asian: 13, Black: 18, Hispanic: 14, Other: 5 },
+  { Year: 2019, White: 50, Asian: 13, Black: 17, Hispanic: 14, Other: 4 },
+  { Year: 2020, White: 51, Asian: 13, Black: 17, Hispanic: 14, Other: 5 }
+];
+
+const data2_v2 = [
+  { Year: 2000, White: 41, Asian: 7, Black: 25, Hispanic: 22, Other: 5 },
+  { Year: 2001, White: 42, Asian: 7, Black: 24, Hispanic: 22, Other: 5 },
+  { Year: 2002, White: 42, Asian: 7, Black: 24, Hispanic: 22, Other: 4 },
+  { Year: 2003, White: 43, Asian: 8, Black: 23, Hispanic: 22, Other: 5 },
+  { Year: 2004, White: 43, Asian: 8, Black: 23, Hispanic: 22, Other: 5 },
+  { Year: 2005, White: 43, Asian: 8, Black: 23, Hispanic: 22, Other: 5 },
+  { Year: 2006, White: 44, Asian: 8, Black: 23, Hispanic: 21, Other: 4 },
+  { Year: 2007, White: 44, Asian: 8, Black: 23, Hispanic: 22, Other: 5 },
+  { Year: 2008, White: 44, Asian: 8, Black: 22, Hispanic: 22, Other: 5 },
+  { Year: 2009, White: 44, Asian: 9, Black: 22, Hispanic: 22, Other: 4 },
+  { Year: 2010, White: 44, Asian: 9, Black: 22, Hispanic: 22, Other: 4 },
+  { Year: 2011, White: 44, Asian: 9, Black: 22, Hispanic: 21, Other: 4 },
+  { Year: 2012, White: 44, Asian: 10, Black: 22, Hispanic: 21, Other: 4 },
+  { Year: 2013, White: 44, Asian: 10, Black: 22, Hispanic: 21, Other: 5 },
+  { Year: 2014, White: 44, Asian: 10, Black: 21, Hispanic: 21, Other: 4 },
+  { Year: 2015, White: 44, Asian: 10, Black: 21, Hispanic: 21, Other: 4 },
+  { Year: 2016, White: 45, Asian: 11, Black: 21, Hispanic: 20, Other: 4 },
+  { Year: 2017, White: 45, Asian: 11, Black: 21, Hispanic: 21, Other: 4 },
+  { Year: 2018, White: 45, Asian: 11, Black: 21, Hispanic: 20, Other: 3 },
+  { Year: 2019, White: 45, Asian: 11, Black: 21, Hispanic: 19, Other: 3 },
+  { Year: 2020, White: 44, Asian: 11, Black: 21, Hispanic: 20, Other: 4 }
+];
+
+
+const data1_v3 = [
+  { Year: 2000, White: 40, Asian: 6, Black: 26, Hispanic: 22, Other: 5 },
+  { Year: 2001, White: 42, Asian: 6, Black: 26, Hispanic: 21, Other: 5 },
+  { Year: 2002, White: 42, Asian: 7, Black: 26, Hispanic: 21, Other: 4 },
+  { Year: 2003, White: 43, Asian: 7, Black: 25, Hispanic: 21, Other: 5 },
+  { Year: 2004, White: 44, Asian: 8, Black: 24, Hispanic: 20, Other: 5 },
+  { Year: 2005, White: 44, Asian: 8, Black: 24, Hispanic: 21, Other: 4 },
+  { Year: 2006, White: 45, Asian: 8, Black: 24, Hispanic: 20, Other: 5 },
+  { Year: 2007, White: 45, Asian: 8, Black: 22, Hispanic: 20, Other: 5 },
+  { Year: 2008, White: 45, Asian: 9, Black: 22, Hispanic: 20, Other: 5 },
+  { Year: 2009, White: 45, Asian: 9, Black: 22, Hispanic: 20, Other: 4 },
+  { Year: 2010, White: 46, Asian: 10, Black: 22, Hispanic: 19, Other: 5 },
+  { Year: 2011, White: 46, Asian: 10, Black: 22, Hispanic: 19, Other: 5 },
+  { Year: 2012, White: 45, Asian: 10, Black: 22, Hispanic: 18, Other: 4 },
+  { Year: 2013, White: 46, Asian: 11, Black: 21, Hispanic: 18, Other: 5 },
+  { Year: 2014, White: 47, Asian: 11, Black: 20, Hispanic: 18, Other: 5 },
+  { Year: 2015, White: 47, Asian: 11, Black: 20, Hispanic: 18, Other: 4 },
+  { Year: 2016, White: 49, Asian: 12, Black: 19, Hispanic: 17, Other: 5 },
+  { Year: 2017, White: 49, Asian: 12, Black: 19, Hispanic: 17, Other: 5 },
+  { Year: 2018, White: 49, Asian: 12, Black: 19, Hispanic: 16, Other: 5 },
+  { Year: 2019, White: 49, Asian: 12, Black: 19, Hispanic: 16, Other: 4 },
+  { Year: 2020, White: 50, Asian: 12, Black: 18, Hispanic: 16, Other: 5 }
+];
+
+const data2_v3 = [
+  { Year: 2000, White: 41, Asian: 7, Black: 25, Hispanic: 22, Other: 5 },
+  { Year: 2001, White: 42, Asian: 7, Black: 25, Hispanic: 22, Other: 5 },
+  { Year: 2002, White: 42, Asian: 7, Black: 25, Hispanic: 21, Other: 4 },
+  { Year: 2003, White: 43, Asian: 8, Black: 25, Hispanic: 21, Other: 5 },
+  { Year: 2004, White: 44, Asian: 8, Black: 24, Hispanic: 21, Other: 5 },
+  { Year: 2005, White: 44, Asian: 8, Black: 24, Hispanic: 21, Other: 5 },
+  { Year: 2006, White: 45, Asian: 8, Black: 24, Hispanic: 20, Other: 4 },
+  { Year: 2007, White: 45, Asian: 8, Black: 22, Hispanic: 20, Other: 5 },
+  { Year: 2008, White: 45, Asian: 9, Black: 22, Hispanic: 20, Other: 5 },
+  { Year: 2009, White: 45, Asian: 9, Black: 22, Hispanic: 20, Other: 4 },
+  { Year: 2010, White: 46, Asian: 10, Black: 22, Hispanic: 20, Other: 4 },
+  { Year: 2011, White: 46, Asian: 10, Black: 21, Hispanic: 20, Other: 4 },
+  { Year: 2012, White: 45, Asian: 10, Black: 22, Hispanic: 19, Other: 4 },
+  { Year: 2013, White: 46, Asian: 10, Black: 21, Hispanic: 19, Other: 5 },
+  { Year: 2014, White: 46, Asian: 10, Black: 20, Hispanic: 19, Other: 4 },
+  { Year: 2015, White: 46, Asian: 10, Black: 20, Hispanic: 19, Other: 4 },
+  { Year: 2016, White: 48, Asian: 11, Black: 20, Hispanic: 18, Other: 4 },
+  { Year: 2017, White: 48, Asian: 11, Black: 20, Hispanic: 18, Other: 4 },
+  { Year: 2018, White: 48, Asian: 11, Black: 20, Hispanic: 17, Other: 3 },
+  { Year: 2019, White: 48, Asian: 11, Black: 20, Hispanic: 17, Other: 3 },
+  { Year: 2020, White: 48, Asian: 11, Black: 20, Hispanic: 17, Other: 4 }
+];
+
+// if version 3 is selected, use data1_v3 and data2_v3
+// const version = document.getElementById("version-select").value;
+console.log(version);
+console.log(version === "v3");
+let data1_plot, data2_plot;
+
+if (version === "v3") {
+    console.log("Version 3 selected");
+    data1_plot = data1_v3;
+    data2_plot = data2_v3;
+} else if (version === "v2") {
+    console.log("Version 2 selected");
+    data1_plot = data1_v2;
+    data2_plot = data2_v2;
+} else if (version === "v1") {
+    console.log("Version 1 selected");
+    data1_plot = data1;
+    data2_plot = data2;
+} 
+
+  const races = ["White", "Asian", "Black", "Hispanic", "Other"];
+  const colors = {
+    White: "#FF5733",
+    Black: "#3357FF",
+    Asian: "#33FF57",
+    Hispanic: "#FF33D4",
+    Other: "orange"
+  };
+
+  function createLineData(rawData) {
+    return races.map(race => ({
+      race,
+      values: rawData.map(d => ({
+        x: d.Year,
+        y: d[race]
+      }))
+    }));
+  }
+
+  function drawChart(svgId, lineData) {
+  const svg = d3.select(svgId);
+  const width = +svg.attr("width") - 120;
+  const height = +svg.attr("height") - 50;
+
+  const x = d3.scaleLinear()
+    .domain(d3.extent(lineData[0].values, d => d.x))
+    .range([40, width]);
+
+  const y = d3.scaleLinear()
+    .domain([0, 100])
+    .range([height, 20]);
+
+  const line = d3.line()
+    .x(d => x(d.x))
+    .y(d => y(d.y));
+
+  svg.selectAll("*").remove();
+
+  const xAxis = svg.append("g")
+    .attr("transform", `translate(0,${height})`)
+    .call(d3.axisBottom(x).ticks(5).tickFormat(d3.format("d")));
+
+  const yAxis = svg.append("g")
+    .attr("transform", `translate(40,0)`)
+    .call(d3.axisLeft(y).ticks(5));
+
+  // Bigger axis font size
+  xAxis.selectAll("text").style("font-size", "14px");
+  yAxis.selectAll("text").style("font-size", "14px");
+
+  // Draw the lines
+  svg.selectAll(".line")
+    .data(lineData)
+    .enter()
+    .append("path")
+    .attr("fill", "none")
+    .attr("stroke", d => colors[d.race])
+    .attr("stroke-width", 6) // thicker lines here if you want
+    .attr("d", d => line(d.values));
+
+  // 🔥 Add marker points (circles) at each data point!
+  lineData.forEach(series => {
+    svg.selectAll(`.circle-${series.race}`)
+      .data(series.values)
+      .enter()
+      .append("circle")
+      .attr("cx", d => x(d.x))
+      .attr("cy", d => y(d.y))
+      .attr("r", .5)  // 👈 radius of each marker
+      .attr("fill", colors[series.race])
+      .attr("stroke", "transparent") // optional: tiny outline for visibility
+      .attr("stroke-width", 0.7);
+  });
+
+  // Add labels
+  svg.selectAll(".label")
+    .data(lineData)
+    .enter()
+    .append("text")
+    .datum(d => ({ race: d.race, value: d.values[d.values.length - 1] }))
+    .attr("x", d => x(d.value.x) + 5)
+    .attr("y", d => y(d.value.y))
+    .text(d => d.race)
+    .style("font-size", "14px")
+    .style("fill", d => colors[d.race]);
+}
+
+  drawChart("#high-ownership-chart", createLineData(data1_plot));
+  drawChart("#low-ownership-chart", createLineData(data2_plot));
+}
+
+  drawLineCharts1("v1");
+
+  
+  function drawLineCharts2(version) {
+  const ageData1 = [
+    { Year: 2000, "0-9": 8, "10-19": 11, "20-34": 31, "35-54": 24, "55-64": 10, "65+": 15 },
+    { Year: 2001, "0-9": 8, "10-19": 9, "20-34": 29, "35-54": 26, "55-64": 10, "65+": 14 },
+    { Year: 2002, "0-9": 8, "10-19": 10, "20-34": 34, "35-54": 23, "55-64": 10, "65+": 14 },
+    { Year: 2003, "0-9": 9, "10-19": 8, "20-34": 32, "35-54": 22, "55-64": 10, "65+": 15 },
+    { Year: 2004, "0-9": 9, "10-19": 10, "20-34": 35, "35-54": 23, "55-64": 8, "65+": 13 },
+    { Year: 2005, "0-9": 8, "10-19": 8, "20-34": 37, "35-54": 22, "55-64": 9, "65+": 13 },
+    { Year: 2006, "0-9": 8, "10-19": 9, "20-34": 39, "35-54": 22, "55-64": 9, "65+": 13 },
+    { Year: 2007, "0-9": 8, "10-19": 8, "20-34": 38, "35-54": 22, "55-64": 8, "65+": 12 },
+    { Year: 2008, "0-9": 8, "10-19": 8, "20-34": 40, "35-54": 22, "55-64": 8, "65+": 12 },
+    { Year: 2009, "0-9": 7, "10-19": 7, "20-34": 41, "35-54": 23, "55-64": 7, "65+": 12 },
+    { Year: 2010, "0-9": 7, "10-19": 8, "20-34": 45, "35-54": 23, "55-64": 8, "65+": 12 },
+    { Year: 2011, "0-9": 5, "10-19": 8, "20-34": 45, "35-54": 21, "55-64": 7, "65+": 11 },
+    { Year: 2012, "0-9": 6, "10-19": 7, "20-34": 47, "35-54": 21, "55-64": 7, "65+": 11 },
+    { Year: 2013, "0-9": 6, "10-19": 7, "20-34": 50, "35-54": 21, "55-64": 7, "65+": 10 },
+    { Year: 2014, "0-9": 5, "10-19": 6, "20-34": 49, "35-54": 20, "55-64": 6, "65+": 9 },
+    { Year: 2015, "0-9": 5, "10-19": 7, "20-34": 51, "35-54": 21, "55-64": 5, "65+": 10 },
+    { Year: 2016, "0-9": 6, "10-19": 6, "20-34": 53, "35-54": 19, "55-64": 7, "65+": 9 },
+    { Year: 2017, "0-9": 4, "10-19": 5, "20-34": 55, "35-54": 18, "55-64": 6, "65+": 9 },
+    { Year: 2018, "0-9": 4, "10-19": 6, "20-34": 57, "35-54": 20, "55-64": 6, "65+": 8 },
+    { Year: 2019, "0-9": 4, "10-19": 6, "20-34": 57, "35-54": 19, "55-64": 5, "65+": 7 },
+    { Year: 2020, "0-9": 3, "10-19": 5, "20-34": 58, "35-54": 17, "55-64": 5, "65+": 8 }
+  ];
+
+  const ageData2 = [
+    { Year: 2000, "0-9": 8, "10-19": 8, "20-34": 42, "35-54": 26, "55-64": 9, "65+": 14 },
+    { Year: 2001, "0-9": 8, "10-19": 9, "20-34": 42, "35-54": 27, "55-64": 10, "65+": 15 },
+    { Year: 2002, "0-9": 7, "10-19": 7, "20-34": 44, "35-54": 27, "55-64": 10, "65+": 14 },
+    { Year: 2003, "0-9": 6, "10-19": 7, "20-34": 43, "35-54": 28, "55-64": 8, "65+": 15 },
+    { Year: 2004, "0-9": 6, "10-19": 7, "20-34": 44, "35-54": 25, "55-64": 8, "65+": 15 },
+    { Year: 2005, "0-9": 6, "10-19": 8, "20-34": 42, "35-54": 27, "55-64": 8, "65+": 16 },
+    { Year: 2006, "0-9": 6, "10-19": 7, "20-34": 42, "35-54": 28, "55-64": 9, "65+": 15 },
+    { Year: 2007, "0-9": 7, "10-19": 8, "20-34": 43, "35-54": 25, "55-64": 9, "65+": 14 },
+    { Year: 2008, "0-9": 6, "10-19": 8, "20-34": 44, "35-54": 26, "55-64": 8, "65+": 16 },
+    { Year: 2009, "0-9": 6, "10-19": 7, "20-34": 45, "35-54": 27, "55-64": 9, "65+": 16 },
+    { Year: 2010, "0-9": 6, "10-19": 7, "20-34": 45, "35-54": 25, "55-64": 8, "65+": 16 },
+    { Year: 2011, "0-9": 5, "10-19": 6, "20-34": 43, "35-54": 27, "55-64": 6, "65+": 16 },
+    { Year: 2012, "0-9": 5, "10-19": 5, "20-34": 42, "35-54": 26, "55-64": 6, "65+": 14 },
+    { Year: 2013, "0-9": 5, "10-19": 7, "20-34": 42, "35-54": 26, "55-64": 7, "65+": 15 },
+    { Year: 2014, "0-9": 6, "10-19": 6, "20-34": 43, "35-54": 24, "55-64": 6, "65+": 15 },
+    { Year: 2015, "0-9": 5, "10-19": 6, "20-34": 45, "35-54": 26, "55-64": 6, "65+": 15 },
+    { Year: 2016, "0-9": 5, "10-19": 5, "20-34": 45, "35-54": 25, "55-64": 7, "65+": 14 },
+    { Year: 2017, "0-9": 4, "10-19": 6, "20-34": 42, "35-54": 26, "55-64": 5, "65+": 16 },
+    { Year: 2018, "0-9": 5, "10-19": 6, "20-34": 45, "35-54": 26, "55-64": 5, "65+": 14 },
+    { Year: 2019, "0-9": 4, "10-19": 6, "20-34": 45, "35-54": 27, "55-64": 5, "65+": 14 },
+    { Year: 2020, "0-9": 4, "10-19": 4, "20-34": 44, "35-54": 25, "55-64": 6, "65+": 16 }
+  ];
+
+  const ageData1_v2 = [
+  { Year: 2000, "0-9": 8, "10-19": 10, "20-34": 36, "35-54": 25, "55-64": 9, "65+": 15 },
+  { Year: 2001, "0-9": 8, "10-19": 9, "20-34": 35, "35-54": 26, "55-64": 10, "65+": 14 },
+  { Year: 2002, "0-9": 8, "10-19": 9, "20-34": 38, "35-54": 25, "55-64": 10, "65+": 14 },
+  { Year: 2003, "0-9": 8, "10-19": 8, "20-34": 37, "35-54": 25, "55-64": 9, "65+": 15 },
+  { Year: 2004, "0-9": 8, "10-19": 9, "20-34": 39, "35-54": 24, "55-64": 8, "65+": 14 },
+  { Year: 2005, "0-9": 8, "10-19": 8, "20-34": 39, "35-54": 24, "55-64": 9, "65+": 14 },
+  { Year: 2006, "0-9": 8, "10-19": 8, "20-34": 40, "35-54": 24, "55-64": 9, "65+": 14 },
+  { Year: 2007, "0-9": 8, "10-19": 8, "20-34": 40, "35-54": 24, "55-64": 8, "65+": 13 },
+  { Year: 2008, "0-9": 7, "10-19": 8, "20-34": 41, "35-54": 24, "55-64": 8, "65+": 13 },
+  { Year: 2009, "0-9": 7, "10-19": 7, "20-34": 43, "35-54": 25, "55-64": 8, "65+": 13 },
+  { Year: 2010, "0-9": 7, "10-19": 7, "20-34": 45, "35-54": 25, "55-64": 8, "65+": 14 },
+  { Year: 2011, "0-9": 5, "10-19": 7, "20-34": 45, "35-54": 24, "55-64": 7, "65+": 13 },
+  { Year: 2012, "0-9": 5, "10-19": 6, "20-34": 46, "35-54": 24, "55-64": 7, "65+": 13 },
+  { Year: 2013, "0-9": 5, "10-19": 7, "20-34": 47, "35-54": 24, "55-64": 7, "65+": 12 },
+  { Year: 2014, "0-9": 5, "10-19": 6, "20-34": 46, "35-54": 23, "55-64": 6, "65+": 11 },
+  { Year: 2015, "0-9": 5, "10-19": 6, "20-34": 47, "35-54": 23, "55-64": 6, "65+": 11 },
+  { Year: 2016, "0-9": 5, "10-19": 6, "20-34": 49, "35-54": 22, "55-64": 7, "65+": 11 },
+  { Year: 2017, "0-9": 4, "10-19": 5, "20-34": 49, "35-54": 22, "55-64": 6, "65+": 11 },
+  { Year: 2018, "0-9": 4, "10-19": 6, "20-34": 51, "35-54": 23, "55-64": 6, "65+": 10 },
+  { Year: 2019, "0-9": 4, "10-19": 6, "20-34": 51, "35-54": 23, "55-64": 6, "65+": 9 },
+  { Year: 2020, "0-9": 4, "10-19": 5, "20-34": 52, "35-54": 21, "55-64": 6, "65+": 10 }
+];
+
+const ageData2_v2 = [
+  { Year: 2000, "0-9": 8, "10-19": 9, "20-34": 41, "35-54": 26, "55-64": 9, "65+": 14 },
+  { Year: 2001, "0-9": 8, "10-19": 9, "20-34": 41, "35-54": 27, "55-64": 10, "65+": 14 },
+  { Year: 2002, "0-9": 7, "10-19": 8, "20-34": 42, "35-54": 27, "55-64": 10, "65+": 14 },
+  { Year: 2003, "0-9": 7, "10-19": 7, "20-34": 42, "35-54": 27, "55-64": 8, "65+": 15 },
+  { Year: 2004, "0-9": 7, "10-19": 7, "20-34": 42, "35-54": 26, "55-64": 8, "65+": 14 },
+  { Year: 2005, "0-9": 7, "10-19": 8, "20-34": 42, "35-54": 26, "55-64": 8, "65+": 15 },
+  { Year: 2006, "0-9": 7, "10-19": 8, "20-34": 42, "35-54": 27, "55-64": 9, "65+": 15 },
+  { Year: 2007, "0-9": 7, "10-19": 8, "20-34": 42, "35-54": 26, "55-64": 9, "65+": 14 },
+  { Year: 2008, "0-9": 7, "10-19": 8, "20-34": 43, "35-54": 26, "55-64": 8, "65+": 15 },
+  { Year: 2009, "0-9": 6, "10-19": 7, "20-34": 44, "35-54": 26, "55-64": 9, "65+": 15 },
+  { Year: 2010, "0-9": 6, "10-19": 7, "20-34": 44, "35-54": 26, "55-64": 8, "65+": 15 },
+  { Year: 2011, "0-9": 5, "10-19": 6, "20-34": 43, "35-54": 26, "55-64": 7, "65+": 15 },
+  { Year: 2012, "0-9": 5, "10-19": 5, "20-34": 42, "35-54": 26, "55-64": 7, "65+": 14 },
+  { Year: 2013, "0-9": 5, "10-19": 6, "20-34": 42, "35-54": 26, "55-64": 7, "65+": 14 },
+  { Year: 2014, "0-9": 5, "10-19": 6, "20-34": 42, "35-54": 25, "55-64": 6, "65+": 14 },
+  { Year: 2015, "0-9": 5, "10-19": 6, "20-34": 43, "35-54": 25, "55-64": 6, "65+": 14 },
+  { Year: 2016, "0-9": 5, "10-19": 5, "20-34": 43, "35-54": 25, "55-64": 7, "65+": 14 },
+  { Year: 2017, "0-9": 4, "10-19": 6, "20-34": 42, "35-54": 25, "55-64": 6, "65+": 15 },
+  { Year: 2018, "0-9": 5, "10-19": 6, "20-34": 43, "35-54": 26, "55-64": 6, "65+": 14 },
+  { Year: 2019, "0-9": 4, "10-19": 6, "20-34": 43, "35-54": 26, "55-64": 5, "65+": 14 },
+  { Year: 2020, "0-9": 4, "10-19": 5, "20-34": 43, "35-54": 25, "55-64": 6, "65+": 15 }
+];
+const ageData1_v3 = [
+  { Year: 2000, "0-9": 8, "10-19": 9, "20-34": 39, "35-54": 25, "55-64": 9, "65+": 15 },
+  { Year: 2001, "0-9": 8, "10-19": 9, "20-34": 38, "35-54": 26, "55-64": 10, "65+": 14 },
+  { Year: 2002, "0-9": 8, "10-19": 8, "20-34": 40, "35-54": 25, "55-64": 10, "65+": 14 },
+  { Year: 2003, "0-9": 8, "10-19": 8, "20-34": 39, "35-54": 25, "55-64": 9, "65+": 15 },
+  { Year: 2004, "0-9": 7, "10-19": 8, "20-34": 40, "35-54": 25, "55-64": 8, "65+": 14 },
+  { Year: 2005, "0-9": 7, "10-19": 8, "20-34": 40, "35-54": 25, "55-64": 8, "65+": 15 },
+  { Year: 2006, "0-9": 7, "10-19": 8, "20-34": 41, "35-54": 25, "55-64": 9, "65+": 14 },
+  { Year: 2007, "0-9": 7, "10-19": 8, "20-34": 40, "35-54": 25, "55-64": 9, "65+": 14 },
+  { Year: 2008, "0-9": 7, "10-19": 8, "20-34": 41, "35-54": 25, "55-64": 8, "65+": 14 },
+  { Year: 2009, "0-9": 6, "10-19": 7, "20-34": 43, "35-54": 26, "55-64": 8, "65+": 14 },
+  { Year: 2010, "0-9": 6, "10-19": 7, "20-34": 44, "35-54": 25, "55-64": 8, "65+": 14 },
+  { Year: 2011, "0-9": 5, "10-19": 7, "20-34": 44, "35-54": 24, "55-64": 7, "65+": 14 },
+  { Year: 2012, "0-9": 5, "10-19": 6, "20-34": 44, "35-54": 24, "55-64": 7, "65+": 13 },
+  { Year: 2013, "0-9": 5, "10-19": 7, "20-34": 45, "35-54": 24, "55-64": 7, "65+": 13 },
+  { Year: 2014, "0-9": 5, "10-19": 6, "20-34": 45, "35-54": 24, "55-64": 6, "65+": 13 },
+  { Year: 2015, "0-9": 5, "10-19": 6, "20-34": 46, "35-54": 24, "55-64": 6, "65+": 13 },
+  { Year: 2016, "0-9": 5, "10-19": 6, "20-34": 47, "35-54": 23, "55-64": 7, "65+": 13 },
+  { Year: 2017, "0-9": 4, "10-19": 5, "20-34": 46, "35-54": 23, "55-64": 6, "65+": 13 },
+  { Year: 2018, "0-9": 5, "10-19": 6, "20-34": 48, "35-54": 24, "55-64": 6, "65+": 12 },
+  { Year: 2019, "0-9": 4, "10-19": 6, "20-34": 48, "35-54": 24, "55-64": 5, "65+": 11 },
+  { Year: 2020, "0-9": 4, "10-19": 5, "20-34": 48, "35-54": 23, "55-64": 6, "65+": 13 }
+];
+
+const ageData2_v3 = [
+  { Year: 2000, "0-9": 8, "10-19": 9, "20-34": 40, "35-54": 26, "55-64": 9, "65+": 14 },
+  { Year: 2001, "0-9": 8, "10-19": 9, "20-34": 39, "35-54": 26, "55-64": 10, "65+": 14 },
+  { Year: 2002, "0-9": 8, "10-19": 8, "20-34": 41, "35-54": 26, "55-64": 10, "65+": 14 },
+  { Year: 2003, "0-9": 7, "10-19": 8, "20-34": 40, "35-54": 26, "55-64": 9, "65+": 15 },
+  { Year: 2004, "0-9": 7, "10-19": 8, "20-34": 41, "35-54": 25, "55-64": 8, "65+": 15 },
+  { Year: 2005, "0-9": 7, "10-19": 8, "20-34": 40, "35-54": 26, "55-64": 8, "65+": 15 },
+  { Year: 2006, "0-9": 7, "10-19": 8, "20-34": 41, "35-54": 26, "55-64": 9, "65+": 15 },
+  { Year: 2007, "0-9": 7, "10-19": 8, "20-34": 41, "35-54": 25, "55-64": 9, "65+": 14 },
+  { Year: 2008, "0-9": 7, "10-19": 8, "20-34": 42, "35-54": 25, "55-64": 8, "65+": 15 },
+  { Year: 2009, "0-9": 6, "10-19": 7, "20-34": 43, "35-54": 26, "55-64": 9, "65+": 15 },
+  { Year: 2010, "0-9": 6, "10-19": 7, "20-34": 44, "35-54": 25, "55-64": 8, "65+": 15 },
+  { Year: 2011, "0-9": 5, "10-19": 6, "20-34": 43, "35-54": 25, "55-64": 7, "65+": 15 },
+  { Year: 2012, "0-9": 5, "10-19": 6, "20-34": 43, "35-54": 25, "55-64": 7, "65+": 14 },
+  { Year: 2013, "0-9": 5, "10-19": 6, "20-34": 43, "35-54": 25, "55-64": 7, "65+": 14 },
+  { Year: 2014, "0-9": 5, "10-19": 6, "20-34": 44, "35-54": 24, "55-64": 6, "65+": 14 },
+  { Year: 2015, "0-9": 5, "10-19": 6, "20-34": 45, "35-54": 24, "55-64": 6, "65+": 14 },
+  { Year: 2016, "0-9": 5, "10-19": 5, "20-34": 44, "35-54": 24, "55-64": 7, "65+": 14 },
+  { Year: 2017, "0-9": 4, "10-19": 5, "20-34": 43, "35-54": 24, "55-64": 6, "65+": 14 },
+  { Year: 2018, "0-9": 5, "10-19": 6, "20-34": 44, "35-54": 25, "55-64": 6, "65+": 14 },
+  { Year: 2019, "0-9": 4, "10-19": 6, "20-34": 44, "35-54": 25, "55-64": 5, "65+": 13 },
+  { Year: 2020, "0-9": 4, "10-19": 5, "20-34": 44, "35-54": 24, "55-64": 6, "65+": 14 }
+];
+
+
+let age_data1_plot, age_data2_plot;
+
+if (version === "v3") {
+    console.log("Version 3 selected");
+    age_data1_plot = ageData1_v3;
+    age_data2_plot = ageData2_v3;
+} else if (version === "v2") {
+    console.log("Version 2 selected");
+    age_data1_plot = ageData1_v2;
+    age_data2_plot = ageData2_v2;
+} else if (version === "v1") {
+    console.log("Version 1 selected");
+    age_data1_plot = ageData1;
+    age_data2_plot = ageData2;
+} 
+
+  const ageGroups = ["0-9", "10-19", "20-34", "35-54", "55-64", "65+"];
+  const colors = d3.schemeCategory10;
+
+  function createLineData(rawData) {
+    return ageGroups.map((group, i) => ({
+      group,
+      values: rawData.map(d => ({ x: d.Year, y: d[group] })),
+      color: colors[i % colors.length]
+    }));
+  }
+
+  function drawChart(svgId, lineData) {
+    const svg = d3.select(svgId);
+    const width = +svg.attr("width") - 120;
+    const height = +svg.attr("height") - 50;
+
+    const x = d3.scaleLinear().domain(d3.extent(lineData[0].values, d => d.x)).range([40, width]);
+    const y = d3.scaleLinear().domain([0, 100]).range([height, 20]);
+
+    const line = d3.line().x(d => x(d.x)).y(d => y(d.y));
+
+    const xAxis = svg.append("g")
+    .attr("transform", `translate(0,${height})`)
+    .call(d3.axisBottom(x).ticks(5).tickFormat(d3.format("d")));
+
+  const yAxis = svg.append("g")
+    .attr("transform", `translate(40,0)`)
+    .call(d3.axisLeft(y).ticks(5));
+
+    xAxis.selectAll("text").style("font-size", "14px");
+    yAxis.selectAll("text").style("font-size", "14px");
+    
+    svg.selectAll("*").remove();
+
+    svg.append("g")
+      .attr("transform", `translate(0,${height})`)
+      .call(d3.axisBottom(x).ticks(5).tickFormat(d3.format("d")));
+
+    svg.append("g")
+      .attr("transform", `translate(40,0)`)
+      .call(d3.axisLeft(y).ticks(5));
+
+    svg.selectAll(".line")
+      .data(lineData)
+      .enter()
+      .append("path")
+      .attr("fill", "none")
+      .attr("stroke", d => d.color)
+      .attr("stroke-width", 6)
+      .attr("d", d => line(d.values));
+
+    svg.selectAll(".label")
+      .data(lineData)
+      .enter()
+      .append("text")
+      .datum(d => ({ group: d.group, value: d.values[d.values.length - 1], color: d.color }))
+      .attr("x", d => x(d.value.x) + 5)
+      .attr("y", d => y(d.value.y))
+      .text(d => d.group)
+      .style("font-size", "14px")
+      .style("fill", d => d.color);
+  }
+
+  drawChart("#high-ownership-chart-age", createLineData(age_data1_plot));
+  drawChart("#low-ownership-chart-age", createLineData(age_data2_plot));
+}
+
+drawLineCharts2("v1"); 
+  
+
+function drawLineCharts3(version) {
+  const eduData1 = [
+  {"Year": 2000, "Bach. or Above": 34, "Below High Sch.": 15, "High School": 24, "Some College": 25},
+  {"Year": 2001, "Bach. or Above": 35, "Below High Sch.": 14, "High School": 24, "Some College": 24},
+  {"Year": 2002, "Bach. or Above": 36, "Below High Sch.": 15, "High School": 24, "Some College": 25},
+  {"Year": 2003, "Bach. or Above": 39, "Below High Sch.": 13, "High School": 24, "Some College": 25},
+  {"Year": 2004, "Bach. or Above": 41, "Below High Sch.": 14, "High School": 22, "Some College": 24},
+  {"Year": 2005, "Bach. or Above": 43, "Below High Sch.": 12, "High School": 22, "Some College": 25},
+  {"Year": 2006, "Bach. or Above": 42, "Below High Sch.": 12, "High School": 22, "Some College": 25},
+  {"Year": 2007, "Bach. or Above": 44, "Below High Sch.": 11, "High School": 20, "Some College": 24},
+  {"Year": 2008, "Bach. or Above": 45, "Below High Sch.": 10, "High School": 19, "Some College": 25},
+  {"Year": 2009, "Bach. or Above": 45, "Below High Sch.": 11, "High School": 20, "Some College": 24},
+  {"Year": 2010, "Bach. or Above": 48, "Below High Sch.": 9, "High School": 20, "Some College": 24},
+  {"Year": 2011, "Bach. or Above": 48, "Below High Sch.": 10, "High School": 19, "Some College": 24},
+  {"Year": 2012, "Bach. or Above": 48, "Below High Sch.": 9, "High School": 18, "Some College": 23},
+  {"Year": 2013, "Bach. or Above": 50, "Below High Sch.": 8, "High School": 17, "Some College": 23},
+  {"Year": 2014, "Bach. or Above": 53, "Below High Sch.": 7, "High School": 17, "Some College": 24},
+  {"Year": 2015, "Bach. or Above": 53, "Below High Sch.": 7, "High School": 16, "Some College": 24},
+  {"Year": 2016, "Bach. or Above": 56, "Below High Sch.": 7, "High School": 15, "Some College": 23},
+  {"Year": 2017, "Bach. or Above": 57, "Below High Sch.": 7, "High School": 14, "Some College": 22},
+  {"Year": 2018, "Bach. or Above": 57, "Below High Sch.": 6, "High School": 15, "Some College": 23},
+  {"Year": 2019, "Bach. or Above": 59, "Below High Sch.": 5, "High School": 13, "Some College": 23},
+  {"Year": 2020, "Bach. or Above": 61, "Below High Sch.": 4, "High School": 13, "Some College": 23}
+];
+
+  const eduData2 = [
+  { "Year": 2000, "Bach. or Above": 28, "Below High Sch.": 16, "High School": 28, "Some College": 28 },
+  { "Year": 2001, "Bach. or Above": 27, "Below High Sch.": 17, "High School": 26, "Some College": 28 },
+  { "Year": 2002, "Bach. or Above": 27, "Below High Sch.": 17, "High School": 27, "Some College": 28 },
+  { "Year": 2003, "Bach. or Above": 28, "Below High Sch.": 17, "High School": 27, "Some College": 27 },
+  { "Year": 2004, "Bach. or Above": 29, "Below High Sch.": 16, "High School": 26, "Some College": 27 },
+  { "Year": 2005, "Bach. or Above": 27, "Below High Sch.": 16, "High School": 25, "Some College": 29 },
+  { "Year": 2006, "Bach. or Above": 29, "Below High Sch.": 17, "High School": 26, "Some College": 29 },
+  { "Year": 2007, "Bach. or Above": 30, "Below High Sch.": 17, "High School": 24, "Some College": 29 },
+  { "Year": 2008, "Bach. or Above": 29, "Below High Sch.": 15, "High School": 24, "Some College": 29 },
+  { "Year": 2009, "Bach. or Above": 29, "Below High Sch.": 16, "High School": 23, "Some College": 28 },
+  { "Year": 2010, "Bach. or Above": 30, "Below High Sch.": 17, "High School": 24, "Some College": 30 },
+  { "Year": 2011, "Bach. or Above": 32, "Below High Sch.": 16, "High School": 22, "Some College": 29 },
+  { "Year": 2012, "Bach. or Above": 30, "Below High Sch.": 15, "High School": 23, "Some College": 31 },
+  { "Year": 2013, "Bach. or Above": 31, "Below High Sch.": 15, "High School": 23, "Some College": 30 },
+  { "Year": 2014, "Bach. or Above": 34, "Below High Sch.": 15, "High School": 22, "Some College": 30 },
+  { "Year": 2015, "Bach. or Above": 32, "Below High Sch.": 15, "High School": 21, "Some College": 30 },
+  { "Year": 2016, "Bach. or Above": 33, "Below High Sch.": 16, "High School": 22, "Some College": 30 },
+  { "Year": 2017, "Bach. or Above": 35, "Below High Sch.": 16, "High School": 21, "Some College": 31 },
+  { "Year": 2018, "Bach. or Above": 35, "Below High Sch.": 15, "High School": 20, "Some College": 32 },
+  { "Year": 2019, "Bach. or Above": 33, "Below High Sch.": 15, "High School": 20, "Some College": 32 },
+  { "Year": 2020, "Bach. or Above": 35, "Below High Sch.": 15, "High School": 19, "Some College": 32 }
+];
+const eduData1_v2 = [
+  { Year: 2000, "Bach. or Above": 32, "Below High Sch.": 15, "High School": 26, "Some College": 26 },
+  { Year: 2001, "Bach. or Above": 32, "Below High Sch.": 15, "High School": 25, "Some College": 26 },
+  { Year: 2002, "Bach. or Above": 33, "Below High Sch.": 15, "High School": 26, "Some College": 26 },
+  { Year: 2003, "Bach. or Above": 34, "Below High Sch.": 14, "High School": 26, "Some College": 26 },
+  { Year: 2004, "Bach. or Above": 36, "Below High Sch.": 14, "High School": 24, "Some College": 26 },
+  { Year: 2005, "Bach. or Above": 37, "Below High Sch.": 13, "High School": 23, "Some College": 27 },
+  { Year: 2006, "Bach. or Above": 37, "Below High Sch.": 14, "High School": 24, "Some College": 27 },
+  { Year: 2007, "Bach. or Above": 38, "Below High Sch.": 13, "High School": 22, "Some College": 27 },
+  { Year: 2008, "Bach. or Above": 39, "Below High Sch.": 12, "High School": 22, "Some College": 27 },
+  { Year: 2009, "Bach. or Above": 39, "Below High Sch.": 13, "High School": 22, "Some College": 26 },
+  { Year: 2010, "Bach. or Above": 41, "Below High Sch.": 12, "High School": 22, "Some College": 27 },
+  { Year: 2011, "Bach. or Above": 42, "Below High Sch.": 12, "High School": 21, "Some College": 26 },
+  { Year: 2012, "Bach. or Above": 42, "Below High Sch.": 11, "High School": 21, "Some College": 26 },
+  { Year: 2013, "Bach. or Above": 43, "Below High Sch.": 10, "High School": 20, "Some College": 26 },
+  { Year: 2014, "Bach. or Above": 45, "Below High Sch.": 9, "High School": 19, "Some College": 27 },
+  { Year: 2015, "Bach. or Above": 45, "Below High Sch.": 9, "High School": 18, "Some College": 27 },
+  { Year: 2016, "Bach. or Above": 47, "Below High Sch.": 9, "High School": 18, "Some College": 26 },
+  { Year: 2017, "Bach. or Above": 48, "Below High Sch.": 9, "High School": 17, "Some College": 26 },
+  { Year: 2018, "Bach. or Above": 49, "Below High Sch.": 8, "High School": 17, "Some College": 27 },
+  { Year: 2019, "Bach. or Above": 50, "Below High Sch.": 7, "High School": 16, "Some College": 27 },
+  { Year: 2020, "Bach. or Above": 52, "Below High Sch.": 6, "High School": 16, "Some College": 27 }
+];
+
+const eduData2_v2 = [
+  { Year: 2000, "Bach. or Above": 30, "Below High Sch.": 16, "High School": 27, "Some College": 27 },
+  { Year: 2001, "Bach. or Above": 30, "Below High Sch.": 16, "High School": 26, "Some College": 27 },
+  { Year: 2002, "Bach. or Above": 30, "Below High Sch.": 16, "High School": 26, "Some College": 27 },
+  { Year: 2003, "Bach. or Above": 31, "Below High Sch.": 16, "High School": 26, "Some College": 26 },
+  { Year: 2004, "Bach. or Above": 32, "Below High Sch.": 16, "High School": 25, "Some College": 26 },
+  { Year: 2005, "Bach. or Above": 31, "Below High Sch.": 16, "High School": 24, "Some College": 28 },
+  { Year: 2006, "Bach. or Above": 32, "Below High Sch.": 16, "High School": 25, "Some College": 28 },
+  { Year: 2007, "Bach. or Above": 33, "Below High Sch.": 16, "High School": 24, "Some College": 28 },
+  { Year: 2008, "Bach. or Above": 32, "Below High Sch.": 15, "High School": 24, "Some College": 28 },
+  { Year: 2009, "Bach. or Above": 32, "Below High Sch.": 15, "High School": 23, "Some College": 28 },
+  { Year: 2010, "Bach. or Above": 33, "Below High Sch.": 16, "High School": 24, "Some College": 29 },
+  { Year: 2011, "Bach. or Above": 34, "Below High Sch.": 15, "High School": 23, "Some College": 29 },
+  { Year: 2012, "Bach. or Above": 34, "Below High Sch.": 15, "High School": 23, "Some College": 30 },
+  { Year: 2013, "Bach. or Above": 35, "Below High Sch.": 15, "High School": 23, "Some College": 30 },
+  { Year: 2014, "Bach. or Above": 36, "Below High Sch.": 15, "High School": 22, "Some College": 30 },
+  { Year: 2015, "Bach. or Above": 36, "Below High Sch.": 15, "High School": 22, "Some College": 30 },
+  { Year: 2016, "Bach. or Above": 37, "Below High Sch.": 16, "High School": 22, "Some College": 30 },
+  { Year: 2017, "Bach. or Above": 38, "Below High Sch.": 16, "High School": 21, "Some College": 31 },
+  { Year: 2018, "Bach. or Above": 38, "Below High Sch.": 15, "High School": 21, "Some College": 31 },
+  { Year: 2019, "Bach. or Above": 37, "Below High Sch.": 15, "High School": 21, "Some College": 31 },
+  { Year: 2020, "Bach. or Above": 38, "Below High Sch.": 15, "High School": 20, "Some College": 31 }
+];
+
+
+const eduData1_v3 = [
+  { Year: 2000, "Bach. or Above": 30, "Below High Sch.": 15, "High School": 27, "Some College": 27 },
+  { Year: 2001, "Bach. or Above": 30, "Below High Sch.": 15, "High School": 26, "Some College": 27 },
+  { Year: 2002, "Bach. or Above": 31, "Below High Sch.": 16, "High School": 26, "Some College": 27 },
+  { Year: 2003, "Bach. or Above": 32, "Below High Sch.": 15, "High School": 26, "Some College": 27 },
+  { Year: 2004, "Bach. or Above": 34, "Below High Sch.": 15, "High School": 25, "Some College": 27 },
+  { Year: 2005, "Bach. or Above": 34, "Below High Sch.": 15, "High School": 24, "Some College": 28 },
+  { Year: 2006, "Bach. or Above": 35, "Below High Sch.": 15, "High School": 25, "Some College": 28 },
+  { Year: 2007, "Bach. or Above": 36, "Below High Sch.": 15, "High School": 23, "Some College": 28 },
+  { Year: 2008, "Bach. or Above": 36, "Below High Sch.": 14, "High School": 23, "Some College": 28 },
+  { Year: 2009, "Bach. or Above": 36, "Below High Sch.": 15, "High School": 23, "Some College": 27 },
+  { Year: 2010, "Bach. or Above": 37, "Below High Sch.": 15, "High School": 23, "Some College": 28 },
+  { Year: 2011, "Bach. or Above": 38, "Below High Sch.": 15, "High School": 22, "Some College": 28 },
+  { Year: 2012, "Bach. or Above": 38, "Below High Sch.": 15, "High School": 22, "Some College": 28 },
+  { Year: 2013, "Bach. or Above": 39, "Below High Sch.": 14, "High School": 21, "Some College": 28 },
+  { Year: 2014, "Bach. or Above": 41, "Below High Sch.": 14, "High School": 20, "Some College": 28 },
+  { Year: 2015, "Bach. or Above": 41, "Below High Sch.": 14, "High School": 20, "Some College": 28 },
+  { Year: 2016, "Bach. or Above": 42, "Below High Sch.": 14, "High School": 20, "Some College": 28 },
+  { Year: 2017, "Bach. or Above": 43, "Below High Sch.": 14, "High School": 19, "Some College": 29 },
+  { Year: 2018, "Bach. or Above": 43, "Below High Sch.": 14, "High School": 19, "Some College": 29 },
+  { Year: 2019, "Bach. or Above": 44, "Below High Sch.": 14, "High School": 18, "Some College": 29 },
+  { Year: 2020, "Bach. or Above": 45, "Below High Sch.": 14, "High School": 18, "Some College": 29 }
+];
+
+const eduData2_v3 = [
+  { Year: 2000, "Bach. or Above": 31, "Below High Sch.": 15, "High School": 26, "Some College": 28 },
+  { Year: 2001, "Bach. or Above": 30, "Below High Sch.": 15, "High School": 26, "Some College": 27 },
+  { Year: 2002, "Bach. or Above": 31, "Below High Sch.": 16, "High School": 27, "Some College": 27 },
+  { Year: 2003, "Bach. or Above": 32, "Below High Sch.": 15, "High School": 26, "Some College": 28 },
+  { Year: 2004, "Bach. or Above": 33, "Below High Sch.": 15, "High School": 25, "Some College": 28 },
+  { Year: 2005, "Bach. or Above": 34, "Below High Sch.": 15, "High School": 24, "Some College": 28 },
+  { Year: 2006, "Bach. or Above": 35, "Below High Sch.": 15, "High School": 25, "Some College": 29 },
+  { Year: 2007, "Bach. or Above": 36, "Below High Sch.": 14, "High School": 23, "Some College": 29 },
+  { Year: 2008, "Bach. or Above": 36, "Below High Sch.": 14, "High School": 23, "Some College": 28 },
+  { Year: 2009, "Bach. or Above": 36, "Below High Sch.": 14, "High School": 23, "Some College": 28 },
+  { Year: 2010, "Bach. or Above": 37, "Below High Sch.": 15, "High School": 24, "Some College": 28 },
+  { Year: 2011, "Bach. or Above": 38, "Below High Sch.": 15, "High School": 22, "Some College": 28 },
+  { Year: 2012, "Bach. or Above": 38, "Below High Sch.": 15, "High School": 22, "Some College": 29 },
+  { Year: 2013, "Bach. or Above": 38, "Below High Sch.": 14, "High School": 21, "Some College": 29 },
+  { Year: 2014, "Bach. or Above": 40, "Below High Sch.": 14, "High School": 20, "Some College": 29 },
+  { Year: 2015, "Bach. or Above": 41, "Below High Sch.": 14, "High School": 21, "Some College": 28 },
+  { Year: 2016, "Bach. or Above": 42, "Below High Sch.": 15, "High School": 20, "Some College": 28 },
+  { Year: 2017, "Bach. or Above": 43, "Below High Sch.": 14, "High School": 20, "Some College": 29 },
+  { Year: 2018, "Bach. or Above": 43, "Below High Sch.": 14, "High School": 19, "Some College": 29 },
+  { Year: 2019, "Bach. or Above": 44, "Below High Sch.": 14, "High School": 19, "Some College": 29 },
+  { Year: 2020, "Bach. or Above": 45, "Below High Sch.": 13, "High School": 18, "Some College": 29 }
+];
+
+
+
+let edu_data1_plot, edu_data2_plot;
+
+if (version === "v3") {
+    console.log("Version 3 selected");
+    edu_data1_plot = eduData1_v3;
+    edu_data2_plot = eduData2_v3;
+} else if (version === "v2") {
+    console.log("Version 2 selected");
+    edu_data1_plot = eduData1_v2;
+    edu_data2_plot = eduData2_v2;
+} else if (version === "v1") {
+    console.log("Version 1 selected");
+    edu_data1_plot = eduData1;
+    edu_data2_plot = eduData2;
+} 
+
+
+  const eduGroups = ["Bach. or Above", "Below High Sch.", "High School", "Some College"];
+  const colors = d3.schemeCategory10;
+
+  function createLineData(rawData) {
+    return eduGroups.map((group, i) => ({
+      group,
+      values: rawData.map(d => ({ x: d.Year, y: d[group] })),
+      color: colors[i % colors.length]
+    }));
+  }
+
+  function drawChart(svgId, lineData) {
+    const svg = d3.select(svgId);
+    const width = +svg.attr("width") - 120;
+    const height = +svg.attr("height") - 50;
+
+    const x = d3.scaleLinear().domain(d3.extent(lineData[0].values, d => d.x)).range([40, width]);
+    const y = d3.scaleLinear().domain([0, 100]).range([height, 20]);
+
+    const line = d3.line().x(d => x(d.x)).y(d => y(d.y));
+
+    const xAxis = svg.append("g")
+    .attr("transform", `translate(0,${height})`)
+    .call(d3.axisBottom(x).ticks(5).tickFormat(d3.format("d")));
+
+  const yAxis = svg.append("g")
+    .attr("transform", `translate(40,0)`)
+    .call(d3.axisLeft(y).ticks(5));
+    
+    xAxis.selectAll("text").style("font-size", "14px");
+    yAxis.selectAll("text").style("font-size", "14px");
+    
+    svg.selectAll("*").remove();
+
+    svg.append("g")
+      .attr("transform", `translate(0,${height})`)
+      .call(d3.axisBottom(x).ticks(5).tickFormat(d3.format("d")));
+
+    svg.append("g")
+      .attr("transform", `translate(40,0)`)
+      .call(d3.axisLeft(y).ticks(5));
+
+    svg.selectAll(".line")
+      .data(lineData)
+      .enter()
+      .append("path")
+      .attr("fill", "none")
+      .attr("stroke", d => d.color)
+      .attr("stroke-width", 6)
+      .attr("d", d => line(d.values));
+
+    svg.selectAll(".label")
+      .data(lineData)
+      .enter()
+      .append("text")
+      .datum(d => ({ group: d.group, value: d.values[d.values.length - 1], color: d.color }))
+      .attr("x", d => x(d.value.x) + 5)
+      .attr("y", d => y(d.value.y))
+      .text(d => d.group)
+      .style("font-size", "14px")
+      .style("fill", d => d.color);
+  }
+
+  drawChart("#high-ownership-chart-edu", createLineData(edu_data1_plot));
+  drawChart("#low-ownership-chart-edu", createLineData(edu_data2_plot));
+}
+
+drawLineCharts3("v1"); 
+  
+
+  
+  
+  </script>
+  
+
+
+
+<script>
+    // Sample static data for pie charts
+    const pieData = {
+      race: [
+        { label: "White", value: 37, color: "#FF5733" },
+        { label: "Asian", value: 10, color: "#33FF57" },
+        { label: "Black", value: 30, color: "#3357FF" },
+        { label: "Hispanic", value: 17, color: "#FF33D4" },
+        { label: "Other", value: 6, color: "orange" }
+      ],
+      age: [
+        { label: "0-19", value: 25 },
+        { label: "20-34", value: 28 },
+        { label: "35-54", value: 24 },
+        { label: "55+", value: 23 }
+      ],
+      education: [
+        { label: "<High School", value: 16 },
+        { label: "High School", value: 25 },
+        { label: "Some College", value: 23 },
+        { label: "Bachelor+", value: 35 }
+      ],
+      job: [
+        { label: "Tech", value: 15 },
+        { label: "Corporate", value: 12 },
+        { label: "Healthcare", value: 15 },
+        { label: "Construction", value: 15 },
+        { label: "Hospitality", value: 21 }
+      ]
+    };
+    
+    const raceColorMap = {
+  "White": "#FF5733",
+  "Asian": "#33FF57",
+  "Black": "#3357FF",
+  "Hispanic": "#FF33D4",
+  "Other": "orange"
+};
+
+const ageColorMap = {
+  "0-19": "#a6cee3",
+  "20-34": "#1f78b4",
+  "35-54": "#b2df8a",
+  "55+": "#33a02c"
+};
+
+const educationColorMap = {
+  "<High School": "#fb9a99",
+  "High School": "#e31a1c",
+  "Some College": "#fdbf6f",
+  "Bachelor+": "#ff7f00"
+};
+
+const jobColorMap = {
+  "Tech": "#cab2d6",
+  "Corporate": "#6a3d9a",
+  "Healthcare": "#ffff99",
+  "Construction": "#b15928",
+  "Hospitality": "#8dd3c7"
+};
+
+function drawPieChart(svgId, data, colorMap) {
+  const svg = d3.select(svgId);
+  const width = +svg.attr("width");
+  const height = +svg.attr("height");
+  const radius = Math.min(width, height) / 2 - 10;
+
+  svg.selectAll("*").remove(); // Clear previous
+
+  const g = svg.append("g")
+    .attr("transform", `translate(${width / 2},${height / 2})`);
+
+  const pie = d3.pie()
+    .value(d => d.value);
+
+  const arc = d3.arc()
+    .innerRadius(0)
+    .outerRadius(radius);
+
+  const color = d3.scaleOrdinal()
+    .domain(data.map(d => d.label))
+    .range(data.map(d => colorMap[d.label]));
+
+  const arcs = g.selectAll(".arc")
+    .data(pie(data))
+    .enter().append("g")
+    .attr("class", "arc");
+
+  arcs.append("path")
+    .attr("d", arc)
+    .attr("fill", d => color(d.data.label));
+}
+
+function drawLegend(containerId, colorMap) {
+  const container = d3.select(containerId);
+  
+  // Clear old legend if any
+  container.selectAll("*").remove();
+
+  const entries = Object.entries(colorMap);
+  const legendItemHeight = 18;
+  
+  const svg = container.append("svg")
+    .attr("width", 150)
+    .attr("height", entries.length * legendItemHeight + 20);
+
+  const legend = svg.selectAll(".legend-item")
+    .data(entries)
+    .enter()
+    .append("g")
+    .attr("class", "legend-item")
+    .attr("transform", (d, i) => `translate(5, ${i * legendItemHeight + 20})`);
+
+  legend.append("rect")
+    .attr("width", 14)
+    .attr("height", 14)
+    .attr("fill", d => d[1])
+    .attr("stroke", "#333")
+    .attr("stroke-width", 0.5);
+
+  legend.append("text")
+    .attr("x", 20)
+    .attr("y", 12)
+    .text(d => d[0])
+    .style("font-size", "15px")
+    .attr("fill", "#333");
+}
+
+    drawPieChart("#pie-race", pieData.race);
+    drawPieChart("#pie-age", pieData.age);
+    drawPieChart("#pie-education", pieData.education);
+    drawPieChart("#pie-job", pieData.job);
+    </script>
+    
+    
+
+    <script>
+        // Dummy data generator for different years
+        const years = d3.range(2004, 2025); // 2004 to 2024
+        
+        const dummyPieData = {};
+        years.forEach(year => {
+  dummyPieData[year] = {
+    race: [
+      { label: "White", value: 30 + Math.floor(Math.random() * 40), color: raceColorMap["White"] },
+      { label: "Asian", value: 5 + Math.floor(Math.random() * 15), color: raceColorMap["Asian"] },
+      { label: "Black", value: 10 + Math.floor(Math.random() * 30), color: raceColorMap["Black"] },
+      { label: "Hispanic", value: 5 + Math.floor(Math.random() * 20), color: raceColorMap["Hispanic"] },
+      { label: "Other", value: 2 + Math.floor(Math.random() * 10), color: raceColorMap["Other"] }
+    ],
+    age: [
+      { label: "0-19", value: 10 + Math.floor(Math.random() * 30), color: ageColorMap["0-19"] },
+      { label: "20-34", value: 20 + Math.floor(Math.random() * 30), color: ageColorMap["20-34"] },
+      { label: "35-54", value: 20 + Math.floor(Math.random() * 30), color: ageColorMap["35-54"] },
+      { label: "55+", value: 10 + Math.floor(Math.random() * 20), color: ageColorMap["55+"] }
+    ],
+    education: [
+      { label: "<High School", value: 5 + Math.floor(Math.random() * 20), color: educationColorMap["<High School"] },
+      { label: "High School", value: 10 + Math.floor(Math.random() * 25), color: educationColorMap["High School"] },
+      { label: "Some College", value: 10 + Math.floor(Math.random() * 25), color: educationColorMap["Some College"] },
+      { label: "Bachelor+", value: 20 + Math.floor(Math.random() * 30), color: educationColorMap["Bachelor+"] }
+    ],
+    job: [
+      { label: "Tech", value: 5 + Math.floor(Math.random() * 20), color: jobColorMap["Tech"] },
+      { label: "Corporate", value: 5 + Math.floor(Math.random() * 20), color: jobColorMap["Corporate"] },
+      { label: "Healthcare", value: 5 + Math.floor(Math.random() * 20), color: jobColorMap["Healthcare"] },
+      { label: "Construction", value: 5 + Math.floor(Math.random() * 20), color: jobColorMap["Construction"] },
+      { label: "Hospitality", value: 5 + Math.floor(Math.random() * 20), color: jobColorMap["Hospitality"] }
+    ]
+  };
+});
+        
+function drawPieChart(svgId, data) {
+  const svg = d3.select(svgId);
+  const width = +svg.attr("width");
+  const height = +svg.attr("height");
+  const radius = Math.min(width, height) / 2 - 10;
+
+  svg.selectAll("*").remove(); // Clear previous
+
+  const g = svg.append("g")
+    .attr("transform", `translate(${width / 2},${height / 2})`);
+
+  const pie = d3.pie()
+    .value(d => d.value);
+
+  const arc = d3.arc()
+    .innerRadius(0)
+    .outerRadius(radius);
+
+  const arcs = g.selectAll(".arc")
+    .data(pie(data))
+    .enter().append("g")
+    .attr("class", "arc");
+
+  arcs.append("path")
+    .attr("d", arc)
+    .attr("fill", d => d.data.color);
+}
+
+        function updateAllPies(year) {
+  const data = dummyPieData[year];
+  drawPieChart("#pie-race", data.race, raceColorMap);
+  drawPieChart("#pie-age", data.age, ageColorMap);
+  drawPieChart("#pie-education", data.education, educationColorMap);
+  drawPieChart("#pie-job", data.job, jobColorMap);
+}
+
+// Populate year dropdown (for pie charts)
+const pieYearSelect = document.getElementById("pie-year-select");
+years.forEach(year => {
+  const option = document.createElement("option");
+  option.value = year;
+  option.text = year;
+  pieYearSelect.appendChild(option);
+});
+
+// Initial pies (start with 2004)
+updateAllPies(2004);
+
+drawLegend("#legend-race", raceColorMap);
+drawLegend("#legend-age", ageColorMap);
+drawLegend("#legend-education", educationColorMap);
+drawLegend("#legend-job", jobColorMap);
+
+// When dropdown changes
+pieYearSelect.addEventListener("change", function() {
+  const selectedYear = +this.value;
+  updateAllPies(selectedYear);
+});
+        </script>
+        
+        <script>
+            // Data you gave
+            const corpOwnershipData = [
+  { Neighborhood: "Allston", "2004": 0.07, "2005": 0.07, "2006": 0.08, "2007": 0.08, "2008": 0.09, "2009": 0.09, "2010": 0.09, "2011": 0.10, "2012": 0.10, "2013": 0.11, "2014": 0.12, "2015": 0.13, "2016": 0.14, "2017": 0.16, "2018": 0.17, "2019": 0.18, "2020": 0.22, "2021": 0.24, "2022": 0.25, "2023": 0.28, "2024": 0.30 },
+  { Neighborhood: "Beacon Hill", "2004": 0.05, "2005": 0.06, "2006": 0.06, "2007": 0.07, "2008": 0.07, "2009": 0.08, "2010": 0.07, "2011": 0.07, "2012": 0.07, "2013": 0.07, "2014": 0.08, "2015": 0.09, "2016": 0.09, "2017": 0.12, "2018": 0.13, "2019": 0.15, "2020": 0.20, "2021": 0.24, "2022": 0.25, "2023": 0.28, "2024": 0.30 },
+  { Neighborhood: "Brighton", "2004": 0.04, "2005": 0.04, "2006": 0.04, "2007": 0.05, "2008": 0.05, "2009": 0.05, "2010": 0.07, "2011": 0.07, "2012": 0.07, "2013": 0.08, "2014": 0.09, "2015": 0.10, "2016": 0.10, "2017": 0.11, "2018": 0.12, "2019": 0.13, "2020": 0.16, "2021": 0.19, "2022": 0.19, "2023": 0.21, "2024": 0.23 },
+  { Neighborhood: "Charlestown", "2004": 0.03, "2005": 0.03, "2006": 0.05, "2007": 0.04, "2008": 0.04, "2009": 0.04, "2010": 0.04, "2011": 0.04, "2012": 0.04, "2013": 0.05, "2014": 0.05, "2015": 0.05, "2016": 0.05, "2017": 0.06, "2018": 0.08, "2019": 0.09, "2020": 0.12, "2021": 0.14, "2022": 0.15, "2023": 0.17, "2024": 0.28 },
+  { Neighborhood: "Chinatown", "2004": 0.13, "2005": 0.12, "2006": 0.09, "2007": 0.09, "2008": 0.10, "2009": 0.09, "2010": 0.09, "2011": 0.10, "2012": 0.10, "2013": 0.11, "2014": 0.11, "2015": 0.12, "2016": 0.12, "2017": 0.14, "2018": 0.16, "2019": 0.18, "2020": 0.21, "2021": 0.24, "2022": 0.24, "2023": 0.27, "2024": 0.30 },
+  { Neighborhood: "Dorchester", "2004": 0.04, "2005": 0.05, "2006": 0.05, "2007": 0.05, "2008": 0.05, "2009": 0.05, "2010": 0.06, "2011": 0.07, "2012": 0.07, "2013": 0.08, "2014": 0.08, "2015": 0.09, "2016": 0.09, "2017": 0.10, "2018": 0.10, "2019": 0.11, "2020": 0.14, "2021": 0.15, "2022": 0.16, "2023": 0.18, "2024": 0.19 },
+  { Neighborhood: "Downtown", "2004": 0.13, "2005": 0.14, "2006": 0.14, "2007": 0.14, "2008": 0.13, "2009": 0.11, "2010": 0.13, "2011": 0.13, "2012": 0.12, "2013": 0.13, "2014": 0.13, "2015": 0.13, "2016": 0.13, "2017": 0.14, "2018": 0.17, "2019": 0.20, "2020": 0.25, "2021": 0.29, "2022": 0.29, "2023": 0.32, "2024": 0.34 },
+  { Neighborhood: "East Boston", "2004": 0.03, "2005": 0.03, "2006": 0.03, "2007": 0.03, "2008": 0.04, "2009": 0.04, "2010": 0.04, "2011": 0.04, "2012": 0.05, "2013": 0.05, "2014": 0.05, "2015": 0.06, "2016": 0.07, "2017": 0.09, "2018": 0.11, "2019": 0.12, "2020": 0.17, "2021": 0.21, "2022": 0.22, "2023": 0.22, "2024": 0.30 },
+  { Neighborhood: "Fenway", "2004": 0.09, "2005": 0.13, "2006": 0.13, "2007": 0.13, "2008": 0.15, "2009": 0.15, "2010": 0.16, "2011": 0.16, "2012": 0.15, "2013": 0.16, "2014": 0.17, "2015": 0.18, "2016": 0.21, "2017": 0.22, "2018": 0.23, "2019": 0.24, "2020": 0.27, "2021": 0.28, "2022": 0.29, "2023": 0.35, "2024": 0.36 },
+  { Neighborhood: "Hyde Park", "2004": 0.02, "2005": 0.03, "2006": 0.03, "2007": 0.03, "2008": 0.04, "2009": 0.03, "2010": 0.03, "2011": 0.04, "2012": 0.07, "2013": 0.07, "2014": 0.06, "2015": 0.06, "2016": 0.05, "2017": 0.05, "2018": 0.06, "2019": 0.06, "2020": 0.08, "2021": 0.10, "2022": 0.10, "2023": 0.12, "2024": 0.12 },
+  { Neighborhood: "Jamaica Plain", "2004": 0.02, "2005": 0.03, "2006": 0.03, "2007": 0.03, "2008": 0.04, "2009": 0.04, "2010": 0.04, "2011": 0.04, "2012": 0.04, "2013": 0.04, "2014": 0.05, "2015": 0.05, "2016": 0.06, "2017": 0.07, "2018": 0.07, "2019": 0.08, "2020": 0.11, "2021": 0.13, "2022": 0.13, "2023": 0.16, "2024": 0.17 },
+  { Neighborhood: "Longwood", "2004": 0.09, "2005": 0.09, "2006": 0.09, "2007": 0.10, "2008": 0.11, "2009": 0.11, "2010": 0.11, "2011": 0.10, "2012": 0.11, "2013": 0.12, "2014": 0.11, "2015": 0.13, "2016": 0.14, "2017": 0.16, "2018": 0.18, "2019": 0.18, "2020": 0.22, "2021": 0.27, "2022": 0.27, "2023": 0.30, "2024": 0.34 },
+  { Neighborhood: "Mattapan", "2004": 0.02, "2005": 0.03, "2006": 0.03, "2007": 0.03, "2008": 0.03, "2009": 0.03, "2010": 0.03, "2011": 0.04, "2012": 0.04, "2013": 0.05, "2014": 0.05, "2015": 0.05, "2016": 0.06, "2017": 0.06, "2018": 0.07, "2019": 0.07, "2020": 0.09, "2021": 0.09, "2022": 0.10, "2023": 0.12, "2024": 0.14 },
+  { Neighborhood: "North End", "2004": 0.08, "2005": 0.08, "2006": 0.09, "2007": 0.10, "2008": 0.11, "2009": 0.10, "2010": 0.11, "2011": 0.11, "2012": 0.11, "2013": 0.11, "2014": 0.11, "2015": 0.13, "2016": 0.10, "2017": 0.12, "2018": 0.13, "2019": 0.16, "2020": 0.19, "2021": 0.23, "2022": 0.24, "2023": 0.28, "2024": 0.29 },
+  { Neighborhood: "Roslindale", "2004": 0.02, "2005": 0.02, "2006": 0.02, "2007": 0.02, "2008": 0.02, "2009": 0.02, "2010": 0.02, "2011": 0.02, "2012": 0.03, "2013": 0.03, "2014": 0.03, "2015": 0.03, "2016": 0.04, "2017": 0.05, "2018": 0.05, "2019": 0.05, "2020": 0.08, "2021": 0.10, "2022": 0.10, "2023": 0.12, "2024": 0.14 },
+  { Neighborhood: "Roxbury", "2004": 0.07, "2005": 0.08, "2006": 0.08, "2007": 0.08, "2008": 0.08, "2009": 0.09, "2010": 0.09, "2011": 0.10, "2012": 0.11, "2013": 0.13, "2014": 0.13, "2015": 0.15, "2016": 0.16, "2017": 0.17, "2018": 0.18, "2019": 0.19, "2020": 0.22, "2021": 0.23, "2022": 0.23, "2023": 0.25, "2024": 0.25 },
+{ Neighborhood: "South Boston", "2004": 0.04, "2005": 0.05, "2006": 0.05, "2007": 0.05, "2008": 0.06, "2009": 0.08, "2010": 0.08, "2011": 0.08, "2012": 0.08, "2013": 0.08, "2014": 0.08, "2015": 0.09, "2016": 0.09, "2017": 0.10, "2018": 0.11, "2019": 0.12, "2020": 0.16, "2021": 0.18, "2022": 0.19, "2023": 0.21, "2024": 0.22 },
+{ Neighborhood: "S. Boston Waterfront", "2004": 0.06, "2005": 0.08, "2006": 0.11, "2007": 0.15, "2008": 0.12, "2009": 0.12, "2010": 0.22, "2011": 0.19, "2012": 0.15, "2013": 0.14, "2014": 0.13, "2015": 0.13, "2016": 0.14, "2017": 0.19, "2018": 0.17, "2019": 0.20, "2020": 0.30, "2021": 0.35, "2022": 0.41, "2023": 0.35, "2024": 0.38 },
+{ Neighborhood: "South End", "2004": 0.06, "2005": 0.07, "2006": 0.07, "2007": 0.07, "2008": 0.08, "2009": 0.08, "2010": 0.08, "2011": 0.10, "2012": 0.09, "2013": 0.10, "2014": 0.09, "2015": 0.10, "2016": 0.10, "2017": 0.12, "2018": 0.13, "2019": 0.14, "2020": 0.18, "2021": 0.20, "2022": 0.21, "2023": 0.24, "2024": 0.25 },
+{ Neighborhood: "West End", "2004": 0.05, "2005": 0.06, "2006": 0.06, "2007": 0.07, "2008": 0.08, "2009": 0.08, "2010": 0.07, "2011": 0.08, "2012": 0.09, "2013": 0.09, "2014": 0.10, "2015": 0.10, "2016": 0.11, "2017": 0.12, "2018": 0.13, "2019": 0.15, "2020": 0.21, "2021": 0.23, "2022": 0.24, "2023": 0.27, "2024": 0.28 },
+{ Neighborhood: "West Roxbury", "2004": 0.01, "2005": 0.01, "2006": 0.02, "2007": 0.02, "2008": 0.02, "2009": 0.02, "2010": 0.02, "2011": 0.02, "2012": 0.02, "2013": 0.03, "2014": 0.03, "2015": 0.03, "2016": 0.03, "2017": 0.04, "2018": 0.04, "2019": 0.05, "2020": 0.07, "2021": 0.09, "2022": 0.09, "2023": 0.11, "2024": 0.13 }
+];
+          
+            // Draw function
+            function drawOwnershipBarChart(selectedYear) {
+              const svgId = "#ownership-bar-chart";
+              const svg = d3.select(svgId);
+              const width = +svg.attr("width") - 120;
+              const height = +svg.attr("height") - 60;
+          
+              svg.selectAll("*").remove(); // clear previous chart
+          
+              const data = corpOwnershipData.map(d => ({
+                Neighborhood: d.Neighborhood,
+                OwnershipRate: d[selectedYear]
+              }));
+              data.sort((a, b) => a.OwnershipRate - b.OwnershipRate);
+
+              const x = d3.scaleBand()
+                .domain(data.map(d => d.Neighborhood))
+                .range([0, width])
+                .padding(0.2);
+          
+              const y = d3.scaleLinear()
+                .domain([0, 0.4]) // Adjust as needed
+                .range([height, 0]);
+          
+              const g = svg.append("g")
+                .attr("transform", "translate(60,-30)");
+          
+              g.append("g")
+                .attr("transform", `translate(0,${height})`)
+                .call(d3.axisBottom(x))
+                .selectAll("text")
+                .attr("transform", "rotate(-45)")
+                .style("text-anchor", "end")
+                .style("font-size", "12px");
+          
+              g.append("g")
+                .call(d3.axisLeft(y).tickFormat(d3.format(".0%")))
+                .selectAll("text")
+                .style("font-size", "12px");
+          
+              g.selectAll(".bar")
+                .data(data)
+                .enter()
+                .append("rect")
+                .attr("class", "bar")
+                .attr("x", d => x(d.Neighborhood))
+                .attr("y", d => y(d.OwnershipRate))
+                .attr("width", x.bandwidth())
+                .attr("height", d => height - y(d.OwnershipRate))
+                .attr("fill", "#6a3d9a"); // purple bar color
+            }
+          
+            const yearSlider = document.getElementById("ownership-year-slider");
+            const yearDisplay = document.getElementById("ownership-year-display");
+            const mapImage = document.getElementById("map-image"); // grab the img
+
+            // yearSlider.addEventListener("input", function() {
+            // const selectedYear = this.value;
+            // yearDisplay.textContent = selectedYear;  // update visible year
+            // drawOwnershipBarChart(selectedYear);
+            // });
+
+            yearSlider.addEventListener("input", function() {
+            const selectedYear = this.value;
+            
+            yearDisplay.textContent = selectedYear;   // Update the visible year
+            drawOwnershipBarChart(selectedYear);      // Update the bar chart
+            // mapImage.src = `${selectedYear}.png`;      // 🔥 Update the PNG!
+            // use 2004 .png as default
+            mapImage.src = "2004.png"; // Set the default image
+            // switch to 2024.png when year is 20
+            if (selectedYear === "2024") {
+              mapImage.src = "2024.png";
+            } else {
+              mapImage.src = "2004.png"; // Reset to 2004 image
+            }
+            });
+          
+            // Initial draw
+            drawOwnershipBarChart("2004");
+          </script>
+          
+
+          
+  
+</body>
+</html>
+
