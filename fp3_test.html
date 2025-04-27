@@ -222,8 +222,9 @@
     }
 
     .neutral {
-    background: #e0e0e0;
-    color: #555;
+        /* background: #e0e0e0; */
+        background: rgba(0, 0, 0, 0.05);
+        color: #555;
     }
 
     .gray {
@@ -279,12 +280,11 @@
                     <h2>Explore the diversity of Boston from 2004 to 2024 with respect to race, age, education, and employment type.</h2>
                 
                 <div style="margin-top: 40px; margin-bottom: 20px;">
-                    <label for="pie-year-select" style="font-weight: bold; font-size: 16px;">Select Year:</label>
+                    <label for="pie-year-select" style="font-weight: bold; font-size: 16px;">Select Neighborhood:</label>
                     <select id="pie-year-select" style="font-size: 16px; margin-left: 10px; padding: 4px 8px; border-radius: 6px;">
                     </select>
                 </div>
 
-                
 
                 <div id="pie-charts-row" style="margin-top: 40px; display: flex; justify-content: center; gap: 40px; flex-wrap: wrap;">
                 
@@ -319,7 +319,7 @@
 
 
         <div class = "neutral" style="text-align: center; margin-top: 0px; margin-bottom: 0px; height: 700px;">
-            <h2>How has the rate of corporate ownership in Boston changed between 2004 and 2024? 🏙️</h2>
+            <h2>How has the rate of corporate ownership in Boston changed since 2004? 🏙️</h2>
             <p>Select a year to view how corporate ownership rates have changed across the city.</p>
           
     
@@ -329,10 +329,28 @@
                 <span id="ownership-year-display" style="margin-left: 10px; font-weight: bold;">2004</span>
               </div>
 
+              <div style="margin-top: 20px; text-align: center;">
+                <div style="width: 300px; height: 20px; margin: 0 auto;
+                             background: linear-gradient(to right, white, darkgray);
+                             border: 1px solid #ccc; border-radius: 5px;">
+                </div>
+                <div style="width: 300px; margin: 5px auto; display: flex; justify-content: space-between; font-size: 14px;">
+                  <span>0%</span>
+                  <span>Corporate Ownership Rate</span>
+                  <span>40%</span>
+                </div>
+              </div>
             <div style="margin-top: 20px; display: flex; align-items: flex-start; gap: 20px;">
   
                 <svg id="ownership-bar-chart" width="1100" height="400"></svg>
-                <img id="map-image" src="2004.png" alt="Corporate Ownership Map" style="max-width: 300px; height: auto; flex-shrink: 0; margin-right: auto; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">
+                <!-- <img id="map-image" src="2004.png" alt="Corporate Ownership Map" style="max-width: 300px; height: auto; flex-shrink: 0; margin-right: auto; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);"> -->
+                <!-- <iframe src="ownership_map.html" 
+                style="width: 500px; height: 500px; border: none; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);"
+                title="Boston Corporate Ownership Map">
+                </iframe> -->
+                <div id="embedded-map-container" style="width:600px; height:500px; margin:auto;">
+                    <iframe id="map-iframe" src="ownership_map.html" style="width:100%; height:100%; border:none;"></iframe>
+                  </div>
                 
               
               </div>
@@ -342,9 +360,11 @@
             <div style="background-color: rgba(255, 255, 255, 0.8); padding: 20px; border-radius: 10px; display: inline-block;">
                 <!-- <h1>Fading Colors, Fading Voices 🎭</h1> -->
                 <h2>How does the rise in corporate ownership affect the diversity of Boston communities?</h2>
+
+                <br>
                 <!-- <h2>How do communities with corporate ownership affect the diversity of Boston communities?</h2> -->
 
-                <p>Higher corporate ownership rates correlate with a measurable decline in community diversity across race, age, education, and employment types.</p>
+                <p>Communities with high corporate ownership show a greater decrease in diversity across race, age, education, and employment types.</p>
             
 
                 <div style="margin-bottom: 20px; margin-top: 20px;">
@@ -366,7 +386,7 @@
 
                 <div>
                   <h3 style="margin-bottom: 10px;">Communities with High Corporate Ownership</h3>
-                  <span style="text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 10px;"> greater than <span id="threshold-label" style="text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 10px;">15% corporate ownership</span></span>
+                  <span style="text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 10px;"> (greater than <span id="threshold-label" style="text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 10px;">15% corporate ownership</span>)</span>
                   <!-- set label for selected threshold -->
                    <!-- only show this if line-version-slider value is 3-->
 
@@ -375,8 +395,22 @@
               
                 <div>
                   <h3 style="margin-bottom: 10px;">Communities with Low Corporate Ownership</h3>
-                  <span style="text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 10px;"> less than <span id="threshold-label-2" style="text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 10px;">15% corporate ownership</span></span>
+                  <span style="text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 10px;"> (less than <span id="threshold-label-2" style="text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 10px;">15% corporate ownership</span>)</span>
                   <svg id="low-ownership-chart" width="600" height="200"></svg>
+                </div>
+              
+              </div>
+
+
+
+              <div style="display: flex; justify-content: center; gap: 40px; margin-top: 0px; flex-wrap: wrap;">
+  
+                <div>
+                  <svg id="high-ownership-chart-edu" width="600" height="200"></svg>
+                </div>
+              
+                <div>
+                  <svg id="low-ownership-chart-edu" width="600" height="200"></svg>
                 </div>
               
               </div>
@@ -392,19 +426,6 @@
                 </div>
               
               </div>
-
-              <div style="display: flex; justify-content: center; gap: 40px; margin-top: 0px; flex-wrap: wrap;">
-  
-                <div>
-                  <svg id="high-ownership-chart-edu" width="600" height="200"></svg>
-                </div>
-              
-                <div>
-                  <svg id="low-ownership-chart-edu" width="600" height="200"></svg>
-                </div>
-              
-              </div>
-
 
             </div>
           </section>
@@ -1852,11 +1873,12 @@ function drawLegend(containerId, colorMap) {
 
     <script>
         // Dummy data generator for different years
-        const years = d3.range(2004, 2025); // 2004 to 2024
+        // const years = d3.range(2004, 2025); // 2004 to 2024
+        const neighborhoods = ["Allston", "Beacon Hill", "Brighton", "Charlestown", "Chinatown","Dorchester", "Downtown", "East Boston", "Fenway", "Hyde Park","Jamaica Plain", "Longwood", "Mattapan", "North End", "Roslindale","Roxbury", "South Boston", "S. Boston Waterfront", "South End","West End", "West Roxbury"];
         
         const dummyPieData = {};
-        years.forEach(year => {
-  dummyPieData[year] = {
+        neighborhoods.forEach(neighborhood => {
+  dummyPieData[neighborhood] = {
     race: [
       { label: "White", value: 30 + Math.floor(Math.random() * 40), color: raceColorMap["White"] },
       { label: "Asian", value: 5 + Math.floor(Math.random() * 15), color: raceColorMap["Asian"] },
@@ -1914,8 +1936,8 @@ function drawPieChart(svgId, data) {
     .attr("fill", d => d.data.color);
 }
 
-        function updateAllPies(year) {
-  const data = dummyPieData[year];
+        function updateAllPies(neighborhood) {
+  const data = dummyPieData[neighborhood];
   drawPieChart("#pie-race", data.race, raceColorMap);
   drawPieChart("#pie-age", data.age, ageColorMap);
   drawPieChart("#pie-education", data.education, educationColorMap);
@@ -1923,16 +1945,30 @@ function drawPieChart(svgId, data) {
 }
 
 // Populate year dropdown (for pie charts)
-const pieYearSelect = document.getElementById("pie-year-select");
-years.forEach(year => {
-  const option = document.createElement("option");
-  option.value = year;
-  option.text = year;
-  pieYearSelect.appendChild(option);
+// const pieYearSelect = document.getElementById("pie-year-select");
+// years.forEach(year => {
+//   const option = document.createElement("option");
+//   option.value = year;
+//   option.text = year;
+//   pieYearSelect.appendChild(option);
+// });
+
+const pieSelect = d3.select("#pie-year-select");
+pieSelect.selectAll("option")
+    .data(neighborhoods)
+    .enter()
+    .append("option")
+    .attr("value", d => d)
+    .text(d => d);
+
+d3.select("#pie-year-select").on("change", function() {
+    const selectedNeighborhood = this.value;
+    updateAllPies(selectedNeighborhood); // 🔥 you'll define this function
 });
 
+
 // Initial pies (start with 2004)
-updateAllPies(2004);
+updateAllPies('Allston');
 
 drawLegend("#legend-race", raceColorMap);
 drawLegend("#legend-age", ageColorMap);
@@ -1971,7 +2007,27 @@ pieYearSelect.addEventListener("change", function() {
 { Neighborhood: "West End", "2004": 0.05, "2005": 0.06, "2006": 0.06, "2007": 0.07, "2008": 0.08, "2009": 0.08, "2010": 0.07, "2011": 0.08, "2012": 0.09, "2013": 0.09, "2014": 0.10, "2015": 0.10, "2016": 0.11, "2017": 0.12, "2018": 0.13, "2019": 0.15, "2020": 0.21, "2021": 0.23, "2022": 0.24, "2023": 0.27, "2024": 0.28 },
 { Neighborhood: "West Roxbury", "2004": 0.01, "2005": 0.01, "2006": 0.02, "2007": 0.02, "2008": 0.02, "2009": 0.02, "2010": 0.02, "2011": 0.02, "2012": 0.02, "2013": 0.03, "2014": 0.03, "2015": 0.03, "2016": 0.03, "2017": 0.04, "2018": 0.04, "2019": 0.05, "2020": 0.07, "2021": 0.09, "2022": 0.09, "2023": 0.11, "2024": 0.13 }
 ];
+
           
+// function getColor(rate) {
+//   return rate > 0.5 ? 'black' :
+//          rate > 0.4 ? 'black' :
+//          rate > 0.3 ? 'dimgray' :
+//          rate > 0.2 ? 'darkgray' :
+//          rate > 0.1 ? 'lightgray' :
+//                       'white';
+// }
+function getColor(rate) {
+  // Clamp rate between 0 and 1
+  rate = Math.min(Math.max(rate, 0), 1);
+  
+  // Calculate grayscale value: 0 (black) to 255 (white)
+//   const grayValue = Math.round(255 * (1 - rate));
+  const grayValue = Math.round(255 * (1 - rate) + 0);
+  
+  return `rgb(${grayValue},${grayValue},${grayValue})`;
+}
+
             // Draw function
             function drawOwnershipBarChart(selectedYear) {
               const svgId = "#ownership-bar-chart";
@@ -2021,7 +2077,7 @@ pieYearSelect.addEventListener("change", function() {
                 .attr("y", d => y(d.OwnershipRate))
                 .attr("width", x.bandwidth())
                 .attr("height", d => height - y(d.OwnershipRate))
-                .attr("fill", "#6a3d9a"); // purple bar color
+                .attr("fill", d => getColor(d.OwnershipRate))// purple bar color
             }
           
             const yearSlider = document.getElementById("ownership-year-slider");
@@ -2050,8 +2106,27 @@ pieYearSelect.addEventListener("change", function() {
             }
             });
           
+            yearSlider.addEventListener('input', () => {
+            const year = yearSlider.value;
+            yearDisplay.innerText = year;
+
+            const iframe = document.getElementById('map-iframe');
+            iframe.contentWindow.postMessage({ year: year }, '*'); // send year to iframe
+            });
             // Initial draw
             drawOwnershipBarChart("2004");
+
+            const ownershipSlider = document.getElementById('ownership-year-slider');
+            const ownershipYearDisplay = document.getElementById('ownership-year-display');
+            const mapIframe = document.getElementById('map-iframe');
+
+            ownershipSlider.addEventListener('input', function() {
+                const selectedYear = ownershipSlider.value;
+                ownershipYearDisplay.textContent = selectedYear;
+                
+                // Send message to iframe
+                mapIframe.contentWindow.postMessage({ year: selectedYear }, '*');
+            });
           </script>
           
 
