@@ -275,13 +275,13 @@
 
 
 
-          <div  class="vibrant" style="margin-top: 0px; margin-bottom: 0px; height: 700px;">
+          <div  class="vibrant" style="margin-top: 0px; margin-bottom: 0px; padding:80px 0px; height: 700px;">
 
-                    <h2>Explore the diversity of Boston from 2004 to 2024 with respect to race, age, education, and employment type.</h2>
+                    <h2>Explore the diversity of Boston neighborhoods with respect to race, age, education, and employment type.</h2>
                 
                 <div style="margin-top: 40px; margin-bottom: 20px;">
-                    <label for="pie-year-select" style="font-weight: bold; font-size: 16px;">Select Neighborhood:</label>
-                    <select id="pie-year-select" style="font-size: 16px; margin-left: 10px; padding: 4px 8px; border-radius: 6px;">
+                    <label for="pie-year-select" style="font-weight: bold; font-size: 18px;">Select Neighborhood:</label>
+                    <select id="pie-year-select" style="font-size: 18px; margin-left: 10px; padding: 4px 8px; border-radius: 6px;">
                     </select>
                 </div>
 
@@ -318,7 +318,7 @@
 
 
 
-        <div class = "neutral" style="text-align: center; margin-top: 0px; margin-bottom: 0px; height: 700px;">
+        <div class = "neutral" style="text-align: center; margin-top: 0px; margin-bottom: 0px; padding:120px 0px; height: 700px;">
             <h2>How has the rate of corporate ownership in Boston changed since 2004? 🏙️</h2>
             <p>Select a year to view how corporate ownership rates have changed across the city.</p>
           
@@ -427,6 +427,17 @@
               
               </div>
 
+              <div style="display: flex; justify-content: center; gap: 40px; margin-top: 0px; flex-wrap: wrap;">
+  
+                <div>
+                  <svg id="high-ownership-chart-job" width="600" height="200"></svg>
+                </div>
+              
+                <div>
+                  <svg id="low-ownership-chart-job" width="600" height="200"></svg>
+                </div>
+              
+              </div>
             </div>
           </section>
 
@@ -998,6 +1009,7 @@ slider.addEventListener("input", function() {
   }
   
   drawLineCharts1(version);
+  drawLineCharts1b(version);
   drawLineCharts2(version);
   drawLineCharts3(version);
 });
@@ -1262,6 +1274,270 @@ if (version === "v3") {
 
   drawLineCharts1("v1");
 
+
+
+  function drawLineCharts1b(version) {
+
+// const version = document.getElementById("version-select").value;
+const data1 = [
+{ Year: 2000, Tech: 39, Corporate: 5, Healthcare: 29, Hospitality: 20, Other: 5 },
+{ Year: 2001, Tech: 40, Corporate: 5, Healthcare: 29, Hospitality: 19, Other: 5 },
+{ Year: 2002, Tech: 40, Corporate: 7, Healthcare: 29, Hospitality: 19, Other: 4 },
+{ Year: 2003, Tech: 42, Corporate: 6, Healthcare: 29, Hospitality: 19, Other: 5 },
+{ Year: 2004, Tech: 44, Corporate: 8, Healthcare: 26, Hospitality: 17, Other: 5 },
+{ Year: 2005, Tech: 45, Corporate: 7, Healthcare: 27, Hospitality: 18, Other: 4 },
+{ Year: 2006, Tech: 44, Corporate: 8, Healthcare: 26, Hospitality: 18, Other: 5 },
+{ Year: 2007, Tech: 46, Corporate: 8, Healthcare: 24, Hospitality: 16, Other: 5 },
+{ Year: 2008, Tech: 46, Corporate: 8, Healthcare: 23, Hospitality: 17, Other: 5 },
+{ Year: 2009, Tech: 45, Corporate: 10, Healthcare: 24, Hospitality: 16, Other: 4 },
+{ Year: 2010, Tech: 48, Corporate: 9, Healthcare: 23, Hospitality: 15, Other: 5 },
+{ Year: 2011, Tech: 47, Corporate: 11, Healthcare: 23, Hospitality: 15, Other: 5 },
+{ Year: 2012, Tech: 47, Corporate: 11, Healthcare: 21, Hospitality: 13, Other: 4 },
+{ Year: 2013, Tech: 49, Corporate: 11, Healthcare: 20, Hospitality: 13, Other: 4 },
+{ Year: 2014, Tech: 51, Corporate: 11, Healthcare: 20, Hospitality: 13, Other: 6 },
+{ Year: 2015, Tech: 50, Corporate: 12, Healthcare: 19, Hospitality: 13, Other: 4 },
+{ Year: 2016, Tech: 53, Corporate: 13, Healthcare: 17, Hospitality: 12, Other: 5 },
+{ Year: 2017, Tech: 54, Corporate: 14, Healthcare: 17, Hospitality: 11, Other: 6 },
+{ Year: 2018, Tech: 53, Corporate: 14, Healthcare: 17, Hospitality: 10, Other: 6 },
+{ Year: 2019, Tech: 54, Corporate: 14, Healthcare: 15, Hospitality: 10, Other: 4 },
+{ Year: 2020, Tech: 56, Corporate: 14, Healthcare: 15, Hospitality: 10, Other: 5 }
+];
+
+const data2 = [
+{ Year: 2000, Tech: 41, Corporate: 8, Healthcare: 23, Hospitality: 23, Other: 5 },
+{ Year: 2001, Tech: 43, Corporate: 7, Healthcare: 22, Hospitality: 23, Other: 5 },
+{ Year: 2002, Tech: 43, Corporate: 8, Healthcare: 22, Hospitality: 22, Other: 4 },
+{ Year: 2003, Tech: 44, Corporate: 9, Healthcare: 21, Hospitality: 23, Other: 5 },
+{ Year: 2004, Tech: 43, Corporate: 9, Healthcare: 21, Hospitality: 22, Other: 5 },
+{ Year: 2005, Tech: 42, Corporate: 8, Healthcare: 22, Hospitality: 23, Other: 5 },
+{ Year: 2006, Tech: 46, Corporate: 9, Healthcare: 22, Hospitality: 21, Other: 4 },
+{ Year: 2007, Tech: 45, Corporate: 8, Healthcare: 21, Hospitality: 23, Other: 5 },
+{ Year: 2008, Tech: 42, Corporate: 9, Healthcare: 21, Hospitality: 22, Other: 5 },
+{ Year: 2009, Tech: 45, Corporate: 9, Healthcare: 20, Hospitality: 23, Other: 4 },
+{ Year: 2010, Tech: 45, Corporate: 10, Healthcare: 21, Hospitality: 22, Other: 4 },
+{ Year: 2011, Tech: 45, Corporate: 9, Healthcare: 20, Hospitality: 22, Other: 4 },
+{ Year: 2012, Tech: 43, Corporate: 10, Healthcare: 22, Hospitality: 22, Other: 4 },
+{ Year: 2013, Tech: 44, Corporate: 11, Healthcare: 21, Hospitality: 22, Other: 5 },
+{ Year: 2014, Tech: 43, Corporate: 10, Healthcare: 20, Hospitality: 21, Other: 4 },
+{ Year: 2015, Tech: 43, Corporate: 10, Healthcare: 20, Hospitality: 21, Other: 4 },
+{ Year: 2016, Tech: 46, Corporate: 11, Healthcare: 20, Hospitality: 20, Other: 4 },
+{ Year: 2017, Tech: 46, Corporate: 11, Healthcare: 20, Hospitality: 21, Other: 4 },
+{ Year: 2018, Tech: 45, Corporate: 11, Healthcare: 20, Hospitality: 20, Other: 3 },
+{ Year: 2019, Tech: 45, Corporate: 11, Healthcare: 21, Hospitality: 19, Other: 3 },
+{ Year: 2020, Tech: 44, Corporate: 11, Healthcare: 20, Hospitality: 20, Other: 4 }
+];
+
+const data1_v2 = [
+{ Year: 2000, Tech: 40, Corporate: 6, Healthcare: 27, Hospitality: 21, Other: 5 },
+{ Year: 2001, Tech: 41, Corporate: 6, Healthcare: 27, Hospitality: 21, Other: 5 },
+{ Year: 2002, Tech: 41, Corporate: 7, Healthcare: 27, Hospitality: 21, Other: 4 },
+{ Year: 2003, Tech: 43, Corporate: 7, Healthcare: 27, Hospitality: 21, Other: 5 },
+{ Year: 2004, Tech: 44, Corporate: 8, Healthcare: 25, Hospitality: 20, Other: 5 },
+{ Year: 2005, Tech: 44, Corporate: 8, Healthcare: 25, Hospitality: 21, Other: 4 },
+{ Year: 2006, Tech: 45, Corporate: 8, Healthcare: 25, Hospitality: 20, Other: 5 },
+{ Year: 2007, Tech: 46, Corporate: 8, Healthcare: 23, Hospitality: 18, Other: 5 },
+{ Year: 2008, Tech: 45, Corporate: 9, Healthcare: 23, Hospitality: 19, Other: 5 },
+{ Year: 2009, Tech: 45, Corporate: 10, Healthcare: 23, Hospitality: 19, Other: 4 },
+{ Year: 2010, Tech: 46, Corporate: 10, Healthcare: 22, Hospitality: 18, Other: 5 },
+{ Year: 2011, Tech: 46, Corporate: 11, Healthcare: 22, Hospitality: 18, Other: 5 },
+{ Year: 2012, Tech: 45, Corporate: 11, Healthcare: 21, Hospitality: 17, Other: 4 },
+{ Year: 2013, Tech: 47, Corporate: 11, Healthcare: 20, Hospitality: 17, Other: 4 },
+{ Year: 2014, Tech: 48, Corporate: 11, Healthcare: 20, Hospitality: 17, Other: 5 },
+{ Year: 2015, Tech: 48, Corporate: 11, Healthcare: 19, Hospitality: 17, Other: 4 },
+{ Year: 2016, Tech: 50, Corporate: 12, Healthcare: 18, Hospitality: 16, Other: 5 },
+{ Year: 2017, Tech: 51, Corporate: 13, Healthcare: 18, Hospitality: 15, Other: 5 },
+{ Year: 2018, Tech: 50, Corporate: 13, Healthcare: 18, Hospitality: 14, Other: 5 },
+{ Year: 2019, Tech: 50, Corporate: 13, Healthcare: 17, Hospitality: 14, Other: 4 },
+{ Year: 2020, Tech: 51, Corporate: 13, Healthcare: 17, Hospitality: 14, Other: 5 }
+];
+
+const data2_v2 = [
+{ Year: 2000, Tech: 41, Corporate: 7, Healthcare: 25, Hospitality: 22, Other: 5 },
+{ Year: 2001, Tech: 42, Corporate: 7, Healthcare: 24, Hospitality: 22, Other: 5 },
+{ Year: 2002, Tech: 42, Corporate: 7, Healthcare: 24, Hospitality: 22, Other: 4 },
+{ Year: 2003, Tech: 43, Corporate: 8, Healthcare: 23, Hospitality: 22, Other: 5 },
+{ Year: 2004, Tech: 43, Corporate: 8, Healthcare: 23, Hospitality: 22, Other: 5 },
+{ Year: 2005, Tech: 43, Corporate: 8, Healthcare: 23, Hospitality: 22, Other: 5 },
+{ Year: 2006, Tech: 44, Corporate: 8, Healthcare: 23, Hospitality: 21, Other: 4 },
+{ Year: 2007, Tech: 44, Corporate: 8, Healthcare: 23, Hospitality: 22, Other: 5 },
+{ Year: 2008, Tech: 44, Corporate: 8, Healthcare: 22, Hospitality: 22, Other: 5 },
+{ Year: 2009, Tech: 44, Corporate: 9, Healthcare: 22, Hospitality: 22, Other: 4 },
+{ Year: 2010, Tech: 44, Corporate: 9, Healthcare: 22, Hospitality: 22, Other: 4 },
+{ Year: 2011, Tech: 44, Corporate: 9, Healthcare: 22, Hospitality: 21, Other: 4 },
+{ Year: 2012, Tech: 44, Corporate: 10, Healthcare: 22, Hospitality: 21, Other: 4 },
+{ Year: 2013, Tech: 44, Corporate: 10, Healthcare: 22, Hospitality: 21, Other: 5 },
+{ Year: 2014, Tech: 44, Corporate: 10, Healthcare: 21, Hospitality: 21, Other: 4 },
+{ Year: 2015, Tech: 44, Corporate: 10, Healthcare: 21, Hospitality: 21, Other: 4 },
+{ Year: 2016, Tech: 45, Corporate: 11, Healthcare: 21, Hospitality: 20, Other: 4 },
+{ Year: 2017, Tech: 45, Corporate: 11, Healthcare: 21, Hospitality: 21, Other: 4 },
+{ Year: 2018, Tech: 45, Corporate: 11, Healthcare: 21, Hospitality: 20, Other: 3 },
+{ Year: 2019, Tech: 45, Corporate: 11, Healthcare: 21, Hospitality: 19, Other: 3 },
+{ Year: 2020, Tech: 44, Corporate: 11, Healthcare: 21, Hospitality: 20, Other: 4 }
+];
+
+
+const data1_v3 = [
+{ Year: 2000, Tech: 40, Corporate: 6, Healthcare: 26, Hospitality: 22, Other: 5 },
+{ Year: 2001, Tech: 42, Corporate: 6, Healthcare: 26, Hospitality: 21, Other: 5 },
+{ Year: 2002, Tech: 42, Corporate: 7, Healthcare: 26, Hospitality: 21, Other: 4 },
+{ Year: 2003, Tech: 43, Corporate: 7, Healthcare: 25, Hospitality: 21, Other: 5 },
+{ Year: 2004, Tech: 44, Corporate: 8, Healthcare: 24, Hospitality: 20, Other: 5 },
+{ Year: 2005, Tech: 44, Corporate: 8, Healthcare: 24, Hospitality: 21, Other: 4 },
+{ Year: 2006, Tech: 45, Corporate: 8, Healthcare: 24, Hospitality: 20, Other: 5 },
+{ Year: 2007, Tech: 45, Corporate: 8, Healthcare: 22, Hospitality: 20, Other: 5 },
+{ Year: 2008, Tech: 45, Corporate: 9, Healthcare: 22, Hospitality: 20, Other: 5 },
+{ Year: 2009, Tech: 45, Corporate: 9, Healthcare: 22, Hospitality: 20, Other: 4 },
+{ Year: 2010, Tech: 46, Corporate: 10, Healthcare: 22, Hospitality: 19, Other: 5 },
+{ Year: 2011, Tech: 46, Corporate: 10, Healthcare: 22, Hospitality: 19, Other: 5 },
+{ Year: 2012, Tech: 45, Corporate: 10, Healthcare: 22, Hospitality: 18, Other: 4 },
+{ Year: 2013, Tech: 46, Corporate: 11, Healthcare: 21, Hospitality: 18, Other: 5 },
+{ Year: 2014, Tech: 47, Corporate: 11, Healthcare: 20, Hospitality: 18, Other: 5 },
+{ Year: 2015, Tech: 47, Corporate: 11, Healthcare: 20, Hospitality: 18, Other: 4 },
+{ Year: 2016, Tech: 49, Corporate: 12, Healthcare: 19, Hospitality: 17, Other: 5 },
+{ Year: 2017, Tech: 49, Corporate: 12, Healthcare: 19, Hospitality: 17, Other: 5 },
+{ Year: 2018, Tech: 49, Corporate: 12, Healthcare: 19, Hospitality: 16, Other: 5 },
+{ Year: 2019, Tech: 49, Corporate: 12, Healthcare: 19, Hospitality: 16, Other: 4 },
+{ Year: 2020, Tech: 50, Corporate: 12, Healthcare: 18, Hospitality: 16, Other: 5 }
+];
+
+const data2_v3 = [
+{ Year: 2000, Tech: 41, Corporate: 7, Healthcare: 25, Hospitality: 22, Other: 5 },
+{ Year: 2001, Tech: 42, Corporate: 7, Healthcare: 25, Hospitality: 22, Other: 5 },
+{ Year: 2002, Tech: 42, Corporate: 7, Healthcare: 25, Hospitality: 21, Other: 4 },
+{ Year: 2003, Tech: 43, Corporate: 8, Healthcare: 25, Hospitality: 21, Other: 5 },
+{ Year: 2004, Tech: 44, Corporate: 8, Healthcare: 24, Hospitality: 21, Other: 5 },
+{ Year: 2005, Tech: 44, Corporate: 8, Healthcare: 24, Hospitality: 21, Other: 5 },
+{ Year: 2006, Tech: 45, Corporate: 8, Healthcare: 24, Hospitality: 20, Other: 4 },
+{ Year: 2007, Tech: 45, Corporate: 8, Healthcare: 22, Hospitality: 20, Other: 5 },
+{ Year: 2008, Tech: 45, Corporate: 9, Healthcare: 22, Hospitality: 20, Other: 5 },
+{ Year: 2009, Tech: 45, Corporate: 9, Healthcare: 22, Hospitality: 20, Other: 4 },
+{ Year: 2010, Tech: 46, Corporate: 10, Healthcare: 22, Hospitality: 20, Other: 4 },
+{ Year: 2011, Tech: 46, Corporate: 10, Healthcare: 21, Hospitality: 20, Other: 4 },
+{ Year: 2012, Tech: 45, Corporate: 10, Healthcare: 22, Hospitality: 19, Other: 4 },
+{ Year: 2013, Tech: 46, Corporate: 10, Healthcare: 21, Hospitality: 19, Other: 5 },
+{ Year: 2014, Tech: 46, Corporate: 10, Healthcare: 20, Hospitality: 19, Other: 4 },
+{ Year: 2015, Tech: 46, Corporate: 10, Healthcare: 20, Hospitality: 19, Other: 4 },
+{ Year: 2016, Tech: 48, Corporate: 11, Healthcare: 20, Hospitality: 18, Other: 4 },
+{ Year: 2017, Tech: 48, Corporate: 11, Healthcare: 20, Hospitality: 18, Other: 4 },
+{ Year: 2018, Tech: 48, Corporate: 11, Healthcare: 20, Hospitality: 17, Other: 3 },
+{ Year: 2019, Tech: 48, Corporate: 11, Healthcare: 20, Hospitality: 17, Other: 3 },
+{ Year: 2020, Tech: 48, Corporate: 11, Healthcare: 20, Hospitality: 17, Other: 4 }
+];
+
+// if version 3 is selected, use data1_v3 and data2_v3
+// const version = document.getElementById("version-select").value;
+console.log(version);
+console.log(version === "v3");
+let data1_plot, data2_plot;
+
+if (version === "v3") {
+console.log("Version 3 selected");
+data1_plot = data1_v3;
+data2_plot = data2_v3;
+} else if (version === "v2") {
+console.log("Version 2 selected");
+data1_plot = data1_v2;
+data2_plot = data2_v2;
+} else if (version === "v1") {
+console.log("Version 1 selected");
+data1_plot = data1;
+data2_plot = data2;
+} 
+
+const races = ["Tech", "Corporate", "Healthcare", "Hospitality", "Other"];
+const colors = {
+Tech: "#6a3d9a",
+Corporate: "#cab2d6",
+Healthcare: "#ffff99",
+Hospitality: "#8dd3c7",
+Other: "#b15928"
+};
+
+
+function createLineData(rawData) {
+return races.map(race => ({
+  race,
+  values: rawData.map(d => ({
+    x: d.Year,
+    y: d[race]
+  }))
+}));
+}
+
+function drawChart(svgId, lineData) {
+const svg = d3.select(svgId);
+const width = +svg.attr("width") - 120;
+const height = +svg.attr("height") - 50;
+
+const x = d3.scaleLinear()
+.domain(d3.extent(lineData[0].values, d => d.x))
+.range([40, width]);
+
+const y = d3.scaleLinear()
+.domain([0, 100])
+.range([height, 20]);
+
+const line = d3.line()
+.x(d => x(d.x))
+.y(d => y(d.y));
+
+svg.selectAll("*").remove();
+
+const xAxis = svg.append("g")
+.attr("transform", `translate(0,${height})`)
+.call(d3.axisBottom(x).ticks(5).tickFormat(d3.format("d")));
+
+const yAxis = svg.append("g")
+.attr("transform", `translate(40,0)`)
+.call(d3.axisLeft(y).ticks(5));
+
+// Bigger axis font size
+xAxis.selectAll("text").style("font-size", "14px");
+yAxis.selectAll("text").style("font-size", "14px");
+
+// Draw the lines
+svg.selectAll(".line")
+.data(lineData)
+.enter()
+.append("path")
+.attr("fill", "none")
+.attr("stroke", d => colors[d.race])
+.attr("stroke-width", 6) // thicker lines here if you want
+.attr("d", d => line(d.values));
+
+// 🔥 Add marker points (circles) at each data point!
+lineData.forEach(series => {
+svg.selectAll(`.circle-${series.race}`)
+  .data(series.values)
+  .enter()
+  .append("circle")
+  .attr("cx", d => x(d.x))
+  .attr("cy", d => y(d.y))
+  .attr("r", .5)  // 👈 radius of each marker
+  .attr("fill", colors[series.race])
+  .attr("stroke", "transparent") // optional: tiny outline for visibility
+  .attr("stroke-width", 0.7);
+});
+
+// Add labels
+svg.selectAll(".label")
+.data(lineData)
+.enter()
+.append("text")
+.datum(d => ({ race: d.race, value: d.values[d.values.length - 1] }))
+.attr("x", d => x(d.value.x) + 5)
+.attr("y", d => y(d.value.y))
+.text(d => d.race)
+.style("font-size", "14px")
+.style("fill", d => colors[d.race]);
+}
+
+drawChart("#high-ownership-chart-job", createLineData(data1_plot));
+drawChart("#low-ownership-chart-job", createLineData(data2_plot));
+}
+
+drawLineCharts1b("v1");
+
   
   function drawLineCharts2(version) {
   const ageData1 = [
@@ -1490,6 +1766,7 @@ if (version === "v3") {
   drawChart("#high-ownership-chart-age", createLineData(age_data1_plot));
   drawChart("#low-ownership-chart-age", createLineData(age_data2_plot));
 }
+
 
 drawLineCharts2("v1"); 
   
@@ -1761,8 +2038,9 @@ drawLineCharts3("v1");
         { label: "Tech", value: 15 },
         { label: "Corporate", value: 12 },
         { label: "Healthcare", value: 15 },
-        { label: "Construction", value: 15 },
-        { label: "Hospitality", value: 21 }
+        { label: "Hospitality", value: 21 },
+        // { label: "Construction", value: 15 },
+        { label: "Other", value: 15 }
       ]
     };
     
@@ -1789,44 +2067,49 @@ const educationColorMap = {
 };
 
 const jobColorMap = {
-  "Tech": "#cab2d6",
-  "Corporate": "#6a3d9a",
+  "Tech": "#6a3d9a",
+  "Corporate": "#cab2d6",
   "Healthcare": "#ffff99",
-  "Construction": "#b15928",
-  "Hospitality": "#8dd3c7"
+  "Hospitality": "#8dd3c7",
+//   "Construction": "#b15928",
+  "Other": "#b15928",
 };
 
-function drawPieChart(svgId, data, colorMap) {
-  const svg = d3.select(svgId);
-  const width = +svg.attr("width");
-  const height = +svg.attr("height");
-  const radius = Math.min(width, height) / 2 - 10;
+function drawPieChart(svgId, data, colorMap, fixedOrder) {
+    const svg = d3.select(svgId);
+    const width = +svg.attr("width");
+    const height = +svg.attr("height");
+    const radius = Math.min(width, height) / 2;
 
-  svg.selectAll("*").remove(); // Clear previous
+    const g = svg.append("g")
+        .attr("transform", `translate(${width / 2}, ${height / 2})`);
 
-  const g = svg.append("g")
-    .attr("transform", `translate(${width / 2},${height / 2})`);
+    // 🔥 FIX 1: always use fixed ordering
+    const orderedData = fixedOrder.map(key => ({
+        label: key,
+        value: data[key] || 0  // Default to 0 if missing
+    }));
 
-  const pie = d3.pie()
-    .value(d => d.value);
+    // 🔥 FIX 2: no sorting
+    const pie = d3.pie()
+        .sort(null)
+        .value(d => d.value);
 
-  const arc = d3.arc()
-    .innerRadius(0)
-    .outerRadius(radius);
+    const arc = d3.arc()
+        .outerRadius(radius - 10)
+        .innerRadius(0);
 
-  const color = d3.scaleOrdinal()
-    .domain(data.map(d => d.label))
-    .range(data.map(d => colorMap[d.label]));
+    const arcs = g.selectAll(".arc")
+        .data(pie(orderedData))
+        .enter()
+        .append("g")
+        .attr("class", "arc");
 
-  const arcs = g.selectAll(".arc")
-    .data(pie(data))
-    .enter().append("g")
-    .attr("class", "arc");
-
-  arcs.append("path")
-    .attr("d", arc)
-    .attr("fill", d => color(d.data.label));
+    arcs.append("path")
+        .attr("d", arc)
+        .attr("fill", d => colorMap[d.data.label]);
 }
+
 
 function drawLegend(containerId, colorMap) {
   const container = d3.select(containerId);
@@ -1863,10 +2146,19 @@ function drawLegend(containerId, colorMap) {
     .attr("fill", "#333");
 }
 
-    drawPieChart("#pie-race", pieData.race);
-    drawPieChart("#pie-age", pieData.age);
-    drawPieChart("#pie-education", pieData.education);
-    drawPieChart("#pie-job", pieData.job);
+    // drawPieChart("#pie-race", pieData.race);
+    // drawPieChart("#pie-age", pieData.age);
+    // drawPieChart("#pie-education", pieData.education);
+    // drawPieChart("#pie-job", pieData.job);
+    const raceOrder = ["White", "Asian", "Black", "Hispanic", "Other"];
+    const ageOrder = ["0-19", "20-34", "35-54", "55+"];
+    const educationOrder = ["<High School", "High School", "Some College", "Bachelor+"];
+    const jobOrder = ["Tech", "Corporate", "Healthcare", "Hospitality", "Other"];
+
+    drawPieChart("#pie-race", neighborhoodData, raceColors, raceOrder);
+    drawPieChart("#pie-age", neighborhoodData, ageColors, ageOrder);
+    drawPieChart("#pie-education", neighborhoodData, educationColors, educationOrder);
+    drawPieChart("#pie-job", neighborhoodData, jobColors, jobOrder);
     </script>
     
     
@@ -1902,8 +2194,9 @@ function drawLegend(containerId, colorMap) {
       { label: "Tech", value: 5 + Math.floor(Math.random() * 20), color: jobColorMap["Tech"] },
       { label: "Corporate", value: 5 + Math.floor(Math.random() * 20), color: jobColorMap["Corporate"] },
       { label: "Healthcare", value: 5 + Math.floor(Math.random() * 20), color: jobColorMap["Healthcare"] },
-      { label: "Construction", value: 5 + Math.floor(Math.random() * 20), color: jobColorMap["Construction"] },
-      { label: "Hospitality", value: 5 + Math.floor(Math.random() * 20), color: jobColorMap["Hospitality"] }
+      { label: "Hospitality", value: 5 + Math.floor(Math.random() * 20), color: jobColorMap["Hospitality"] },
+    //   { label: "Construction", value: 5 + Math.floor(Math.random() * 20), color: jobColorMap["Construction"] },
+      { label: "Other", value: 5 + Math.floor(Math.random() * 20), color: jobColorMap["Other"] },
     ]
   };
 });
@@ -1980,6 +2273,7 @@ pieYearSelect.addEventListener("change", function() {
   const selectedYear = +this.value;
   updateAllPies(selectedYear);
 });
+
         </script>
         
         <script>
