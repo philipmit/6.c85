@@ -1,0 +1,2102 @@
+{
+    "Allston": {
+        "race": [
+            {
+                "label": "White",
+                "value": 51,
+                "color": "#FF5733"
+            },
+            {
+                "label": "Asian",
+                "value": 11,
+                "color": "#33FF57"
+            },
+            {
+                "label": "Black",
+                "value": 37,
+                "color": "#3357FF"
+            },
+            {
+                "label": "Hispanic",
+                "value": 6,
+                "color": "#FF33D4"
+            },
+            {
+                "label": "Other",
+                "value": 3,
+                "color": "orange"
+            }
+        ],
+        "age": [
+            {
+                "label": "0-19",
+                "value": 28,
+                "color": "#a6cee3"
+            },
+            {
+                "label": "20-34",
+                "value": 26,
+                "color": "#1f78b4"
+            },
+            {
+                "label": "35-54",
+                "value": 26,
+                "color": "#b2df8a"
+            },
+            {
+                "label": "55+",
+                "value": 23,
+                "color": "#33a02c"
+            }
+        ],
+        "education": [
+            {
+                "label": "<High School",
+                "value": 8,
+                "color": "#fb9a99"
+            },
+            {
+                "label": "High School",
+                "value": 28,
+                "color": "#e31a1c"
+            },
+            {
+                "label": "Some College",
+                "value": 22,
+                "color": "#fdbf6f"
+            },
+            {
+                "label": "Bachelor+",
+                "value": 48,
+                "color": "#ff7f00"
+            }
+        ],
+        "job": [
+            {
+                "label": "Tech",
+                "value": 20,
+                "color": "#6a3d9a"
+            },
+            {
+                "label": "Corporate",
+                "value": 5,
+                "color": "#cab2d6"
+            },
+            {
+                "label": "Healthcare",
+                "value": 17,
+                "color": "#ffff99"
+            },
+            {
+                "label": "Hospitality",
+                "value": 6,
+                "color": "#8dd3c7"
+            },
+            {
+                "label": "Other",
+                "value": 7,
+                "color": "#b15928"
+            }
+        ]
+    },
+    "Beacon Hill": {
+        "race": [
+            {
+                "label": "White",
+                "value": 68,
+                "color": "#FF5733"
+            },
+            {
+                "label": "Asian",
+                "value": 17,
+                "color": "#33FF57"
+            },
+            {
+                "label": "Black",
+                "value": 22,
+                "color": "#3357FF"
+            },
+            {
+                "label": "Hispanic",
+                "value": 10,
+                "color": "#FF33D4"
+            },
+            {
+                "label": "Other",
+                "value": 5,
+                "color": "orange"
+            }
+        ],
+        "age": [
+            {
+                "label": "0-19",
+                "value": 23,
+                "color": "#a6cee3"
+            },
+            {
+                "label": "20-34",
+                "value": 24,
+                "color": "#1f78b4"
+            },
+            {
+                "label": "35-54",
+                "value": 34,
+                "color": "#b2df8a"
+            },
+            {
+                "label": "55+",
+                "value": 18,
+                "color": "#33a02c"
+            }
+        ],
+        "education": [
+            {
+                "label": "<High School",
+                "value": 17,
+                "color": "#fb9a99"
+            },
+            {
+                "label": "High School",
+                "value": 23,
+                "color": "#e31a1c"
+            },
+            {
+                "label": "Some College",
+                "value": 21,
+                "color": "#fdbf6f"
+            },
+            {
+                "label": "Bachelor+",
+                "value": 44,
+                "color": "#ff7f00"
+            }
+        ],
+        "job": [
+            {
+                "label": "Tech",
+                "value": 15,
+                "color": "#6a3d9a"
+            },
+            {
+                "label": "Corporate",
+                "value": 6,
+                "color": "#cab2d6"
+            },
+            {
+                "label": "Healthcare",
+                "value": 16,
+                "color": "#ffff99"
+            },
+            {
+                "label": "Hospitality",
+                "value": 21,
+                "color": "#8dd3c7"
+            },
+            {
+                "label": "Other",
+                "value": 21,
+                "color": "#b15928"
+            }
+        ]
+    },
+    "Brighton": {
+        "race": [
+            {
+                "label": "White",
+                "value": 38,
+                "color": "#FF5733"
+            },
+            {
+                "label": "Asian",
+                "value": 10,
+                "color": "#33FF57"
+            },
+            {
+                "label": "Black",
+                "value": 18,
+                "color": "#3357FF"
+            },
+            {
+                "label": "Hispanic",
+                "value": 8,
+                "color": "#FF33D4"
+            },
+            {
+                "label": "Other",
+                "value": 11,
+                "color": "orange"
+            }
+        ],
+        "age": [
+            {
+                "label": "0-19",
+                "value": 36,
+                "color": "#a6cee3"
+            },
+            {
+                "label": "20-34",
+                "value": 37,
+                "color": "#1f78b4"
+            },
+            {
+                "label": "35-54",
+                "value": 48,
+                "color": "#b2df8a"
+            },
+            {
+                "label": "55+",
+                "value": 13,
+                "color": "#33a02c"
+            }
+        ],
+        "education": [
+            {
+                "label": "<High School",
+                "value": 7,
+                "color": "#fb9a99"
+            },
+            {
+                "label": "High School",
+                "value": 18,
+                "color": "#e31a1c"
+            },
+            {
+                "label": "Some College",
+                "value": 14,
+                "color": "#fdbf6f"
+            },
+            {
+                "label": "Bachelor+",
+                "value": 38,
+                "color": "#ff7f00"
+            }
+        ],
+        "job": [
+            {
+                "label": "Tech",
+                "value": 14,
+                "color": "#6a3d9a"
+            },
+            {
+                "label": "Corporate",
+                "value": 18,
+                "color": "#cab2d6"
+            },
+            {
+                "label": "Healthcare",
+                "value": 11,
+                "color": "#ffff99"
+            },
+            {
+                "label": "Hospitality",
+                "value": 8,
+                "color": "#8dd3c7"
+            },
+            {
+                "label": "Other",
+                "value": 24,
+                "color": "#b15928"
+            }
+        ]
+    },
+    "Charlestown": {
+        "race": [
+            {
+                "label": "White",
+                "value": 65,
+                "color": "#FF5733"
+            },
+            {
+                "label": "Asian",
+                "value": 15,
+                "color": "#33FF57"
+            },
+            {
+                "label": "Black",
+                "value": 38,
+                "color": "#3357FF"
+            },
+            {
+                "label": "Hispanic",
+                "value": 10,
+                "color": "#FF33D4"
+            },
+            {
+                "label": "Other",
+                "value": 10,
+                "color": "orange"
+            }
+        ],
+        "age": [
+            {
+                "label": "0-19",
+                "value": 13,
+                "color": "#a6cee3"
+            },
+            {
+                "label": "20-34",
+                "value": 36,
+                "color": "#1f78b4"
+            },
+            {
+                "label": "35-54",
+                "value": 49,
+                "color": "#b2df8a"
+            },
+            {
+                "label": "55+",
+                "value": 11,
+                "color": "#33a02c"
+            }
+        ],
+        "education": [
+            {
+                "label": "<High School",
+                "value": 8,
+                "color": "#fb9a99"
+            },
+            {
+                "label": "High School",
+                "value": 32,
+                "color": "#e31a1c"
+            },
+            {
+                "label": "Some College",
+                "value": 26,
+                "color": "#fdbf6f"
+            },
+            {
+                "label": "Bachelor+",
+                "value": 27,
+                "color": "#ff7f00"
+            }
+        ],
+        "job": [
+            {
+                "label": "Tech",
+                "value": 16,
+                "color": "#6a3d9a"
+            },
+            {
+                "label": "Corporate",
+                "value": 10,
+                "color": "#cab2d6"
+            },
+            {
+                "label": "Healthcare",
+                "value": 12,
+                "color": "#ffff99"
+            },
+            {
+                "label": "Hospitality",
+                "value": 18,
+                "color": "#8dd3c7"
+            },
+            {
+                "label": "Other",
+                "value": 12,
+                "color": "#b15928"
+            }
+        ]
+    },
+    "Chinatown": {
+        "race": [
+            {
+                "label": "White",
+                "value": 65,
+                "color": "#FF5733"
+            },
+            {
+                "label": "Asian",
+                "value": 10,
+                "color": "#33FF57"
+            },
+            {
+                "label": "Black",
+                "value": 33,
+                "color": "#3357FF"
+            },
+            {
+                "label": "Hispanic",
+                "value": 13,
+                "color": "#FF33D4"
+            },
+            {
+                "label": "Other",
+                "value": 5,
+                "color": "orange"
+            }
+        ],
+        "age": [
+            {
+                "label": "0-19",
+                "value": 37,
+                "color": "#a6cee3"
+            },
+            {
+                "label": "20-34",
+                "value": 32,
+                "color": "#1f78b4"
+            },
+            {
+                "label": "35-54",
+                "value": 41,
+                "color": "#b2df8a"
+            },
+            {
+                "label": "55+",
+                "value": 11,
+                "color": "#33a02c"
+            }
+        ],
+        "education": [
+            {
+                "label": "<High School",
+                "value": 23,
+                "color": "#fb9a99"
+            },
+            {
+                "label": "High School",
+                "value": 25,
+                "color": "#e31a1c"
+            },
+            {
+                "label": "Some College",
+                "value": 27,
+                "color": "#fdbf6f"
+            },
+            {
+                "label": "Bachelor+",
+                "value": 26,
+                "color": "#ff7f00"
+            }
+        ],
+        "job": [
+            {
+                "label": "Tech",
+                "value": 18,
+                "color": "#6a3d9a"
+            },
+            {
+                "label": "Corporate",
+                "value": 6,
+                "color": "#cab2d6"
+            },
+            {
+                "label": "Healthcare",
+                "value": 21,
+                "color": "#ffff99"
+            },
+            {
+                "label": "Hospitality",
+                "value": 24,
+                "color": "#8dd3c7"
+            },
+            {
+                "label": "Other",
+                "value": 15,
+                "color": "#b15928"
+            }
+        ]
+    },
+    "Dorchester": {
+        "race": [
+            {
+                "label": "White",
+                "value": 31,
+                "color": "#FF5733"
+            },
+            {
+                "label": "Asian",
+                "value": 8,
+                "color": "#33FF57"
+            },
+            {
+                "label": "Black",
+                "value": 11,
+                "color": "#3357FF"
+            },
+            {
+                "label": "Hispanic",
+                "value": 16,
+                "color": "#FF33D4"
+            },
+            {
+                "label": "Other",
+                "value": 6,
+                "color": "orange"
+            }
+        ],
+        "age": [
+            {
+                "label": "0-19",
+                "value": 35,
+                "color": "#a6cee3"
+            },
+            {
+                "label": "20-34",
+                "value": 35,
+                "color": "#1f78b4"
+            },
+            {
+                "label": "35-54",
+                "value": 49,
+                "color": "#b2df8a"
+            },
+            {
+                "label": "55+",
+                "value": 28,
+                "color": "#33a02c"
+            }
+        ],
+        "education": [
+            {
+                "label": "<High School",
+                "value": 16,
+                "color": "#fb9a99"
+            },
+            {
+                "label": "High School",
+                "value": 14,
+                "color": "#e31a1c"
+            },
+            {
+                "label": "Some College",
+                "value": 11,
+                "color": "#fdbf6f"
+            },
+            {
+                "label": "Bachelor+",
+                "value": 24,
+                "color": "#ff7f00"
+            }
+        ],
+        "job": [
+            {
+                "label": "Tech",
+                "value": 6,
+                "color": "#6a3d9a"
+            },
+            {
+                "label": "Corporate",
+                "value": 23,
+                "color": "#cab2d6"
+            },
+            {
+                "label": "Healthcare",
+                "value": 15,
+                "color": "#ffff99"
+            },
+            {
+                "label": "Hospitality",
+                "value": 16,
+                "color": "#8dd3c7"
+            },
+            {
+                "label": "Other",
+                "value": 11,
+                "color": "#b15928"
+            }
+        ]
+    },
+    "Downtown": {
+        "race": [
+            {
+                "label": "White",
+                "value": 41,
+                "color": "#FF5733"
+            },
+            {
+                "label": "Asian",
+                "value": 5,
+                "color": "#33FF57"
+            },
+            {
+                "label": "Black",
+                "value": 31,
+                "color": "#3357FF"
+            },
+            {
+                "label": "Hispanic",
+                "value": 16,
+                "color": "#FF33D4"
+            },
+            {
+                "label": "Other",
+                "value": 4,
+                "color": "orange"
+            }
+        ],
+        "age": [
+            {
+                "label": "0-19",
+                "value": 32,
+                "color": "#a6cee3"
+            },
+            {
+                "label": "20-34",
+                "value": 49,
+                "color": "#1f78b4"
+            },
+            {
+                "label": "35-54",
+                "value": 35,
+                "color": "#b2df8a"
+            },
+            {
+                "label": "55+",
+                "value": 11,
+                "color": "#33a02c"
+            }
+        ],
+        "education": [
+            {
+                "label": "<High School",
+                "value": 16,
+                "color": "#fb9a99"
+            },
+            {
+                "label": "High School",
+                "value": 11,
+                "color": "#e31a1c"
+            },
+            {
+                "label": "Some College",
+                "value": 30,
+                "color": "#fdbf6f"
+            },
+            {
+                "label": "Bachelor+",
+                "value": 48,
+                "color": "#ff7f00"
+            }
+        ],
+        "job": [
+            {
+                "label": "Tech",
+                "value": 13,
+                "color": "#6a3d9a"
+            },
+            {
+                "label": "Corporate",
+                "value": 24,
+                "color": "#cab2d6"
+            },
+            {
+                "label": "Healthcare",
+                "value": 20,
+                "color": "#ffff99"
+            },
+            {
+                "label": "Hospitality",
+                "value": 13,
+                "color": "#8dd3c7"
+            },
+            {
+                "label": "Other",
+                "value": 24,
+                "color": "#b15928"
+            }
+        ]
+    },
+    "East Boston": {
+        "race": [
+            {
+                "label": "White",
+                "value": 58,
+                "color": "#FF5733"
+            },
+            {
+                "label": "Asian",
+                "value": 17,
+                "color": "#33FF57"
+            },
+            {
+                "label": "Black",
+                "value": 12,
+                "color": "#3357FF"
+            },
+            {
+                "label": "Hispanic",
+                "value": 10,
+                "color": "#FF33D4"
+            },
+            {
+                "label": "Other",
+                "value": 7,
+                "color": "orange"
+            }
+        ],
+        "age": [
+            {
+                "label": "0-19",
+                "value": 28,
+                "color": "#a6cee3"
+            },
+            {
+                "label": "20-34",
+                "value": 42,
+                "color": "#1f78b4"
+            },
+            {
+                "label": "35-54",
+                "value": 22,
+                "color": "#b2df8a"
+            },
+            {
+                "label": "55+",
+                "value": 16,
+                "color": "#33a02c"
+            }
+        ],
+        "education": [
+            {
+                "label": "<High School",
+                "value": 6,
+                "color": "#fb9a99"
+            },
+            {
+                "label": "High School",
+                "value": 20,
+                "color": "#e31a1c"
+            },
+            {
+                "label": "Some College",
+                "value": 18,
+                "color": "#fdbf6f"
+            },
+            {
+                "label": "Bachelor+",
+                "value": 34,
+                "color": "#ff7f00"
+            }
+        ],
+        "job": [
+            {
+                "label": "Tech",
+                "value": 13,
+                "color": "#6a3d9a"
+            },
+            {
+                "label": "Corporate",
+                "value": 11,
+                "color": "#cab2d6"
+            },
+            {
+                "label": "Healthcare",
+                "value": 17,
+                "color": "#ffff99"
+            },
+            {
+                "label": "Hospitality",
+                "value": 15,
+                "color": "#8dd3c7"
+            },
+            {
+                "label": "Other",
+                "value": 18,
+                "color": "#b15928"
+            }
+        ]
+    },
+    "Fenway": {
+        "race": [
+            {
+                "label": "White",
+                "value": 41,
+                "color": "#FF5733"
+            },
+            {
+                "label": "Asian",
+                "value": 16,
+                "color": "#33FF57"
+            },
+            {
+                "label": "Black",
+                "value": 38,
+                "color": "#3357FF"
+            },
+            {
+                "label": "Hispanic",
+                "value": 19,
+                "color": "#FF33D4"
+            },
+            {
+                "label": "Other",
+                "value": 2,
+                "color": "orange"
+            }
+        ],
+        "age": [
+            {
+                "label": "0-19",
+                "value": 15,
+                "color": "#a6cee3"
+            },
+            {
+                "label": "20-34",
+                "value": 42,
+                "color": "#1f78b4"
+            },
+            {
+                "label": "35-54",
+                "value": 46,
+                "color": "#b2df8a"
+            },
+            {
+                "label": "55+",
+                "value": 16,
+                "color": "#33a02c"
+            }
+        ],
+        "education": [
+            {
+                "label": "<High School",
+                "value": 9,
+                "color": "#fb9a99"
+            },
+            {
+                "label": "High School",
+                "value": 26,
+                "color": "#e31a1c"
+            },
+            {
+                "label": "Some College",
+                "value": 31,
+                "color": "#fdbf6f"
+            },
+            {
+                "label": "Bachelor+",
+                "value": 38,
+                "color": "#ff7f00"
+            }
+        ],
+        "job": [
+            {
+                "label": "Tech",
+                "value": 18,
+                "color": "#6a3d9a"
+            },
+            {
+                "label": "Corporate",
+                "value": 21,
+                "color": "#cab2d6"
+            },
+            {
+                "label": "Healthcare",
+                "value": 12,
+                "color": "#ffff99"
+            },
+            {
+                "label": "Hospitality",
+                "value": 21,
+                "color": "#8dd3c7"
+            },
+            {
+                "label": "Other",
+                "value": 22,
+                "color": "#b15928"
+            }
+        ]
+    },
+    "Hyde Park": {
+        "race": [
+            {
+                "label": "White",
+                "value": 67,
+                "color": "#FF5733"
+            },
+            {
+                "label": "Asian",
+                "value": 6,
+                "color": "#33FF57"
+            },
+            {
+                "label": "Black",
+                "value": 39,
+                "color": "#3357FF"
+            },
+            {
+                "label": "Hispanic",
+                "value": 23,
+                "color": "#FF33D4"
+            },
+            {
+                "label": "Other",
+                "value": 7,
+                "color": "orange"
+            }
+        ],
+        "age": [
+            {
+                "label": "0-19",
+                "value": 19,
+                "color": "#a6cee3"
+            },
+            {
+                "label": "20-34",
+                "value": 22,
+                "color": "#1f78b4"
+            },
+            {
+                "label": "35-54",
+                "value": 37,
+                "color": "#b2df8a"
+            },
+            {
+                "label": "55+",
+                "value": 28,
+                "color": "#33a02c"
+            }
+        ],
+        "education": [
+            {
+                "label": "<High School",
+                "value": 6,
+                "color": "#fb9a99"
+            },
+            {
+                "label": "High School",
+                "value": 33,
+                "color": "#e31a1c"
+            },
+            {
+                "label": "Some College",
+                "value": 13,
+                "color": "#fdbf6f"
+            },
+            {
+                "label": "Bachelor+",
+                "value": 48,
+                "color": "#ff7f00"
+            }
+        ],
+        "job": [
+            {
+                "label": "Tech",
+                "value": 13,
+                "color": "#6a3d9a"
+            },
+            {
+                "label": "Corporate",
+                "value": 22,
+                "color": "#cab2d6"
+            },
+            {
+                "label": "Healthcare",
+                "value": 6,
+                "color": "#ffff99"
+            },
+            {
+                "label": "Hospitality",
+                "value": 5,
+                "color": "#8dd3c7"
+            },
+            {
+                "label": "Other",
+                "value": 20,
+                "color": "#b15928"
+            }
+        ]
+    },
+    "Jamaica Plain": {
+        "race": [
+            {
+                "label": "White",
+                "value": 65,
+                "color": "#FF5733"
+            },
+            {
+                "label": "Asian",
+                "value": 7,
+                "color": "#33FF57"
+            },
+            {
+                "label": "Black",
+                "value": 20,
+                "color": "#3357FF"
+            },
+            {
+                "label": "Hispanic",
+                "value": 17,
+                "color": "#FF33D4"
+            },
+            {
+                "label": "Other",
+                "value": 11,
+                "color": "orange"
+            }
+        ],
+        "age": [
+            {
+                "label": "0-19",
+                "value": 19,
+                "color": "#a6cee3"
+            },
+            {
+                "label": "20-34",
+                "value": 25,
+                "color": "#1f78b4"
+            },
+            {
+                "label": "35-54",
+                "value": 31,
+                "color": "#b2df8a"
+            },
+            {
+                "label": "55+",
+                "value": 17,
+                "color": "#33a02c"
+            }
+        ],
+        "education": [
+            {
+                "label": "<High School",
+                "value": 10,
+                "color": "#fb9a99"
+            },
+            {
+                "label": "High School",
+                "value": 27,
+                "color": "#e31a1c"
+            },
+            {
+                "label": "Some College",
+                "value": 11,
+                "color": "#fdbf6f"
+            },
+            {
+                "label": "Bachelor+",
+                "value": 47,
+                "color": "#ff7f00"
+            }
+        ],
+        "job": [
+            {
+                "label": "Tech",
+                "value": 13,
+                "color": "#6a3d9a"
+            },
+            {
+                "label": "Corporate",
+                "value": 20,
+                "color": "#cab2d6"
+            },
+            {
+                "label": "Healthcare",
+                "value": 19,
+                "color": "#ffff99"
+            },
+            {
+                "label": "Hospitality",
+                "value": 9,
+                "color": "#8dd3c7"
+            },
+            {
+                "label": "Other",
+                "value": 9,
+                "color": "#b15928"
+            }
+        ]
+    },
+    "Longwood": {
+        "race": [
+            {
+                "label": "White",
+                "value": 51,
+                "color": "#FF5733"
+            },
+            {
+                "label": "Asian",
+                "value": 19,
+                "color": "#33FF57"
+            },
+            {
+                "label": "Black",
+                "value": 13,
+                "color": "#3357FF"
+            },
+            {
+                "label": "Hispanic",
+                "value": 7,
+                "color": "#FF33D4"
+            },
+            {
+                "label": "Other",
+                "value": 9,
+                "color": "orange"
+            }
+        ],
+        "age": [
+            {
+                "label": "0-19",
+                "value": 13,
+                "color": "#a6cee3"
+            },
+            {
+                "label": "20-34",
+                "value": 31,
+                "color": "#1f78b4"
+            },
+            {
+                "label": "35-54",
+                "value": 23,
+                "color": "#b2df8a"
+            },
+            {
+                "label": "55+",
+                "value": 25,
+                "color": "#33a02c"
+            }
+        ],
+        "education": [
+            {
+                "label": "<High School",
+                "value": 12,
+                "color": "#fb9a99"
+            },
+            {
+                "label": "High School",
+                "value": 16,
+                "color": "#e31a1c"
+            },
+            {
+                "label": "Some College",
+                "value": 31,
+                "color": "#fdbf6f"
+            },
+            {
+                "label": "Bachelor+",
+                "value": 23,
+                "color": "#ff7f00"
+            }
+        ],
+        "job": [
+            {
+                "label": "Tech",
+                "value": 17,
+                "color": "#6a3d9a"
+            },
+            {
+                "label": "Corporate",
+                "value": 6,
+                "color": "#cab2d6"
+            },
+            {
+                "label": "Healthcare",
+                "value": 11,
+                "color": "#ffff99"
+            },
+            {
+                "label": "Hospitality",
+                "value": 10,
+                "color": "#8dd3c7"
+            },
+            {
+                "label": "Other",
+                "value": 11,
+                "color": "#b15928"
+            }
+        ]
+    },
+    "Mattapan": {
+        "race": [
+            {
+                "label": "White",
+                "value": 68,
+                "color": "#FF5733"
+            },
+            {
+                "label": "Asian",
+                "value": 12,
+                "color": "#33FF57"
+            },
+            {
+                "label": "Black",
+                "value": 37,
+                "color": "#3357FF"
+            },
+            {
+                "label": "Hispanic",
+                "value": 6,
+                "color": "#FF33D4"
+            },
+            {
+                "label": "Other",
+                "value": 9,
+                "color": "orange"
+            }
+        ],
+        "age": [
+            {
+                "label": "0-19",
+                "value": 19,
+                "color": "#a6cee3"
+            },
+            {
+                "label": "20-34",
+                "value": 31,
+                "color": "#1f78b4"
+            },
+            {
+                "label": "35-54",
+                "value": 46,
+                "color": "#b2df8a"
+            },
+            {
+                "label": "55+",
+                "value": 28,
+                "color": "#33a02c"
+            }
+        ],
+        "education": [
+            {
+                "label": "<High School",
+                "value": 9,
+                "color": "#fb9a99"
+            },
+            {
+                "label": "High School",
+                "value": 22,
+                "color": "#e31a1c"
+            },
+            {
+                "label": "Some College",
+                "value": 28,
+                "color": "#fdbf6f"
+            },
+            {
+                "label": "Bachelor+",
+                "value": 37,
+                "color": "#ff7f00"
+            }
+        ],
+        "job": [
+            {
+                "label": "Tech",
+                "value": 15,
+                "color": "#6a3d9a"
+            },
+            {
+                "label": "Corporate",
+                "value": 5,
+                "color": "#cab2d6"
+            },
+            {
+                "label": "Healthcare",
+                "value": 24,
+                "color": "#ffff99"
+            },
+            {
+                "label": "Hospitality",
+                "value": 6,
+                "color": "#8dd3c7"
+            },
+            {
+                "label": "Other",
+                "value": 18,
+                "color": "#b15928"
+            }
+        ]
+    },
+    "North End": {
+        "race": [
+            {
+                "label": "White",
+                "value": 46,
+                "color": "#FF5733"
+            },
+            {
+                "label": "Asian",
+                "value": 16,
+                "color": "#33FF57"
+            },
+            {
+                "label": "Black",
+                "value": 25,
+                "color": "#3357FF"
+            },
+            {
+                "label": "Hispanic",
+                "value": 17,
+                "color": "#FF33D4"
+            },
+            {
+                "label": "Other",
+                "value": 11,
+                "color": "orange"
+            }
+        ],
+        "age": [
+            {
+                "label": "0-19",
+                "value": 23,
+                "color": "#a6cee3"
+            },
+            {
+                "label": "20-34",
+                "value": 20,
+                "color": "#1f78b4"
+            },
+            {
+                "label": "35-54",
+                "value": 47,
+                "color": "#b2df8a"
+            },
+            {
+                "label": "55+",
+                "value": 18,
+                "color": "#33a02c"
+            }
+        ],
+        "education": [
+            {
+                "label": "<High School",
+                "value": 12,
+                "color": "#fb9a99"
+            },
+            {
+                "label": "High School",
+                "value": 27,
+                "color": "#e31a1c"
+            },
+            {
+                "label": "Some College",
+                "value": 32,
+                "color": "#fdbf6f"
+            },
+            {
+                "label": "Bachelor+",
+                "value": 37,
+                "color": "#ff7f00"
+            }
+        ],
+        "job": [
+            {
+                "label": "Tech",
+                "value": 18,
+                "color": "#6a3d9a"
+            },
+            {
+                "label": "Corporate",
+                "value": 17,
+                "color": "#cab2d6"
+            },
+            {
+                "label": "Healthcare",
+                "value": 14,
+                "color": "#ffff99"
+            },
+            {
+                "label": "Hospitality",
+                "value": 10,
+                "color": "#8dd3c7"
+            },
+            {
+                "label": "Other",
+                "value": 18,
+                "color": "#b15928"
+            }
+        ]
+    },
+    "Roslindale": {
+        "race": [
+            {
+                "label": "White",
+                "value": 48,
+                "color": "#FF5733"
+            },
+            {
+                "label": "Asian",
+                "value": 11,
+                "color": "#33FF57"
+            },
+            {
+                "label": "Black",
+                "value": 29,
+                "color": "#3357FF"
+            },
+            {
+                "label": "Hispanic",
+                "value": 21,
+                "color": "#FF33D4"
+            },
+            {
+                "label": "Other",
+                "value": 8,
+                "color": "orange"
+            }
+        ],
+        "age": [
+            {
+                "label": "0-19",
+                "value": 14,
+                "color": "#a6cee3"
+            },
+            {
+                "label": "20-34",
+                "value": 48,
+                "color": "#1f78b4"
+            },
+            {
+                "label": "35-54",
+                "value": 21,
+                "color": "#b2df8a"
+            },
+            {
+                "label": "55+",
+                "value": 28,
+                "color": "#33a02c"
+            }
+        ],
+        "education": [
+            {
+                "label": "<High School",
+                "value": 11,
+                "color": "#fb9a99"
+            },
+            {
+                "label": "High School",
+                "value": 19,
+                "color": "#e31a1c"
+            },
+            {
+                "label": "Some College",
+                "value": 28,
+                "color": "#fdbf6f"
+            },
+            {
+                "label": "Bachelor+",
+                "value": 49,
+                "color": "#ff7f00"
+            }
+        ],
+        "job": [
+            {
+                "label": "Tech",
+                "value": 7,
+                "color": "#6a3d9a"
+            },
+            {
+                "label": "Corporate",
+                "value": 15,
+                "color": "#cab2d6"
+            },
+            {
+                "label": "Healthcare",
+                "value": 9,
+                "color": "#ffff99"
+            },
+            {
+                "label": "Hospitality",
+                "value": 7,
+                "color": "#8dd3c7"
+            },
+            {
+                "label": "Other",
+                "value": 5,
+                "color": "#b15928"
+            }
+        ]
+    },
+    "Roxbury": {
+        "race": [
+            {
+                "label": "White",
+                "value": 57,
+                "color": "#FF5733"
+            },
+            {
+                "label": "Asian",
+                "value": 7,
+                "color": "#33FF57"
+            },
+            {
+                "label": "Black",
+                "value": 10,
+                "color": "#3357FF"
+            },
+            {
+                "label": "Hispanic",
+                "value": 14,
+                "color": "#FF33D4"
+            },
+            {
+                "label": "Other",
+                "value": 11,
+                "color": "orange"
+            }
+        ],
+        "age": [
+            {
+                "label": "0-19",
+                "value": 34,
+                "color": "#a6cee3"
+            },
+            {
+                "label": "20-34",
+                "value": 32,
+                "color": "#1f78b4"
+            },
+            {
+                "label": "35-54",
+                "value": 37,
+                "color": "#b2df8a"
+            },
+            {
+                "label": "55+",
+                "value": 17,
+                "color": "#33a02c"
+            }
+        ],
+        "education": [
+            {
+                "label": "<High School",
+                "value": 9,
+                "color": "#fb9a99"
+            },
+            {
+                "label": "High School",
+                "value": 28,
+                "color": "#e31a1c"
+            },
+            {
+                "label": "Some College",
+                "value": 14,
+                "color": "#fdbf6f"
+            },
+            {
+                "label": "Bachelor+",
+                "value": 36,
+                "color": "#ff7f00"
+            }
+        ],
+        "job": [
+            {
+                "label": "Tech",
+                "value": 18,
+                "color": "#6a3d9a"
+            },
+            {
+                "label": "Corporate",
+                "value": 12,
+                "color": "#cab2d6"
+            },
+            {
+                "label": "Healthcare",
+                "value": 17,
+                "color": "#ffff99"
+            },
+            {
+                "label": "Hospitality",
+                "value": 22,
+                "color": "#8dd3c7"
+            },
+            {
+                "label": "Other",
+                "value": 11,
+                "color": "#b15928"
+            }
+        ]
+    },
+    "South Boston": {
+        "race": [
+            {
+                "label": "White",
+                "value": 54,
+                "color": "#FF5733"
+            },
+            {
+                "label": "Asian",
+                "value": 6,
+                "color": "#33FF57"
+            },
+            {
+                "label": "Black",
+                "value": 31,
+                "color": "#3357FF"
+            },
+            {
+                "label": "Hispanic",
+                "value": 16,
+                "color": "#FF33D4"
+            },
+            {
+                "label": "Other",
+                "value": 3,
+                "color": "orange"
+            }
+        ],
+        "age": [
+            {
+                "label": "0-19",
+                "value": 36,
+                "color": "#a6cee3"
+            },
+            {
+                "label": "20-34",
+                "value": 23,
+                "color": "#1f78b4"
+            },
+            {
+                "label": "35-54",
+                "value": 47,
+                "color": "#b2df8a"
+            },
+            {
+                "label": "55+",
+                "value": 10,
+                "color": "#33a02c"
+            }
+        ],
+        "education": [
+            {
+                "label": "<High School",
+                "value": 15,
+                "color": "#fb9a99"
+            },
+            {
+                "label": "High School",
+                "value": 22,
+                "color": "#e31a1c"
+            },
+            {
+                "label": "Some College",
+                "value": 34,
+                "color": "#fdbf6f"
+            },
+            {
+                "label": "Bachelor+",
+                "value": 41,
+                "color": "#ff7f00"
+            }
+        ],
+        "job": [
+            {
+                "label": "Tech",
+                "value": 14,
+                "color": "#6a3d9a"
+            },
+            {
+                "label": "Corporate",
+                "value": 13,
+                "color": "#cab2d6"
+            },
+            {
+                "label": "Healthcare",
+                "value": 18,
+                "color": "#ffff99"
+            },
+            {
+                "label": "Hospitality",
+                "value": 14,
+                "color": "#8dd3c7"
+            },
+            {
+                "label": "Other",
+                "value": 17,
+                "color": "#b15928"
+            }
+        ]
+    },
+    "S. Boston Waterfront": {
+        "race": [
+            {
+                "label": "White",
+                "value": 59,
+                "color": "#FF5733"
+            },
+            {
+                "label": "Asian",
+                "value": 11,
+                "color": "#33FF57"
+            },
+            {
+                "label": "Black",
+                "value": 10,
+                "color": "#3357FF"
+            },
+            {
+                "label": "Hispanic",
+                "value": 14,
+                "color": "#FF33D4"
+            },
+            {
+                "label": "Other",
+                "value": 8,
+                "color": "orange"
+            }
+        ],
+        "age": [
+            {
+                "label": "0-19",
+                "value": 32,
+                "color": "#a6cee3"
+            },
+            {
+                "label": "20-34",
+                "value": 33,
+                "color": "#1f78b4"
+            },
+            {
+                "label": "35-54",
+                "value": 43,
+                "color": "#b2df8a"
+            },
+            {
+                "label": "55+",
+                "value": 10,
+                "color": "#33a02c"
+            }
+        ],
+        "education": [
+            {
+                "label": "<High School",
+                "value": 20,
+                "color": "#fb9a99"
+            },
+            {
+                "label": "High School",
+                "value": 34,
+                "color": "#e31a1c"
+            },
+            {
+                "label": "Some College",
+                "value": 11,
+                "color": "#fdbf6f"
+            },
+            {
+                "label": "Bachelor+",
+                "value": 22,
+                "color": "#ff7f00"
+            }
+        ],
+        "job": [
+            {
+                "label": "Tech",
+                "value": 15,
+                "color": "#6a3d9a"
+            },
+            {
+                "label": "Corporate",
+                "value": 9,
+                "color": "#cab2d6"
+            },
+            {
+                "label": "Healthcare",
+                "value": 22,
+                "color": "#ffff99"
+            },
+            {
+                "label": "Hospitality",
+                "value": 16,
+                "color": "#8dd3c7"
+            },
+            {
+                "label": "Other",
+                "value": 10,
+                "color": "#b15928"
+            }
+        ]
+    },
+    "South End": {
+        "race": [
+            {
+                "label": "White",
+                "value": 64,
+                "color": "#FF5733"
+            },
+            {
+                "label": "Asian",
+                "value": 12,
+                "color": "#33FF57"
+            },
+            {
+                "label": "Black",
+                "value": 31,
+                "color": "#3357FF"
+            },
+            {
+                "label": "Hispanic",
+                "value": 22,
+                "color": "#FF33D4"
+            },
+            {
+                "label": "Other",
+                "value": 9,
+                "color": "orange"
+            }
+        ],
+        "age": [
+            {
+                "label": "0-19",
+                "value": 33,
+                "color": "#a6cee3"
+            },
+            {
+                "label": "20-34",
+                "value": 22,
+                "color": "#1f78b4"
+            },
+            {
+                "label": "35-54",
+                "value": 22,
+                "color": "#b2df8a"
+            },
+            {
+                "label": "55+",
+                "value": 28,
+                "color": "#33a02c"
+            }
+        ],
+        "education": [
+            {
+                "label": "<High School",
+                "value": 11,
+                "color": "#fb9a99"
+            },
+            {
+                "label": "High School",
+                "value": 13,
+                "color": "#e31a1c"
+            },
+            {
+                "label": "Some College",
+                "value": 20,
+                "color": "#fdbf6f"
+            },
+            {
+                "label": "Bachelor+",
+                "value": 43,
+                "color": "#ff7f00"
+            }
+        ],
+        "job": [
+            {
+                "label": "Tech",
+                "value": 10,
+                "color": "#6a3d9a"
+            },
+            {
+                "label": "Corporate",
+                "value": 24,
+                "color": "#cab2d6"
+            },
+            {
+                "label": "Healthcare",
+                "value": 13,
+                "color": "#ffff99"
+            },
+            {
+                "label": "Hospitality",
+                "value": 5,
+                "color": "#8dd3c7"
+            },
+            {
+                "label": "Other",
+                "value": 11,
+                "color": "#b15928"
+            }
+        ]
+    },
+    "West End": {
+        "race": [
+            {
+                "label": "White",
+                "value": 50,
+                "color": "#FF5733"
+            },
+            {
+                "label": "Asian",
+                "value": 17,
+                "color": "#33FF57"
+            },
+            {
+                "label": "Black",
+                "value": 15,
+                "color": "#3357FF"
+            },
+            {
+                "label": "Hispanic",
+                "value": 23,
+                "color": "#FF33D4"
+            },
+            {
+                "label": "Other",
+                "value": 5,
+                "color": "orange"
+            }
+        ],
+        "age": [
+            {
+                "label": "0-19",
+                "value": 22,
+                "color": "#a6cee3"
+            },
+            {
+                "label": "20-34",
+                "value": 34,
+                "color": "#1f78b4"
+            },
+            {
+                "label": "35-54",
+                "value": 33,
+                "color": "#b2df8a"
+            },
+            {
+                "label": "55+",
+                "value": 13,
+                "color": "#33a02c"
+            }
+        ],
+        "education": [
+            {
+                "label": "<High School",
+                "value": 18,
+                "color": "#fb9a99"
+            },
+            {
+                "label": "High School",
+                "value": 23,
+                "color": "#e31a1c"
+            },
+            {
+                "label": "Some College",
+                "value": 12,
+                "color": "#fdbf6f"
+            },
+            {
+                "label": "Bachelor+",
+                "value": 23,
+                "color": "#ff7f00"
+            }
+        ],
+        "job": [
+            {
+                "label": "Tech",
+                "value": 13,
+                "color": "#6a3d9a"
+            },
+            {
+                "label": "Corporate",
+                "value": 13,
+                "color": "#cab2d6"
+            },
+            {
+                "label": "Healthcare",
+                "value": 14,
+                "color": "#ffff99"
+            },
+            {
+                "label": "Hospitality",
+                "value": 21,
+                "color": "#8dd3c7"
+            },
+            {
+                "label": "Other",
+                "value": 21,
+                "color": "#b15928"
+            }
+        ]
+    },
+    "West Roxbury": {
+        "race": [
+            {
+                "label": "White",
+                "value": 62,
+                "color": "#FF5733"
+            },
+            {
+                "label": "Asian",
+                "value": 6,
+                "color": "#33FF57"
+            },
+            {
+                "label": "Black",
+                "value": 12,
+                "color": "#3357FF"
+            },
+            {
+                "label": "Hispanic",
+                "value": 16,
+                "color": "#FF33D4"
+            },
+            {
+                "label": "Other",
+                "value": 5,
+                "color": "orange"
+            }
+        ],
+        "age": [
+            {
+                "label": "0-19",
+                "value": 12,
+                "color": "#a6cee3"
+            },
+            {
+                "label": "20-34",
+                "value": 29,
+                "color": "#1f78b4"
+            },
+            {
+                "label": "35-54",
+                "value": 36,
+                "color": "#b2df8a"
+            },
+            {
+                "label": "55+",
+                "value": 22,
+                "color": "#33a02c"
+            }
+        ],
+        "education": [
+            {
+                "label": "<High School",
+                "value": 11,
+                "color": "#fb9a99"
+            },
+            {
+                "label": "High School",
+                "value": 16,
+                "color": "#e31a1c"
+            },
+            {
+                "label": "Some College",
+                "value": 32,
+                "color": "#fdbf6f"
+            },
+            {
+                "label": "Bachelor+",
+                "value": 49,
+                "color": "#ff7f00"
+            }
+        ],
+        "job": [
+            {
+                "label": "Tech",
+                "value": 22,
+                "color": "#6a3d9a"
+            },
+            {
+                "label": "Corporate",
+                "value": 10,
+                "color": "#cab2d6"
+            },
+            {
+                "label": "Healthcare",
+                "value": 22,
+                "color": "#ffff99"
+            },
+            {
+                "label": "Hospitality",
+                "value": 15,
+                "color": "#8dd3c7"
+            },
+            {
+                "label": "Other",
+                "value": 12,
+                "color": "#b15928"
+            }
+        ]
+    }
+}
