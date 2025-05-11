@@ -126,7 +126,7 @@ function getColor(rate) {
   
   // Calculate grayscale value: 0 (black) to 255 (white)
 //   const grayValue = Math.round(255 * (1 - rate));
-  const grayValue = Math.round(255 * (1 - rate) + 0);
+  const grayValue = Math.round(255 * (1 - rate*1.5) + 0);
   
   return `rgb(${grayValue},${grayValue},${grayValue})`;
 }
